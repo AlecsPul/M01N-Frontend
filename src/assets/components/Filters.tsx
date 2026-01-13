@@ -85,21 +85,20 @@ export default function Filters({ onFilterChange }: FiltersProps) {
   }
 
   return (
-    <HStack w="100%" h="100%" gap={0} align="stretch">
-      <Box
-        flex="1"
-        bg="white"
-        p={6}
-        overflowY="auto"
-      >
+    <Box
+      w="100%"
+      h="100%"
+      bg="white"
+      p={6}
+      paddingRight={4}
+      overflowY="auto"
+    >
       <VStack align="stretch" gap={6}>
         <Box>
           <Text fontSize="2xl" fontWeight="bold" color="black" mb={2}>
             Filters
           </Text>
         </Box>
-
-        <Separator borderWidth="1px" borderColor="black" />
 
         {/* Categories Filter */}
         <Box>
@@ -203,7 +202,5 @@ export default function Filters({ onFilterChange }: FiltersProps) {
         </Box>
       </VStack>
     </Box>
-    <Separator orientation="vertical" borderWidth="1px" borderColor="black" />
-    </HStack>
   )
 }
