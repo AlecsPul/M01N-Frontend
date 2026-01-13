@@ -1,4 +1,4 @@
-import { StrictMode, useState } from 'react'
+import { StrictMode, useState, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import ProductCard from './assets/components/ProductCard.tsx'
@@ -6,190 +6,15 @@ import { ChakraProvider, defaultSystem, Box, Grid, HStack, Button, Text } from '
 import Filters from './assets/components/Filters.tsx'
 import NavBar from './assets/components/NavBar.tsx'
 
-const products = [
-  {
-    id: "1",
-    title: "Living room Sofa",
-    description: "This sofa is perfect for modern tropical spaces, baroque inspired spaces.",
-    price: "4 CHF/Month",
-    priceValue: 4,
-    image: "https://www.tranxfer.com/wp-content/uploads/2025/09/Logo-Tranxfer-2-300x61.png",
-    category: "Sofas",
-    rating: 4.5,
-    inStock: true,
-    onSale: false,
-    freeShipping: true
-  },
-  {
-    id: "2",
-    title: "Luxury Armchair",
-    description: "A luxurious armchair that adds elegance to any room.",
-    price: "350 CHF",
-    priceValue: 350,
-    image: "https://www.tranxfer.com/wp-content/uploads/2025/09/Logo-Tranxfer-2-300x61.png",
-    category: "Armchairs",
-    rating: 5.0,
-    inStock: true,
-    onSale: true,
-    freeShipping: false
-  },
-  {
-    id: "3",
-    title: "Stylish Coffee Table",
-    description: "A stylish coffee table that complements your living space.",
-    price: "Free",
-    priceValue: 0,
-    image: "https://www.tranxfer.com/wp-content/uploads/2025/09/Logo-Tranxfer-2-300x61.png",
-    category: "Tables",
-    percentage: "98%",
-    rating: 3.8,
-    inStock: true,
-    onSale: true,
-    freeShipping: true
-  },
-
-  {
-    id: "4",
-    title: "Modern Bookshelf",
-    description: "A modern bookshelf to organize your favorite reads. AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    price: "120 CHF",
-    priceValue: 120,
-    image: "https://www.tranxfer.com/wp-content/uploads/2025/09/Logo-Tranxfer-2-300x61.png",
-    category: "Bookshelves",
-    percentage: "76%",
-    rating: 4.2,
-    inStock: false,
-    onSale: false,
-    freeShipping: true
-  },
-
-  {
-    id: "5",
-    title: "Modern Bookshelf",
-    description: "A modern bookshelf to organize your favorite reads. AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    price: "120 CHF",
-    priceValue: 120,
-    image: "https://www.tranxfer.com/wp-content/uploads/2025/09/Logo-Tranxfer-2-300x61.png",
-    category: "Bookshelves",
-    percentage: "76%",
-    rating: 4.2,
-    inStock: true,
-    onSale: false,
-    freeShipping: false
-  },
-  {
-    id: "6",
-    title: "Modern Bookshelf",
-    description: "A modern bookshelf to organize your favorite reads. AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    price: "120 CHF",
-    priceValue: 120,
-    image: "https://www.tranxfer.com/wp-content/uploads/2025/09/Logo-Tranxfer-2-300x61.png",
-    category: "Bookshelves",
-    percentage: "76%",
-    rating: 4.2,
-    inStock: true,
-    onSale: true,
-    freeShipping: true
-  },
-  {
-    id: "7",
-    title: "Modern Bookshelf",
-    description: "A modern bookshelf to organize your favorite reads. AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    price: "120 CHF",
-    priceValue: 120,
-    image: "https://www.tranxfer.com/wp-content/uploads/2025/09/Logo-Tranxfer-2-300x61.png",
-    category: "Bookshelves",
-    percentage: "76%",
-    rating: 4.2,
-    inStock: true,
-    onSale: false,
-    freeShipping: true
-  },
-  {
-    id: "8",
-    title: "Modern Bookshelf",
-    description: "A modern bookshelf to organize your favorite reads. AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    price: "120 CHF",
-    priceValue: 120,
-    image: "https://www.tranxfer.com/wp-content/uploads/2025/09/Logo-Tranxfer-2-300x61.png",
-    category: "Bookshelves",
-    percentage: "76%",
-    rating: 4.2,
-    inStock: false,
-    onSale: true,
-    freeShipping: false
-  },
-  {
-    id: "9",
-    title: "Modern Bookshelf",
-    description: "A modern bookshelf to organize your favorite reads. AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    price: "120 CHF",
-    priceValue: 120,
-    image: "https://www.tranxfer.com/wp-content/uploads/2025/09/Logo-Tranxfer-2-300x61.png",
-    category: "Bookshelves",
-    percentage: "76%",
-    rating: 4.2,
-    inStock: true,
-    onSale: false,
-    freeShipping: true
-  },
-  {
-    id: "10",
-    title: "Modern Bookshelf",
-    description: "A modern bookshelf to organize your favorite reads. AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    price: "120 CHF",
-    priceValue: 120,
-    image: "https://www.tranxfer.com/wp-content/uploads/2025/09/Logo-Tranxfer-2-300x61.png",
-    category: "Bookshelves",
-    percentage: "76%",
-    rating: 4.2,
-    inStock: true,
-    onSale: true,
-    freeShipping: false
-  },
-  {
-    id: "11",
-    title: "Modern Bookshelf",
-    description: "A modern bookshelf to organize your favorite reads. AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    price: "120 CHF",
-    priceValue: 120,
-    image: "https://www.tranxfer.com/wp-content/uploads/2025/09/Logo-Tranxfer-2-300x61.png",
-    category: "Bookshelves",
-    percentage: "76%",
-    rating: 4.2,
-    inStock: false,
-    onSale: false,
-    freeShipping: true
-  },
-  {
-    id: "12",
-    title: "Modern Bookshelf",
-    description: "A modern bookshelf to organize your favorite reads. AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    price: "120 CHF",
-    priceValue: 120,
-    image: "https://www.tranxfer.com/wp-content/uploads/2025/09/Logo-Tranxfer-2-300x61.png",
-    category: "Bookshelves",
-    percentage: "76%",
-    rating: 4.2,
-  },
-  {
-    id: "13",
-    title: "Modern Bookshelf",
-    description: "A modern bookshelf to organize your favorite reads. AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    price: "120 CHF",
-    priceValue: 120,
-    image: "https://www.tranxfer.com/wp-content/uploads/2025/09/Logo-Tranxfer-2-300x61.png",
-    category: "Bookshelves",
-    percentage: "76%",
-    rating: 4.2,
-  }
-
-]
-
+// Backend API base URL - update this to match your backend
+const API_BASE_URL = 'http://localhost:8000' // Change to your backend URL
 
 function App() {
   const [currentPage, setCurrentPage] = useState('marketplace')
   const [page, setPage] = useState(1)
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [filters, setFilters] = useState({
     categories: [],
     priceRange: [0, 1000],
@@ -198,6 +23,50 @@ function App() {
   })
 
   const itemsPerPage = 9
+
+  // Fetch products from backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true) 
+        const response = await fetch(`${API_BASE_URL}/api/v1/application/links`)
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        
+        const data = await response.json()
+        
+        // Map backend data to frontend Product format
+        const mappedProducts = data.map(app => ({
+          id: String(app.id),
+          title: app.name,
+          description: app.description || 'No description available',
+          price: app.price_text || 'Free',
+          priceValue: 0,
+          image: app.image_url,
+          category: 'General',
+          rating: app.stars || 0,
+          link: app.url // This is the important field from backend
+        }))
+        
+        setProducts(mappedProducts)
+        setError(null)
+      } catch (err) {
+        console.error('Error fetching products:', err)
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProducts()
+  }, [])
+
+  // Reset page to 1 when filters change
+  useEffect(() => {
+    setPage(1)
+  }, [filters])
 
   const filteredProducts = products.filter(product => {
     // Filter by category
@@ -273,18 +142,34 @@ function App() {
             display="flex"
             flexDirection="column"
           >
-            <Grid 
-              templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} 
-              gap="4"
-              w="100%"
-              alignContent="start"
-            >
-              {currentProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </Grid>
+            {/* Loading and Error States */}
+            {loading && (
+              <Box textAlign="center" padding="8">
+                <Text fontSize="lg" color="gray.600">Loading...</Text>
+              </Box>
+            )}
             
-            {/* Pagination Controls */}
+            {error && (
+              <Box textAlign="center" padding="8">
+                <Text fontSize="lg" color="red.500">Error loading data: {error}</Text>
+                <Text fontSize="sm" color="gray.600" mt="2">Please try refreshing the page</Text>
+              </Box>
+            )}
+            
+            {!loading && (
+              <>
+                <Grid 
+                  templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} 
+                  gap="4"
+                  w="100%"
+                  alignContent="start"
+                >
+                  {currentProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </Grid>
+                
+                {/* Pagination Controls */}
             <HStack 
               justify="center" 
               gap="2" 
@@ -341,6 +226,8 @@ function App() {
                 →
               </Button>
             </HStack>
+              </>
+            )}
           </Box>
         </>
       )}

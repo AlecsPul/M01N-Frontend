@@ -9,6 +9,7 @@ interface Product {
   image?: string
   percentage?:string
   rating?: number
+  link?: string
 }
 
 interface ProductCardProps {
@@ -17,8 +18,11 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const handleClick = () => {
-    // TODO: Add navigation/redirect logic here
-    console.log(`Clicked product: ${product.id}`)
+    if (product.link) {
+      window.open(product.link, '_blank', 'noopener,noreferrer')
+    } else {
+      console.log(`No link available for product: ${product.id}`)
+    }
   }
 
   const renderStars = (rating: number = 0) => {
