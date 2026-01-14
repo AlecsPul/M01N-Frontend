@@ -49,7 +49,7 @@ export default function Marketplace() {
           image: app.image_url,
           category: app.tags && app.tags.length > 0 ? app.tags[0] : 'General',
           tags: app.tags || [],
-          rating: app.stars || 0,
+          rating: app.rating || 0,  // Changed from app.stars to app.rating
           link: app.url
         }))
         
