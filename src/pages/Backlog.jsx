@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Box, Grid, Text } from '@chakra-ui/react'
 import BacklogCard from '../assets/components/BacklogCard.tsx'
+import BacklogDetailModal from '../assets/components/BacklogDetailModal.tsx'
 
 const API_BASE_URL = 'http://localhost:8000'
 
@@ -8,6 +9,8 @@ export default function Backlog() {
   const [backlogItems, setBacklogItems] = useState([])
   const [backlogLoading, setBacklogLoading] = useState(false)
   const [backlogError, setBacklogError] = useState(null)
+  const [selectedCardId, setSelectedCardId] = useState(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   // Fetch backlog items from backend
   useEffect(() => {
@@ -44,7 +47,17 @@ export default function Backlog() {
   }, [])
 
   return (
-    <Box display="flex" gap="4" px="2rem" pt="7rem" pb="2rem">
+    <>
+      <BacklogDetailModal 
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false)
+          setSelectedCardId(null)
+        }}
+        cardId={selectedCardId}
+      />
+      
+      <Box display="flex" gap="4" px="2rem" pt="7rem" pb="2rem">
       <Box 
         flex="1"
         padding="4"
@@ -124,7 +137,8 @@ export default function Backlog() {
                   }
                 }}
                 onClick={(id) => {
-                  console.log('Backlog item clicked:', id)
+                  setSelectedCardId(id)
+                  setIsModalOpen(true)
                 }}
                 onDiscard={async (id) => {
                   try {
@@ -158,6 +172,7 @@ export default function Backlog() {
           </Grid>
         )}
       </Box>
-    </Box>
+      </Box>
+    </>
   )
 }
