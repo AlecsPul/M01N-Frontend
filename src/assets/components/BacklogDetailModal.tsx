@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { Box, Text, VStack, HStack, Badge, Button, Spinner, IconButton } from "@chakra-ui/react"
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogBackdrop } from "@chakra-ui/react"
-import { FaCheckCircle, FaTimesCircle, FaSearch, FaTimes } from "react-icons/fa"
+import { FaCheckCircle, FaTimesCircle, FaSearch, FaTimes, FaArrowUp } from "react-icons/fa"
 
 const API_BASE_URL = 'http://localhost:8000'
 
@@ -17,6 +17,7 @@ interface CardDetail {
   description: string | null
   status: number
   number_of_requests: number
+  upvotes?: number
   created_at: string
   updated_at: string | null
   comments: Array<{
@@ -32,6 +33,13 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isCloseHovered, setIsCloseHovered] = useState(false)
+
+  // Reset hover state when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setIsCloseHovered(false)
+    }
+  }, [isOpen])
 
   useEffect(() => {
     if (!isOpen || !cardId) return
@@ -95,9 +103,25 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
         boxShadow="2xl"
       >
         <DialogHeader borderBottom="2px solid" borderColor="gray.200" pb="4" position="relative">
-          <DialogTitle fontSize="2xl" fontWeight="bold" color="black">
-            Application Details
-          </DialogTitle>
+          <HStack justify="space-between" align="center">
+            <DialogTitle fontSize="2xl" fontWeight="bold" color="black">
+              Upvotes
+            </DialogTitle>
+            <HStack 
+              gap="2" 
+              bg="gray.100" 
+              px="4" 
+              py="2" 
+              borderRadius="full"
+              border="2px solid"
+              borderColor="gray.300"
+            >
+              <FaArrowUp color="#38A169" size={20} />
+              <Text fontSize="xl" fontWeight="bold" color="gray.700">
+                {cardDetail?.upvotes || 0}
+              </Text>
+            </HStack>
+          </HStack>
           <IconButton
             onClick={onClose}
             onMouseEnter={() => setIsCloseHovered(true)}
@@ -123,7 +147,7 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
         <DialogBody p="6">
           {loading && (
             <Box textAlign="center" py="8">
-              <Spinner size="xl" color="blue.500" />
+              <Spinner size="xl" color="green.500" />
               <Text mt="4" color="gray.600">Loading details...</Text>
             </Box>
           )}
