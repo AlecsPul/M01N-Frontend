@@ -43,9 +43,9 @@ export default function NavBar({ currentPage, onNavigate }: NavBarProps) {
         borderRadius="8px" 
         cursor="pointer" 
         _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-        onClick={() => onNavigate('products')}
+        onClick={() => onNavigate('backlog')}
       >
-        <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Products</Text>
+        <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Backlog</Text>
       </Box>
       <Box 
         bg="transparent" 
