@@ -161,6 +161,13 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
     }
   }
 
+  // Reset provider suggestion when cardId changes
+  useEffect(() => {
+    setProviderSuggestion(null)
+    setProviderError(null)
+    setProviderLoading(false)
+  }, [cardId])
+
   return (
     <DialogRoot open={isOpen} onOpenChange={(e) => !e.open && onClose()} size="xl">
       <DialogBackdrop />
