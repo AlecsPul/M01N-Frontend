@@ -13,6 +13,7 @@ import {
   Box
 } from '@chakra-ui/react'
 import { FaTimes } from 'react-icons/fa'
+import { submitNoMatch } from '../../services/noMatchService'
 
 interface NoMatchModalProps {
   isOpen: boolean
@@ -22,15 +23,27 @@ interface NoMatchModalProps {
 
 export default function NoMatchModal({ isOpen, onClose, userPrompt }: NoMatchModalProps) {
   const [comment, setComment] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleConfirm = () => {
-    // Here you could send the comment to backend if needed
-    if (comment.trim()) {
-      console.log('User comment:', comment)
-      // TODO: Send to backend API
+  const handleConfirm = async () => {
+    try {
+      setIsSubmitting(true)
+      
+      // Submit the no-match data to the backend
+      await submitNoMatch({
+        prompt: userPrompt,
+        comment: comment.trim() || '',
+      })
+      
+      console.log('No-match data submitted successfully')
+    } catch (error) {
+      console.error('Failed to submit no-match data:', error)
+      // Optionally show an error message to the user
+    } finally {
+      setIsSubmitting(false)
+      setComment('')
+      onClose()
     }
-    setComment('')
-    onClose()
   }
 
   return (
@@ -72,6 +85,7 @@ export default function NoMatchModal({ isOpen, onClose, userPrompt }: NoMatchMod
             <Textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
+              disabled={isSubmitting}
               placeholder="Write here any additional details you consider relevant..."
               rows={4}
               resize="vertical"
