@@ -73,11 +73,8 @@ const Community = () => {
       >
         <Box mb="4">
           <Text fontSize="2xl" fontWeight="bold" color="black">
-            Community Requests
-          </Text>
-          <Text fontSize="sm" color="gray.600" mt="1">
-            Vote for the applications you want to see
-          </Text>
+            Community
+          </Text>          
         </Box>
 
         {/* Loading and Error States */}

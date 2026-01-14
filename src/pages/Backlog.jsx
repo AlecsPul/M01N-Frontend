@@ -103,10 +103,7 @@ export default function Backlog() {
             {/* Left: Title */}
             <Box flex="1">
               <Text fontSize="2xl" fontWeight="bold" color="black">
-                Application Backlog
-              </Text>
-              <Text fontSize="sm" color="gray.600" mt="1">
-                Requested applications from users
+                Backlog
               </Text>
             </Box>
 
