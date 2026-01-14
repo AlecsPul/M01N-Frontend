@@ -21,8 +21,8 @@ interface CardDetail {
   updated_at: string | null
   comments: Array<{
     id: string
-    buyer_prompt: string
-    comment: string
+    prompt_text: string
+    comment_text: string | null
     created_at: string
   }>
 }
@@ -41,15 +41,32 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
         setLoading(true)
         setError(null)
         
-        // Replace with your actual endpoint
-        const response = await fetch(`${API_BASE_URL}/api/v1/cards/${cardId}`)
+        // Fetch card basic info
+        const cardResponse = await fetch(`${API_BASE_URL}/api/v1/cards/${cardId}`)
         
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
+        if (!cardResponse.ok) {
+          throw new Error(`HTTP error! status: ${cardResponse.status}`)
         }
         
-        const data = await response.json()
-        setCardDetail(data)
+        const cardData = await cardResponse.json()
+        
+        // Fetch comments and prompts for this card
+        const commentsResponse = await fetch(`${API_BASE_URL}/api/v1/cards/${cardId}/comments`)
+        
+        if (!commentsResponse.ok) {
+          throw new Error(`HTTP error! status: ${commentsResponse.status}`)
+        }
+        
+        const commentsData = await commentsResponse.json()
+        
+        console.log('Card data:', cardData)
+        console.log('Comments data:', commentsData)
+        
+        // Combine data
+        setCardDetail({
+          ...cardData,
+          comments: commentsData
+        })
       } catch (err) {
         console.error('Error fetching card details:', err)
         setError(err instanceof Error ? err.message : 'Failed to load card details')
@@ -223,34 +240,36 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
                             borderRadius="8px"
                             fontStyle="italic"
                           >
-                            "{comment.buyer_prompt}"
+                            "{comment.prompt_text}"
                           </Text>
                         </Box>
 
                         {/* Comment */}
-                        <Box>
-                          <HStack mb="2">
-                            <Badge colorScheme="green" fontSize="xs" px="2" py="1">
-                              COMMENT
-                            </Badge>
-                            <Text fontSize="xs" color="gray.500">
-                              {new Date(comment.created_at).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
+                        {comment.comment_text && (
+                          <Box>
+                            <HStack mb="2">
+                              <Badge colorScheme="green" fontSize="xs" px="2" py="1">
+                                COMMENT
+                              </Badge>
+                              <Text fontSize="xs" color="gray.500">
+                                {new Date(comment.created_at).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'short',
+                                  day: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </Text>
+                            </HStack>
+                            <Text 
+                              fontSize="md" 
+                              color="gray.700"
+                              lineHeight="1.6"
+                            >
+                              {comment.comment_text}
                             </Text>
-                          </HStack>
-                          <Text 
-                            fontSize="md" 
-                            color="gray.700"
-                            lineHeight="1.6"
-                          >
-                            {comment.comment}
-                          </Text>
-                        </Box>
+                          </Box>
+                        )}
                       </Box>
                     ))}
                   </VStack>
