@@ -4,15 +4,18 @@ import { useState } from "react"
 
 interface FiltersProps {
   onFilterChange?: (filters: FilterState) => void
-  availableTags?: string[]
+  availableCategories?: string[]
+  availableIndustries?: string[]
 }
 
 export interface FilterState {
   categories: string[]
+  priceType: string | null  // 'free', 'paid', or null for all
 }
 
-export default function Filters({ onFilterChange, availableTags = [] }: FiltersProps) {
+export default function Filters({ onFilterChange, availableCategories = [], availableIndustries = [] }: FiltersProps) {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [priceType, setPriceType] = useState<string | null>(null)
 
   const handleCategoryChange = (category: string, checked: boolean) => {
     const updated = checked
@@ -20,7 +23,15 @@ export default function Filters({ onFilterChange, availableTags = [] }: FiltersP
       : selectedCategories.filter(c => c !== category)
     setSelectedCategories(updated)
     if (onFilterChange) {
-      onFilterChange({ categories: updated })
+      onFilterChange({ categories: updated, priceType })
+    }
+  }
+
+  const handlePriceChange = (type: string, checked: boolean) => {
+    const newPriceType = checked ? type : null
+    setPriceType(newPriceType)
+    if (onFilterChange) {
+      onFilterChange({ categories: selectedCategories, priceType: newPriceType })
     }
   }
 
@@ -40,14 +51,45 @@ export default function Filters({ onFilterChange, availableTags = [] }: FiltersP
           </Text>
         </Box>
 
+        {/* Price Filter */}
+        <Box>
+          <Text fontSize="lg" fontWeight="semibold" color="black" mb={3}>
+            Price
+          </Text>
+          <VStack align="stretch" gap={2}>
+            <Checkbox.Root
+              checked={priceType === 'free'}
+              onCheckedChange={(e) => handlePriceChange('free', !!e.checked)}
+              colorScheme="blue"
+            >
+              <Checkbox.HiddenInput />
+              <Checkbox.Control />
+              <Checkbox.Label>
+                <Text color="gray.700">Free</Text>
+              </Checkbox.Label>
+            </Checkbox.Root>
+            <Checkbox.Root
+              checked={priceType === 'paid'}
+              onCheckedChange={(e) => handlePriceChange('paid', !!e.checked)}
+              colorScheme="blue"
+            >
+              <Checkbox.HiddenInput />
+              <Checkbox.Control />
+              <Checkbox.Label>
+                <Text color="gray.700">Paid</Text>
+              </Checkbox.Label>
+            </Checkbox.Root>
+          </VStack>
+        </Box>
+
         {/* Categories Filter */}
         <Box>
           <Text fontSize="lg" fontWeight="semibold" color="black" mb={3}>
             Categories
           </Text>
-          {availableTags.length > 0 ? (
+          {availableCategories.length > 0 ? (
             <VStack align="stretch" gap={2}>
-              {availableTags.map((category) => (
+              {availableCategories.map((category) => (
                 <Checkbox.Root
                   key={category}
                   checked={selectedCategories.includes(category)}
@@ -64,6 +106,33 @@ export default function Filters({ onFilterChange, availableTags = [] }: FiltersP
             </VStack>
           ) : (
             <Text fontSize="sm" color="gray.500">No categories available</Text>
+          )}
+        </Box>
+
+        {/* Industries Filter */}
+        <Box>
+          <Text fontSize="lg" fontWeight="semibold" color="black" mb={3}>
+            Industries
+          </Text>
+          {availableIndustries.length > 0 ? (
+            <VStack align="stretch" gap={2}>
+              {availableIndustries.map((industry) => (
+                <Checkbox.Root
+                  key={industry}
+                  checked={selectedCategories.includes(industry)}
+                  onCheckedChange={(e) => handleCategoryChange(industry, !!e.checked)}
+                  colorScheme="blue"
+                >
+                  <Checkbox.HiddenInput />
+                  <Checkbox.Control />
+                  <Checkbox.Label>
+                    <Text color="gray.700">{industry}</Text>
+                  </Checkbox.Label>
+                </Checkbox.Root>
+              ))}
+            </VStack>
+          ) : (
+            <Text fontSize="sm" color="gray.500">No industries available</Text>
           )}
         </Box>
       </VStack>
