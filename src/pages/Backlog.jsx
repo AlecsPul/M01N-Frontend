@@ -157,61 +157,13 @@ export default function Backlog() {
           display="flex"
           flexDirection="column"
         >
-          {/* Header with Title, Toggle (centered), and Create Button */}
-          <Box mb="4" display="flex" justifyContent="space-between" alignItems="center" position="relative">
+          {/* Header with Title and Create Button */}
+          <Box mb="4" display="flex" justifyContent="space-between" alignItems="center">
             {/* Left: Title */}
             <Box flex="1">
               <Text fontSize="2xl" fontWeight="bold" color="black">
                 Backlog
               </Text>
-            </Box>
-
-            {/* Create New Card Button - Only show in backlog view */}
-            {viewMode === 'backlog' && (
-              <Button
-                onClick={() => setIsFormModalOpen(true)}
-                colorScheme="blue"
-                size="lg"
-                leftIcon={<FaPlus />}
-              >
-                Create New Card
-              </Button>
-            )}
-
-            {/* Center: View Toggle Buttons */}
-            <Box position="absolute" left="50%" transform="translateX(-50%)">
-              <HStack 
-                bg="gray.100" 
-                p="1" 
-                borderRadius="md"
-                border="1px solid"
-                borderColor="gray.300"
-              >
-                <Button
-                  onClick={() => setViewMode('backlog')}
-                  size="md"
-                  leftIcon={<FaThLarge />}
-                  bg={viewMode === 'backlog' ? 'white' : 'transparent'}
-                  color={viewMode === 'backlog' ? 'blue.600' : 'gray.600'}
-                  fontWeight={viewMode === 'backlog' ? 'bold' : 'normal'}
-                  boxShadow={viewMode === 'backlog' ? 'sm' : 'none'}
-                  _hover={{ bg: viewMode === 'backlog' ? 'white' : 'gray.200' }}
-                >
-                  Cards
-                </Button>
-                <Button
-                  onClick={() => setViewMode('charts')}
-                  size="md"
-                  leftIcon={<FaChartBar />}
-                  bg={viewMode === 'charts' ? 'white' : 'transparent'}
-                  color={viewMode === 'charts' ? 'blue.600' : 'gray.600'}
-                  fontWeight={viewMode === 'charts' ? 'bold' : 'normal'}
-                  boxShadow={viewMode === 'charts' ? 'sm' : 'none'}
-                  _hover={{ bg: viewMode === 'charts' ? 'white' : 'gray.200' }}
-                >
-                  Charts
-                </Button>
-              </HStack>
             </Box>
 
             {/* Right: Create New Card Button - Only show in backlog view */}
