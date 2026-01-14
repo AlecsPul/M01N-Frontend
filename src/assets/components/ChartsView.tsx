@@ -15,42 +15,48 @@ interface ChartViewProps {
 }
 
 export default function ChartsView({ apiBaseUrl = API_BASE_URL }: ChartViewProps) {
-  const [clickStats, setClickStats] = useState<Stat[]>([])
+  const [allStats, setAllStats] = useState<Stat[]>([])
   const [allCategories, setAllCategories] = useState<string[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string>('')
+  const [searchQuery, setSearchQuery] = useState<string>('')
   const [statsLoading, setStatsLoading] = useState<boolean>(false)
 
+  // Fetch all stats and categories once on mount
   useEffect(() => {
-    const fetchClickStats = async () => {
+    const fetchAllStats = async () => {
       try {
         setStatsLoading(true)
-        const query = selectedCategory ? `?category=${selectedCategory}` : ''
-        const response = await fetch(`${apiBaseUrl}/api/v1/application/clicks/stats${query}`)
-        
+        const response = await fetch(`${apiBaseUrl}/api/v1/application/clicks/stats`)
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
-        
         const data: Stat[] = await response.json()
-        setClickStats(data)
+        console.log(`Fetched ${data.length} total stats`, data)
+        setAllStats(data)
         
-        if (!selectedCategory) {
-          const categories = new Set<string>()
-          data.forEach(stat => {
-            stat.tags.forEach(tag => categories.add(tag))
-          })
-          setAllCategories(Array.from(categories).sort())
-        }
+        // Extract categories from all stats
+        const categories = new Set<string>()
+        data.forEach(stat => {
+          stat.tags.forEach(tag => categories.add(tag))
+        })
+        setAllCategories(Array.from(categories).sort())
       } catch (err) {
-        console.error('Error fetching click statistics:', err)
-        setClickStats([])
+        console.error('Error fetching statistics:', err)
+        setAllStats([])
       } finally {
         setStatsLoading(false)
       }
     }
 
-    fetchClickStats()
-  }, [selectedCategory, apiBaseUrl])
+    fetchAllStats()
+  }, [apiBaseUrl])
+
+  // Filter stats based on selected category and search query
+  const filteredStats = allStats.filter(stat => {
+    const matchesCategory = !selectedCategory || stat.tags.includes(selectedCategory)
+    const matchesSearch = stat.app_name.toLowerCase().includes(searchQuery.toLowerCase())
+    return matchesCategory && matchesSearch
+  }).sort((a, b) => b.click_count - a.click_count)
 
   return (
     <Box display="flex" gap="4" px="2rem" pb="2rem">
@@ -71,31 +77,70 @@ export default function ChartsView({ apiBaseUrl = API_BASE_URL }: ChartViewProps
           </Text>
         </Box>
 
-        {/* Category Filter */}
+        {/* Search Bar */}
         <Box mb="6">
           <Text fontSize="sm" fontWeight="600" color="black" mb="2">
-            Filter by Category
+            Search Applications
           </Text>
-          <select 
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+          <input 
+            type="text"
+            placeholder="Search by app name..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             style={{
               width: '100%',
-              padding: '8px 12px',
+              padding: '10px 12px',
               borderRadius: '6px',
               border: '1px solid #e2e8f0',
               backgroundColor: '#f7fafc',
               fontSize: '14px',
-              cursor: 'pointer'
+              fontFamily: 'inherit'
             }}
-          >
-            <option value="">All Categories</option>
+          />
+        </Box>
+
+        {/* Category Filter - Toggle Squares */}
+        <Box mb="6">
+          <Text fontSize="sm" fontWeight="600" color="black" mb="3">
+            Filter by Category
+          </Text>
+          <HStack gap="2" flexWrap="wrap">
+            <Box
+              onClick={() => setSelectedCategory('')}
+              p="3"
+              borderRadius="6px"
+              border="2px solid"
+              borderColor={selectedCategory === '' ? 'black' : 'gray.300'}
+              bg={selectedCategory === '' ? 'black' : 'white'}
+              color={selectedCategory === '' ? 'white' : 'black'}
+              cursor="pointer"
+              fontWeight="500"
+              fontSize="sm"
+              transition="all 0.2s"
+              _hover={{ transform: 'scale(1.05)' }}
+            >
+              All
+            </Box>
             {allCategories.map((category) => (
-              <option key={category} value={category}>
+              <Box
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                p="3"
+                borderRadius="6px"
+                border="2px solid"
+                borderColor={selectedCategory === category ? 'black' : 'gray.300'}
+                bg={selectedCategory === category ? 'black' : 'white'}
+                color={selectedCategory === category ? 'white' : 'black'}
+                cursor="pointer"
+                fontWeight="500"
+                fontSize="sm"
+                transition="all 0.2s"
+                _hover={{ transform: 'scale(1.05)' }}
+              >
                 {category}
-              </option>
+              </Box>
             ))}
-          </select>
+          </HStack>
         </Box>
 
         {/* Loading State */}
@@ -106,9 +151,9 @@ export default function ChartsView({ apiBaseUrl = API_BASE_URL }: ChartViewProps
         )}
 
         {/* Stats List */}
-        {!statsLoading && clickStats.length > 0 && (
+        {!statsLoading && filteredStats.length > 0 && (
           <VStack gap="3" align="stretch">
-            {clickStats.map((stat, index) => (
+            {filteredStats.map((stat, index) => (
               <Box
                 key={index}
                 p="4"
@@ -151,7 +196,19 @@ export default function ChartsView({ apiBaseUrl = API_BASE_URL }: ChartViewProps
           </VStack>
         )}
 
-        {!statsLoading && clickStats.length === 0 && (
+        {!statsLoading && filteredStats.length === 0 && allStats.length > 0 && (
+          <Box textAlign="center" padding="8">
+            <Text fontSize="lg" color="gray.600">No apps match your search</Text>
+          </Box>
+        )}
+
+        {!statsLoading && allStats.length === 0 && selectedCategory && (
+          <Box textAlign="center" padding="8">
+            <Text fontSize="lg" color="gray.600">No data available for this category</Text>
+          </Box>
+        )}
+
+        {!statsLoading && allStats.length === 0 && !selectedCategory && (
           <Box textAlign="center" padding="8">
             <Text fontSize="lg" color="gray.600">No click data available</Text>
           </Box>
