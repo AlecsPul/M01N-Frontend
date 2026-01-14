@@ -33,15 +33,17 @@ export default function Backlog() {
       
       console.log('Raw backend data:', data)
       
-      // Map backend data to frontend format
-      const mappedBacklog = data.map(card => ({
-        id: String(card.id),
-        title: card.title,
-        requestCount: card.number_of_requests || 0,
-        upvotes: card.upvote || 0,
-        status: card.status === 1 ? 'completed' : 'not-completed',
-        created_by_bexio: card.created_by_bexio || false
-      }))
+      // Map backend data to frontend format and sort by upvotes (descending)
+      const mappedBacklog = data
+        .map(card => ({
+          id: String(card.id),
+          title: card.title,
+          requestCount: card.number_of_requests || 0,
+          upvotes: card.upvote || 0,
+          status: card.status === 1 ? 'completed' : 'not-completed',
+          created_by_bexio: card.created_by_bexio || false
+        }))
+        .sort((a, b) => b.upvotes - a.upvotes) // Sort by upvotes descending
       
       console.log('Mapped backlog items:', mappedBacklog)
       
@@ -96,8 +98,10 @@ export default function Backlog() {
           display="flex"
           flexDirection="column"
         >
-          <Box mb="4" display="flex" justifyContent="space-between" alignItems="center">
-            <Box>
+          {/* Header with Title, Toggle (centered), and Create Button */}
+          <Box mb="4" display="flex" justifyContent="space-between" alignItems="center" position="relative">
+            {/* Left: Title */}
+            <Box flex="1">
               <Text fontSize="2xl" fontWeight="bold" color="black">
                 Application Backlog
               </Text>
@@ -105,8 +109,9 @@ export default function Backlog() {
                 Requested applications from users
               </Text>
             </Box>
-            <HStack gap="3">
-              {/* View Toggle Buttons */}
+
+            {/* Center: View Toggle Buttons */}
+            <Box position="absolute" left="50%" transform="translateX(-50%)">
               <HStack 
                 bg="gray.100" 
                 p="1" 
@@ -139,8 +144,10 @@ export default function Backlog() {
                   Charts
                 </Button>
               </HStack>
+            </Box>
 
-              {/* Create New Card Button - Only show in backlog view */}
+            {/* Right: Create New Card Button - Only show in backlog view */}
+            <Box flex="1" display="flex" justifyContent="flex-end">
               {viewMode === 'backlog' && (
                 <Button
                   onClick={() => setIsFormModalOpen(true)}
@@ -151,7 +158,7 @@ export default function Backlog() {
                   Create New Card
                 </Button>
               )}
-            </HStack>
+            </Box>
           </Box>
 
           {/* Charts View */}

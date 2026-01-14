@@ -26,15 +26,17 @@ const Community = () => {
 
         const data = await response.json();
 
-        // Map backend data to frontend format
-        const mappedCommunity = data.map((card) => ({
-          id: String(card.id),
-          title: card.title,
-          upvotes: card.upvote || 0,
-          requestCount: card.number_of_requests || 0,
-          status: card.status === 1 ? 'completed' : 'not-completed',
-          created_by_bexio: card.created_by_bexio || false,
-        }));
+        // Map backend data to frontend format and sort by upvotes (descending)
+        const mappedCommunity = data
+          .map((card) => ({
+            id: String(card.id),
+            title: card.title,
+            upvotes: card.upvote || 0,
+            requestCount: card.number_of_requests || 0,
+            status: card.status === 1 ? 'completed' : 'not-completed',
+            created_by_bexio: card.created_by_bexio || false,
+          }))
+          .sort((a, b) => b.upvotes - a.upvotes); // Sort by upvotes descending
 
         setCommunityItems(mappedCommunity);
       } catch (err) {
@@ -149,15 +151,17 @@ const Community = () => {
                     const updatedCard = await response.json();
                     console.log('Card upvoted:', updatedCard);
 
-                    // Update local state with the new upvote count
-                    setCommunityItems((prev) =>
-                      prev.map((i) =>
+                    // Update local state with the new upvote count and re-sort
+                    setCommunityItems((prev) => {
+                      const updated = prev.map((i) =>
                         i.id === id ? { 
                           ...i, 
                           upvotes: updatedCard.upvote || i.upvotes + 1
                         } : i
-                      )
-                    );
+                      );
+                      // Re-sort by upvotes after updating
+                      return updated.sort((a, b) => b.upvotes - a.upvotes);
+                    });
                   } catch (error) {
                     console.error('Failed to upvote card:', error);
                   }
