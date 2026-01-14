@@ -20,7 +20,7 @@ interface CardDetail {
   description: string | null
   status: number
   number_of_requests: number
-  upvotes?: number
+  upvote?: number  // Changed from upvotes to upvote to match backend field name
   created_at: string
   updated_at: string | null
   comments: Array<{
@@ -203,7 +203,7 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
             >
               <FaArrowUp color="#38A169" size={20} />
               <Text fontSize="xl" fontWeight="bold" color="gray.700">
-                {cardDetail?.upvotes || 0}
+                {cardDetail?.upvote || 0}
               </Text>
             </HStack>
           </HStack>
