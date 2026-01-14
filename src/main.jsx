@@ -19,7 +19,8 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [filters, setFilters] = useState({
-    categories: []
+    categories: [],
+    priceType: null
   })
   const [matchedAppIds, setMatchedAppIds] = useState([])
   const [isMatching, setIsMatching] = useState(false)
@@ -99,6 +100,37 @@ function App() {
   // Extract unique tags from all products
   const availableTags = [...new Set(products.flatMap(product => product.tags || []))].sort()
 
+  // Define categories and industries
+  const categoryList = [
+    'Time tracking & appointment scheduling',
+    'Connector apps',
+    'Finances & Accounting',
+    'CRM & marketing',
+    'Receipts & expenses',
+    'Sales',
+    'Analytics & reporting',
+    'Security & digital archiving',
+    'Industry solutions'
+  ]
+
+  const industryList = [
+    'Trade & E-Commerce',
+    'Construction, Craft & Maintenance',
+    'Healthcare',
+    'Gastronomy & Hospitality',
+    'Services & IT',
+    'Transport & Logistics',
+    'Manufacturing & Production',
+    'Finance & Insurance',
+    'Associations, Organizations & NPO',
+    'Agencies & Creatives',
+    'Agriculture & Environment'
+  ]
+
+  // Filter available tags into categories and industries
+  const availableCategories = availableTags.filter(tag => categoryList.includes(tag))
+  const availableIndustries = availableTags.filter(tag => industryList.includes(tag))
+
   const filteredProducts = products.filter(product => {
     // Filter by matched app IDs if matching is active
     if (matchedAppIds.length > 0) {
@@ -112,6 +144,16 @@ function App() {
         if (percentValue <= 5) {
           return false
         }
+      }
+    }
+
+    // Filter by price type
+    if (filters.priceType) {
+      if (filters.priceType === 'free' && product.price !== 'Free') {
+        return false
+      }
+      if (filters.priceType === 'paid' && product.price === 'Free') {
+        return false
       }
     }
 
@@ -268,7 +310,11 @@ function App() {
             overflow="hidden"
             alignSelf="flex-start"
           >
-            <Filters onFilterChange={setFilters} availableTags={availableTags} />
+            <Filters 
+              onFilterChange={setFilters} 
+              availableCategories={availableCategories}
+              availableIndustries={availableIndustries}
+            />
           </Box>
           
           <Box 
