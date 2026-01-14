@@ -102,8 +102,29 @@ export default function Backlog() {
                 onClick={(id) => {
                   console.log('Backlog item clicked:', id)
                 }}
-                onDiscard={(id) => {
-                  setBacklogItems(prev => prev.filter(i => i.id !== id))
+                onDiscard={async (id) => {
+                  try {
+                    // Call the backend API to drop the card
+                    const API_BASE_URL = 'http://localhost:8000/api/v1'
+                    await fetch(`${API_BASE_URL}/dropcard`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        id: id,
+                        timestamp: new Date().toISOString(),
+                      }),
+                    })
+                    
+                    console.log('Backlog card dropped:', id)
+                    
+                    // Remove from local state after successful API call
+                    setBacklogItems(prev => prev.filter(i => i.id !== id))
+                  } catch (error) {
+                    console.error('Failed to drop backlog card:', error)
+                    // Optionally show an error message to the user
+                  }
                 }}
               />
             ))}
