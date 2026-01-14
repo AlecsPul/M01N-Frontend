@@ -31,8 +31,8 @@ export default function NoMatchModal({ isOpen, onClose, userPrompt }: NoMatchMod
       
       // Submit the no-match data to the backend
       await submitNoMatch({
-        prompt: userPrompt,
-        comment: comment.trim() || '',
+        prompt_text: userPrompt,
+        comment_text: comment.trim() || '',
       })
       
       console.log('No-match data submitted successfully')
