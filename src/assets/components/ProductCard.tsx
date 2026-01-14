@@ -2,28 +2,34 @@ import { Text, Button, Card, Image, Box, HStack } from "@chakra-ui/react"
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa"
 
 interface Product {
-  id: string
   title: string
   description: string
   price: string
   image?: string
-  percentage?:string
-  rating?: number
   link?: string
+  percentage?: string
+  rating?: number
 }
 
 interface ProductCardProps {
   product: Product
+  onClick?: () => void  // Add this line
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, onClick }: ProductCardProps) {
   const handleClick = () => {
-    if (product.link) {
-      window.open(product.link, '_blank', 'noopener,noreferrer')
+    // Call the parent's onClick first (which tracks the click)
+    if (onClick) {
+      onClick()
     } else {
-      console.log(`No link available for product: ${product.id}`)
+      // Fallback: just open the link if no onClick is provided
+      if (product.link) {
+        window.open(product.link, '_blank', 'noopener,noreferrer')
+      }
     }
   }
+
+  // ... rest of your component stays the same
 
   const renderStars = (rating: number = 0) => {
     const stars = []
