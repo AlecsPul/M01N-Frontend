@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Box, Text, VStack, HStack } from '@chakra-ui/react'
 
+const API_BASE_URL = 'http://localhost:8000'
+
 interface Stat {
   app_id: string
   app_name: string
@@ -12,7 +14,7 @@ interface ChartViewProps {
   apiBaseUrl: string
 }
 
-export default function ChartsView({ apiBaseUrl }: ChartViewProps) {
+export default function ChartsView({ apiBaseUrl = API_BASE_URL }: ChartViewProps) {
   const [clickStats, setClickStats] = useState<Stat[]>([])
   const [allCategories, setAllCategories] = useState<string[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string>('')
