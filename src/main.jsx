@@ -220,6 +220,8 @@ function App() {
       setMatchError(null)
       setHasSearched(false)
       
+
+      // Pass the prompt to the backend matching API
       const response = await fetch(`${API_BASE_URL}/api/v1/matching/match`, {
         method: 'POST',
         headers: {
