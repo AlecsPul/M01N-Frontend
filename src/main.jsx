@@ -2,6 +2,7 @@ import { StrictMode, useState, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import ProductCard from './assets/components/ProductCard.tsx'
+import BacklogCard from './assets/components/BacklogCard.tsx'
 import { ChakraProvider, defaultSystem, Box, Grid, HStack, Button, Text } from '@chakra-ui/react'
 import Filters from './assets/components/Filters.tsx'
 import NavBar from './assets/components/NavBar.tsx'
@@ -27,6 +28,26 @@ function App() {
   const [lastSearchedPrompt, setLastSearchedPrompt] = useState('')
   const [showNoMatchModal, setShowNoMatchModal] = useState(false)
   const [noMatchPrompt, setNoMatchPrompt] = useState('')
+  const [backlogItems, setBacklogItems] = useState([
+    {
+      id: '1',
+      title: 'Advanced Analytics Dashboard',
+      requestCount: 15,
+      status: 'not-completed'
+    },
+    {
+      id: '2',
+      title: 'Inventory Management System',
+      requestCount: 8,
+      status: 'completed'
+    },
+    {
+      id: '3',
+      title: 'Customer Relationship Manager',
+      requestCount: 23,
+      status: 'not-completed'
+    }
+  ])
 
   const itemsPerPage = 9
 
@@ -358,6 +379,60 @@ function App() {
               </Button>
             </HStack>
               </>
+            )}
+          </Box>
+        </Box>
+      )}
+
+      {currentPage === 'backlog' && (
+        <Box display="flex" gap="4" px="2rem" pt="7rem" pb="2rem">
+          <Box 
+            flex="1"
+            padding="4"
+            bg="white"
+            borderRadius="12px"
+            display="flex"
+            flexDirection="column"
+          >
+            <Box mb="4">
+              <Text fontSize="2xl" fontWeight="bold" color="black">
+                Application Backlog
+              </Text>
+              <Text fontSize="sm" color="gray.600" mt="1">
+                Requested applications from users
+              </Text>
+            </Box>
+
+            {backlogItems.length === 0 ? (
+              <Box textAlign="center" padding="8">
+                <Text fontSize="lg" color="gray.600">No backlog items yet</Text>
+              </Box>
+            ) : (
+              <Grid 
+                templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} 
+                gap="4"
+                w="100%"
+                alignContent="start"
+                mb="8"
+              >
+                {backlogItems.map((item) => (
+                  <BacklogCard 
+                    key={item.id} 
+                    item={item}
+                    onStatusToggle={(id, status) => {
+                      setBacklogItems(prev => prev.map(i => 
+                        i.id === id ? { ...i, status } : i
+                      ))
+                    }}
+                    onClick={(id) => {
+                      console.log('Backlog item clicked:', id)
+                    }}
+                    onDiscard={(id) => {
+                      setBacklogItems(prev => prev.filter(i => i.id !== id))
+                    }}
+                  />
+                ))}
+              </Grid>
             )}
           </Box>
         </Box>
