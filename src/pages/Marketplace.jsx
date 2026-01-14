@@ -238,6 +238,38 @@ export default function Marketplace() {
     }
   }
 
+  const handleInteractiveResults = (results, finalPrompt) => {
+    // Extract app_ids and percentages from results
+    const matchedIds = results.map(result => String(result.app_id))
+    
+    // Update products with percentage data
+    setProducts(prevProducts => prevProducts.map(product => {
+      const matchResult = results.find(r => String(r.app_id) === product.id)
+      if (matchResult) {
+        return {
+          ...product,
+          percentage: `${matchResult.similarity_percent}%`
+        }
+      }
+      return { ...product, percentage: undefined }
+    }))
+    
+    setMatchedAppIds(matchedIds)
+    setHasSearched(true)
+    setLastSearchedPrompt(finalPrompt)
+    setPage(1) // Reset to first page
+    
+    // Check if all matches have low percentage
+    const validMatches = results.filter(r => r.similarity_percent > 5)
+    if (validMatches.length === 0 && results.length > 0) {
+      setNoMatchPrompt(finalPrompt)
+      setShowNoMatchModal(true)
+    }
+    
+    setMatchError(null)
+    setIsMatching(false)
+  }
+
   const handleApplicationClick = async (appId, appLink) => {
     try {
       // Track the click in the backend
@@ -314,6 +346,7 @@ export default function Marketplace() {
               <Box mb="6">
                 <UserPrompts 
                   onSubmit={handleUserPrompt} 
+                  onResults={handleInteractiveResults}
                   isLoading={isMatching}
                 />
                 {matchError && (
