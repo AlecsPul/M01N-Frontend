@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Box, Grid, Text, Input, Textarea, Button, VStack } from '@chakra-ui/react'
+import { Box, Grid, Text, Button } from '@chakra-ui/react'
+import { FaPlus } from 'react-icons/fa'
 import BacklogCard from '../assets/components/BacklogCard.tsx'
 import BacklogDetailModal from '../assets/components/BacklogDetailModal.tsx'
-import BacklogFormCard from '../assets/components/BacklogFormCard.tsx'
+import BacklogFormModal from '../assets/components/BacklogFormModal.tsx'
 
 const API_BASE_URL = 'http://localhost:8000'
 
@@ -11,7 +12,8 @@ export default function Backlog() {
   const [backlogLoading, setBacklogLoading] = useState(false)
   const [backlogError, setBacklogError] = useState(null)
   const [selectedCardId, setSelectedCardId] = useState(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false)
 
   // Fetch backlog items from backend
   const fetchBacklogItems = async () => {
@@ -56,9 +58,9 @@ export default function Backlog() {
   return (
     <>
       <BacklogDetailModal 
-        isOpen={isModalOpen}
+        isOpen={isDetailModalOpen}
         onClose={() => {
-          setIsModalOpen(false)
+          setIsDetailModalOpen(false)
           setSelectedCardId(null)
         }}
         cardId={selectedCardId}
@@ -72,113 +74,114 @@ export default function Backlog() {
           ))
         }}
       />
+
+      <BacklogFormModal
+        isOpen={isFormModalOpen}
+        onClose={() => setIsFormModalOpen(false)}
+        onSuccess={(newCard) => {
+          // Refresh the entire backlog list to ensure consistency
+          fetchBacklogItems()
+        }}
+      />
       
       <Box display="flex" gap="4" px="2rem" pt="7rem" pb="2rem">
-      <Box 
-        flex="1"
-        padding="4"
-        bg="white"
-        borderRadius="12px"
-        display="flex"
-        flexDirection="column"
-      >
-        <Box mb="4">
-          <Text fontSize="2xl" fontWeight="bold" color="black">
-            Application Backlog
-          </Text>
-          <Text fontSize="sm" color="gray.600" mt="1">
-            Requested applications from users
-          </Text>
-        </Box>
-
-        {/* Loading and Error States */}
-        {backlogLoading && (
-          <Box textAlign="center" padding="8">
-            <Text fontSize="lg" color="gray.600">Loading backlog items...</Text>
+        <Box 
+          flex="1"
+          padding="4"
+          bg="white"
+          borderRadius="12px"
+          display="flex"
+          flexDirection="column"
+        >
+          <Box mb="4" display="flex" justifyContent="space-between" alignItems="center">
+            <Box>
+              <Text fontSize="2xl" fontWeight="bold" color="black">
+                Application Backlog
+              </Text>
+              <Text fontSize="sm" color="gray.600" mt="1">
+                Requested applications from users
+              </Text>
+            </Box>
+            <Button
+              onClick={() => setIsFormModalOpen(true)}
+              colorScheme="blue"
+              size="lg"
+              leftIcon={<FaPlus />}
+            >
+              Create New Card
+            </Button>
           </Box>
-        )}
-        
-        {backlogError && (
-          <Box textAlign="center" padding="8">
-            <Text fontSize="lg" color="red.500">Error loading backlog: {backlogError}</Text>
-            <Text fontSize="sm" color="gray.600" mt="2">Please try refreshing the page</Text>
-          </Box>
-        )}
-        
-        {!backlogLoading && !backlogError && backlogItems.length > 0 && (
-          <Grid 
-            templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} 
-            gap="4"
-            w="100%"
-            alignContent="start"
-            mb="8"
-          >
-            {/* Form Card - Always first */}
-            <BacklogFormCard 
-              onSuccess={(newCard) => {
-                // Refresh the entire backlog list to ensure consistency
-                fetchBacklogItems()
-              }}
-            />
 
-            {backlogItems.map((item) => (
-              <BacklogCard 
-                key={item.id} 
-                item={item}
-                onClick={(id) => {
-                  setSelectedCardId(id)
-                  setIsModalOpen(true)
-                }}
-                onDiscard={async (id) => {
-                  try {
-                    // Call the backend API to drop the card
-                    const response = await fetch(`${API_BASE_URL}/api/v1/dropcard`, {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({
-                        card_id: id
-                      }),
-                    })
-                    
-                    if (!response.ok) {
-                      throw new Error(`HTTP error! status: ${response.status}`)
+          {/* Loading and Error States */}
+          {backlogLoading && (
+            <Box textAlign="center" padding="8">
+              <Text fontSize="lg" color="gray.600">Loading backlog items...</Text>
+            </Box>
+          )}
+          
+          {backlogError && (
+            <Box textAlign="center" padding="8">
+              <Text fontSize="lg" color="red.500">Error loading backlog: {backlogError}</Text>
+              <Text fontSize="sm" color="gray.600" mt="2">Please try refreshing the page</Text>
+            </Box>
+          )}
+          
+          {!backlogLoading && !backlogError && backlogItems.length > 0 && (
+            <Grid 
+              templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} 
+              gap="4"
+              w="100%"
+              alignContent="start"
+              mb="8"
+            >
+              {backlogItems.map((item) => (
+                <BacklogCard 
+                  key={item.id} 
+                  item={item}
+                  onClick={(id) => {
+                    setSelectedCardId(id)
+                    setIsDetailModalOpen(true)
+                  }}
+                  onDiscard={async (id) => {
+                    try {
+                      // Call the backend API to drop the card
+                      const response = await fetch(`${API_BASE_URL}/api/v1/dropcard`, {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          card_id: id
+                        }),
+                      })
+                      
+                      if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`)
+                      }
+                      
+                      const data = await response.json()
+                      console.log('Backlog card dropped:', data.message)
+                      
+                      // Remove from local state after successful API call
+                      setBacklogItems(prev => prev.filter(i => i.id !== id))
+                    } catch (error) {
+                      console.error('Failed to drop backlog card:', error)
+                      // Optionally show an error message to the user
                     }
-                    
-                    const data = await response.json()
-                    console.log('Backlog card dropped:', data.message)
-                    
-                    // Remove from local state after successful API call
-                    setBacklogItems(prev => prev.filter(i => i.id !== id))
-                  } catch (error) {
-                    console.error('Failed to drop backlog card:', error)
-                    // Optionally show an error message to the user
-                  }
-                }}
-              />
-            ))}
-          </Grid>
-        )}
+                  }}
+                />
+              ))}
+            </Grid>
+          )}
 
-        {/* Show form even when no items exist */}
-        {!backlogLoading && !backlogError && backlogItems.length === 0 && (
-          <Grid 
-            templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} 
-            gap="4"
-            w="100%"
-            alignContent="start"
-            mb="8"
-          >
-            <BacklogFormCard 
-              onSuccess={(newCard) => {
-                // Refresh the entire backlog list to ensure consistency
-                fetchBacklogItems()
-              }}
-            />
-          </Grid>
-        )}
-      </Box>
+          {/* Show message when no items exist */}
+          {!backlogLoading && !backlogError && backlogItems.length === 0 && (
+            <Box textAlign="center" padding="8">
+              <Text fontSize="lg" color="gray.600">No backlog items yet</Text>
+              <Text fontSize="sm" color="gray.500" mt="2">Click "Create New Card" to add one</Text>
+            </Box>
+          )}
+        </Box>
       </Box>
     </>
   )

@@ -134,12 +134,20 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
     <DialogRoot open={isOpen} onOpenChange={(e) => !e.open && onClose()} size="xl">
       <DialogBackdrop />
       <DialogContent
-        maxW="900px"
-        maxH="90vh"
-        overflowY="auto"
+        position="fixed"
+        right="0"
+        top="0"
+        bottom="0"
+        maxW="600px"
+        h="100vh"
+        m="0"
+        borderRadius="0"
         bg="white"
-        borderRadius="16px"
         boxShadow="2xl"
+        transform={isOpen ? "translateX(0)" : "translateX(100%)"}
+        transition="transform 0.3s ease-in-out"
+        display="flex"
+        flexDirection="column"
       >
         <DialogHeader borderBottom="2px solid" borderColor="gray.200" pb="4" position="relative">
           <HStack justify="space-between" align="center">
@@ -183,7 +191,7 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
           </IconButton>
         </DialogHeader>
 
-        <DialogBody p="6">
+        <DialogBody p="6" overflowY="auto" flex="1">
           {loading && (
             <Box textAlign="center" py="8">
               <Spinner size="xl" color="green.500" />
@@ -201,11 +209,11 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
             <VStack align="stretch" gap="6">
               {/* Title and Status */}
               <Box>
-                <HStack justify="space-between" align="start" mb="3">
-                  <Text fontSize="3xl" fontWeight="bold" color="black" flex="1">
+                <HStack justify="space-between" align="start" mb="3" gap="4">
+                  <Text fontSize="3xl" fontWeight="bold" color="black" flex="1" lineHeight="1.2" wordBreak="break-word">
                     {cardDetail.title}
                   </Text>
-                  <HStack gap="2">
+                  <HStack gap="2" flexShrink="0">
                     <Badge 
                       colorScheme={cardDetail.status === 1 ? "green" : "red"}
                       fontSize="md" 
