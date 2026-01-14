@@ -1,0 +1,302 @@
+.About {
+  width: 100%;
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+/* Hero Section */
+.About .about-hero {
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 120px 20px 60px;
+  text-align: center;
+}
+
+.About .hero-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.About .hero-subtitle {
+  font-size: 1.125rem;
+  color: #6c757d;
+  font-weight: 400;
+}
+
+/* Content Wrapper */
+.About .content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Company Overview */
+.About .company-overview {
+  padding: 60px 20px;
+  background: #ffffff;
+}
+
+.About .company-overview h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #212529;
+  font-weight: 600;
+}
+
+.About .overview-text {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #495057;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Mission & Vision */
+.About .mission-vision {
+  padding: 60px 20px;
+  background: #f8f9fa;
+}
+
+.About .mission-vision-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.About .mission-card,
+.About .vision-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.About .mission-card h3,
+.About .vision-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #212529;
+  font-weight: 600;
+}
+
+.About .mission-card p,
+.About .vision-card p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #495057;
+}
+
+/* Core Values */
+.About .core-values {
+  padding: 60px 20px;
+  background: #ffffff;
+}
+
+.About .core-values h2 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #212529;
+  font-weight: 600;
+}
+
+.About .values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.About .value-card {
+  background: #f8f9fa;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #e9ecef;
+}
+
+.About .value-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.About .value-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.About .value-card h4 {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: #212529;
+  font-weight: 600;
+}
+
+.About .value-card p {
+  color: #6c757d;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* Team Section */
+.About .team-section {
+  padding: 60px 20px;
+  background: #f8f9fa;
+}
+
+.About .team-section h2 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #212529;
+  font-weight: 600;
+}
+
+.About .team-intro {
+  text-align: center;
+  font-size: 1rem;
+  color: #6c757d;
+  margin-bottom: 3rem;
+}
+
+.About .team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.About .team-member {
+  text-align: center;
+  background: white;
+  padding: 2rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.About .member-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #e9ecef;
+  margin: 0 auto 1.5rem;
+}
+
+.About .team-member h4 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #212529;
+  font-weight: 600;
+}
+
+.About .member-role {
+  color: #495057;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.About .member-bio {
+  color: #6c757d;
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+
+/* Stats Section */
+.About .stats-section {
+  padding: 60px 20px;
+  background: #ffffff;
+  border-top: 1px solid #e9ecef;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.About .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  text-align: center;
+}
+
+.About .stat-item h3 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #212529;
+}
+
+.About .stat-item p {
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+/* CTA Section */
+.About .cta-section {
+  padding: 80px 20px;
+  text-align: center;
+  background: #f8f9fa;
+}
+
+.About .cta-section h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #212529;
+  font-weight: 600;
+}
+
+.About .cta-section p {
+  font-size: 1.125rem;
+  color: #6c757d;
+  margin-bottom: 2rem;
+}
+
+.About .cta-button {
+  background: #212529;
+  color: white;
+  padding: 0.875rem 2.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-weight: 500;
+}
+
+.About .cta-button:hover {
+  background: #343a40;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .About .hero-content h1 {
+    font-size: 2rem;
+  }
+
+  .About .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .About .company-overview h2,
+  .About .core-values h2,
+  .About .team-section h2,
+  .About .cta-section h2 {
+    font-size: 1.75rem;
+  }
+
+  .About .values-grid,
+  .About .team-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .About .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
