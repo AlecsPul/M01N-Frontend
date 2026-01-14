@@ -2,6 +2,7 @@ import { Text, Button, Card, Image, Box, HStack } from "@chakra-ui/react"
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa"
 
 interface Product {
+  id?: string
   title: string
   description: string
   price: string
@@ -13,10 +14,21 @@ interface Product {
 
 interface ProductCardProps {
   product: Product
-  onClick?: () => void  // Add this line
+  onClick?: () => void
+  onSelect?: (id: string, name: string) => void
+  showSelect?: boolean
+  isSelected?: boolean
+  isSelectionDisabled?: boolean
 }
 
-export default function ProductCard({ product, onClick }: ProductCardProps) {
+export default function ProductCard({ 
+  product, 
+  onClick, 
+  onSelect, 
+  showSelect = false, 
+  isSelected = false, 
+  isSelectionDisabled = false 
+}: ProductCardProps) {
   // Debug: log the full product object
   console.log('Product data:', { title: product.title, rating: product.rating, fullProduct: product })
 
@@ -29,6 +41,13 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
       if (product.link) {
         window.open(product.link, '_blank', 'noopener,noreferrer')
       }
+    }
+  }
+
+  const handleSelect = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (onSelect && product.id) {
+      onSelect(product.id, product.title)
     }
   }
 
@@ -53,17 +72,18 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
     <Card.Root 
       overflow="visible" 
       m={4} 
-      bg="white"
+      bg={isSelected ? "blue.50" : "white"}
       position="relative"
       cursor="pointer"
       onClick={handleClick}
       border="2px solid"
-      borderColor="black"
+      borderColor={isSelected ? "blue.400" : "black"}
       borderRadius="md"
       _hover={{ transform: "translateY(-4px)", transition: "transform 0.2s" }}
       display="flex"
       flexDirection="column"
       h="100%"
+      transition="all 0.2s"
     >
       <Card.Body gap="2" display="flex" flexDirection="column" flex="1" pb="2">
         <Box display="flex" w="100%" h="180px" mb={3} flexShrink={0}>
@@ -130,6 +150,24 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
           </HStack>
         )}
       </Card.Footer>
+      {showSelect && (
+        <Box p={4} pt={0} width="100%">
+           <Button 
+             width="100%" 
+             onClick={handleSelect}
+             disabled={!isSelected && isSelectionDisabled}
+             variant={isSelected ? "solid" : "outline"}
+             bg={isSelected ? "blue.700" : "white"}
+             color={isSelected ? "white" : "gray.800"}
+             borderColor={isSelected ? "blue.700" : "gray.600"}
+             opacity={(!isSelected && isSelectionDisabled) ? 0.4 : 1}
+             _hover={isSelected ? { bg: "blue.800" } : { bg: "gray.50" }}
+             _disabled={{ opacity: 0.4, cursor: "not-allowed", bg: "gray.200", color: "gray.500" }}
+           >
+             {isSelected ? "Selected" : "Select"}
+           </Button>
+        </Box>
+      )}
     </Card.Root>
   )
 }
