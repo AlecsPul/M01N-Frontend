@@ -143,46 +143,50 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
                     {cardDetail.title}
                   </Text>
                   <HStack gap="2">
-                    {cardDetail.status === 1 ? (
-                      <Badge 
-                        colorScheme="green" 
-                        fontSize="md" 
-                        px="4" 
-                        py="2" 
-                        borderRadius="full"
-                        display="flex"
-                        alignItems="center"
-                        gap="2"
-                      >
-                        <FaCheckCircle /> Completed
-                      </Badge>
-                    ) : (
-                      <Badge 
-                        colorScheme="red" 
-                        fontSize="md" 
-                        px="4" 
-                        py="2" 
-                        borderRadius="full"
-                        display="flex"
-                        alignItems="center"
-                        gap="2"
-                      >
-                        <FaTimesCircle /> Not Completed
-                      </Badge>
-                    )}
+                    <Badge 
+                      colorScheme={cardDetail.status === 1 ? "green" : "red"}
+                      fontSize="md" 
+                      px="4" 
+                      py="2" 
+                      borderRadius="full"
+                      display="flex"
+                      alignItems="center"
+                      gap="2"
+                      bg={cardDetail.status === 1 ? "green.500" : "red.500"}
+                      color="white"
+                    >
+                      {cardDetail.status === 1 ? (
+                        <><FaCheckCircle /> Completed</>
+                      ) : (
+                        <><FaTimesCircle /> Not Completed</>
+                      )}
+                    </Badge>
                   </HStack>
                 </HStack>
 
-                {/* Request Count */}
-                <Badge 
-                  colorScheme="blue" 
-                  fontSize="lg" 
-                  px="4" 
-                  py="2" 
-                  borderRadius="md"
-                >
-                  {cardDetail.number_of_requests} {cardDetail.number_of_requests === 1 ? 'Request' : 'Requests'}
-                </Badge>
+                {/* Request Count and Search Button */}
+                <HStack gap="3" align="center">
+                  <Badge 
+                    colorScheme="blue" 
+                    fontSize="lg" 
+                    px="4" 
+                    py="2" 
+                    borderRadius="md"
+                  >
+                    {cardDetail.number_of_requests} {cardDetail.number_of_requests === 1 ? 'Request' : 'Requests'}
+                  </Badge>
+                  <Button
+                    onClick={handleSearchMarketplaces}
+                    size="sm"
+                    colorScheme="blue"
+                    bg="blue.500"
+                    _hover={{ bg: "blue.600" }}
+                    borderRadius="md"
+                  >
+                    <FaSearch style={{ marginRight: '6px' }} size={14} />
+                    Search in Popular Marketplaces
+                  </Button>
+                </HStack>
               </Box>
 
               {/* Description */}
@@ -288,30 +292,6 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
                   </Text>
                 </Box>
               )}
-
-              {/* Search Button */}
-              <Box 
-                borderTop="2px solid" 
-                borderColor="gray.200" 
-                pt="6" 
-                mt="4"
-              >
-                <Button
-                  onClick={handleSearchMarketplaces}
-                  size="lg"
-                  width="100%"
-                  colorScheme="blue"
-                  bg="blue.500"
-                  _hover={{ bg: "blue.600" }}
-                  fontSize="lg"
-                  py="6"
-                  borderRadius="12px"
-                  boxShadow="lg"
-                >
-                  <FaSearch style={{ marginRight: '8px' }} />
-                  Search in Popular Marketplaces
-                </Button>
-              </Box>
 
               {/* Metadata */}
               <Box 
