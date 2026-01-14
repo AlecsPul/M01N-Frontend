@@ -117,7 +117,7 @@ export default function ChartsView({ apiBaseUrl = API_BASE_URL }: ChartViewProps
         <Box
           cursor="pointer"
           pb="3"
-          borderBottom={chartView === 'bar' ? '3px solid black' : chartView === 'pie' ? '3px solid black' : 'none'}
+          borderBottom={chartView === 'bar' ? '3px solid black' : 'none'}
           transition="all 0.2s"
           _hover={{ transform: 'scale(1.08)' }}
           onClick={() => setChartView('bar')}
