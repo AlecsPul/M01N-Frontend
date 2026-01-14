@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Text, Card, Box, HStack, Badge, IconButton, Button } from "@chakra-ui/react"
+import { Text, Card, Box, HStack, Badge, IconButton } from "@chakra-ui/react"
 import { FaCheckSquare, FaRegSquare, FaTrash, FaArrowUp } from "react-icons/fa"
 
 interface BacklogItem {
@@ -122,9 +122,7 @@ export default function BacklogCard({ item, onStatusToggle, onClick, onDiscard }
           >
             {item.requestCount} {item.requestCount === 1 ? "Request" : "Requests"}
           </Badge>
-          <Button
-            onClick={(e) => e.stopPropagation()}
-            size="sm"
+          <HStack 
             gap="2" 
             bg="gray.100" 
             px="3" 
@@ -132,16 +130,12 @@ export default function BacklogCard({ item, onStatusToggle, onClick, onDiscard }
             borderRadius="full"
             border="2px solid"
             borderColor="gray.300"
-            _hover={{ 
-              bg: "green.50", 
-              borderColor: "green.400"
-            }}
           >
             <FaArrowUp color="#38A169" size={16} />
             <Text fontSize="md" fontWeight="bold" color="gray.700">
               {item.upvotes || 0}
             </Text>
-          </Button>
+          </HStack>
         </HStack>
       </Card.Body>
     </Card.Root>
