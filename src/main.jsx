@@ -6,6 +6,7 @@ import { ChakraProvider, defaultSystem, Box, Grid, HStack, Button, Text } from '
 import Filters from './assets/components/Filters.tsx'
 import NavBar from './assets/components/NavBar.tsx'
 import UserPrompts from './assets/components/UserPrompts.tsx'
+import NoMatchModal from './assets/components/NoMatchModal.tsx'
 
 // Backend API base URL - update this to match your backend
 const API_BASE_URL = 'http://localhost:8000' // Change to your backend URL
@@ -24,6 +25,8 @@ function App() {
   const [matchError, setMatchError] = useState(null)
   const [hasSearched, setHasSearched] = useState(false)
   const [lastSearchedPrompt, setLastSearchedPrompt] = useState('')
+  const [showNoMatchModal, setShowNoMatchModal] = useState(false)
+  const [noMatchPrompt, setNoMatchPrompt] = useState('')
 
   const itemsPerPage = 9
 
@@ -77,8 +80,18 @@ function App() {
 
   const filteredProducts = products.filter(product => {
     // Filter by matched app IDs if matching is active
-    if (matchedAppIds.length > 0 && !matchedAppIds.includes(product.id)) {
-      return false
+    if (matchedAppIds.length > 0) {
+      if (!matchedAppIds.includes(product.id)) {
+        return false
+      }
+      
+      // Filter out products with percentage <= 5%
+      if (product.percentage) {
+        const percentValue = parseFloat(product.percentage)
+        if (percentValue <= 5) {
+          return false
+        }
+      }
     }
 
     // Filter by category (tags)
@@ -89,7 +102,18 @@ function App() {
     }
 
     return true
+  }).sort((a, b) => {
+    // Sort by percentage in decreasing order when matching is active
+    if (matchedAppIds.length > 0 && a.percentage && b.percentage) {
+      const percentA = parseFloat(a.percentage)
+      const percentB = parseFloat(b.percentage)
+      return percentB - percentA
+    }
+    return 0
   })
+  
+  // Check if all matched products were filtered out due to low percentage
+  const hasLowPercentageMatches = hasSearched && matchedAppIds.length > 0 && filteredProducts.length === 0
 
   // Pagination calculations
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage)
@@ -127,6 +151,16 @@ function App() {
       })
 
       if (!response.ok) {
+        if (response.status === 400) {
+          // Treat 400 as no matches found
+          setMatchedAppIds([])
+          setHasSearched(true)
+          setLastSearchedPrompt(description)
+          setNoMatchPrompt(description)
+          setShowNoMatchModal(true)
+          setIsMatching(false)
+          return
+        }
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
@@ -152,6 +186,13 @@ function App() {
       setLastSearchedPrompt(description)
       setPage(1) // Reset to first page
       
+      // Check if all matches have low percentage
+      const validMatches = data.results.filter(r => r.similarity_percent > 5)
+      if (validMatches.length === 0 && data.results.length > 0) {
+        setNoMatchPrompt(description)
+        setShowNoMatchModal(true)
+      }
+      
     } catch (err) {
       console.error('Error matching applications:', err)
       setMatchError(err.message)
@@ -160,12 +201,27 @@ function App() {
     }
   }
 
+
+
+
+
+
+
+
+
+
+  
   return (
     <ChakraProvider value={defaultSystem}>
       <NavBar currentPage={currentPage} onNavigate={setCurrentPage} />
+      <NoMatchModal 
+        isOpen={showNoMatchModal} 
+        onClose={() => setShowNoMatchModal(false)}
+        userPrompt={noMatchPrompt}
+      />
       
       {currentPage === 'marketplace' && (
-        <Box display="flex" gap="4" px="2rem" pt="calc(8% + 6rem)" pb="2rem">
+        <Box display="flex" gap="4" px="2rem" pt="7rem" pb="2rem">
           <Box 
             width="20%"
             borderRadius="12px"
@@ -217,7 +273,14 @@ function App() {
                       </Text>
                     </Box>
                   )}
-                  {matchedAppIds.length > 0 && (
+                  {hasLowPercentageMatches && (
+                    <Box mt="3" p="3" bg="blue.50" borderRadius="md" borderLeft="4px solid" borderColor="blue.400">
+                      <Text color="blue.800" fontSize="sm" fontWeight="medium">
+                        There are no products that fit your criteria. We'll work on your petition.
+                      </Text>
+                    </Box>
+                  )}
+                  {matchedAppIds.length > 0 && filteredProducts.length > 0 && (
                     <Text color="green.600" mt="2" fontSize="sm">
                       Showing {filteredProducts.length} matched applications
                     </Text>
