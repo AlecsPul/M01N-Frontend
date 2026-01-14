@@ -238,6 +238,32 @@ export default function Marketplace() {
     }
   }
 
+  const handleApplicationClick = async (appId, appLink) => {
+    try {
+      // Track the click in the backend
+      const response = await fetch(`${API_BASE_URL}/api/v1/application/click`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          app_id: appId
+        }),
+      });
+
+      if (!response.ok) {
+        console.error('Failed to track click');
+      }
+
+      // Open the application link
+      window.open(appLink, '_blank');
+    } catch (error) {
+      console.error('Error tracking application click:', error);
+      // Still open the link even if tracking fails
+      window.open(appLink, '_blank');
+    }
+  };
+
   return (
     <>
       <NoMatchModal 
@@ -324,7 +350,11 @@ export default function Marketplace() {
                 mb="8"
               >
                 {currentProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard 
+                    key={product.id} 
+                    product={product} 
+                    onClick={() => handleApplicationClick(product.id, product.link)} // Track clicks
+                  />
                 ))}
               </Grid>
               
