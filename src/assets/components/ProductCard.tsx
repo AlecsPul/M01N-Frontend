@@ -8,7 +8,7 @@ interface Product {
   image?: string
   link?: string
   percentage?: string
-  rating?: number
+  rating?: number  // This should come from the backend database
 }
 
 interface ProductCardProps {
@@ -17,6 +17,9 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onClick }: ProductCardProps) {
+  // Debug: log the full product object
+  console.log('Product data:', { title: product.title, rating: product.rating, fullProduct: product })
+
   const handleClick = () => {
     // Call the parent's onClick first (which tracks the click)
     if (onClick) {
@@ -28,8 +31,6 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
       }
     }
   }
-
-  // ... rest of your component stays the same
 
   const renderStars = (rating: number = 0) => {
     const stars = []
