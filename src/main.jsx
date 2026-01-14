@@ -5,6 +5,7 @@ import ProductCard from './assets/components/ProductCard.tsx'
 import { ChakraProvider, defaultSystem, Box, Grid, HStack, Button, Text } from '@chakra-ui/react'
 import Filters from './assets/components/Filters.tsx'
 import NavBar from './assets/components/NavBar.tsx'
+import UserPrompts from './assets/components/UserPrompts.tsx'
 
 // Backend API base URL - update this to match your backend
 const API_BASE_URL = 'http://localhost:8000' // Change to your backend URL
@@ -16,11 +17,13 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [filters, setFilters] = useState({
-    categories: [],
-    priceRange: [0, 1000],
-    minRating: 0,
-    availability: []
+    categories: []
   })
+  const [matchedAppIds, setMatchedAppIds] = useState([])
+  const [isMatching, setIsMatching] = useState(false)
+  const [matchError, setMatchError] = useState(null)
+  const [hasSearched, setHasSearched] = useState(false)
+  const [lastSearchedPrompt, setLastSearchedPrompt] = useState('')
 
   const itemsPerPage = 9
 
@@ -45,7 +48,8 @@ function App() {
           price: app.price_text || 'Free',
           priceValue: 0,
           image: app.image_url,
-          category: 'General',
+          category: app.tags && app.tags.length > 0 ? app.tags[0] : 'General',
+          tags: app.tags || [],
           rating: app.stars || 0,
           link: app.url // This is the important field from backend
         }))
@@ -68,31 +72,20 @@ function App() {
     setPage(1)
   }, [filters])
 
+  // Extract unique tags from all products
+  const availableTags = [...new Set(products.flatMap(product => product.tags || []))].sort()
+
   const filteredProducts = products.filter(product => {
-    // Filter by category
-    if (filters.categories.length > 0 && !filters.categories.includes(product.category)) {
+    // Filter by matched app IDs if matching is active
+    if (matchedAppIds.length > 0 && !matchedAppIds.includes(product.id)) {
       return false
     }
 
-    // Filter by price
-    if (product.priceValue < filters.priceRange[0] || product.priceValue > filters.priceRange[1]) {
-      return false
-    }
-
-    // Filter by rating
-    if (product.rating < filters.minRating) {
-      return false
-    }
-
-    // Filter by availability
-    if (filters.availability.includes("In Stock") && !product.inStock) {
-      return false
-    }
-    if (filters.availability.includes("On Sale") && !product.onSale) {
-      return false
-    }
-    if (filters.availability.includes("Free Shipping") && !product.freeShipping) {
-      return false
+    // Filter by category (tags)
+    if (filters.categories.length > 0) {
+      const productTags = product.tags || []
+      const hasMatchingTag = filters.categories.some(cat => productTags.includes(cat))
+      if (!hasMatchingTag) return false
     }
 
     return true
@@ -110,33 +103,81 @@ function App() {
     }
   }
 
+  const handleUserPrompt = async (description) => {
+    // Don't search if it's the same prompt as last time
+    if (description === lastSearchedPrompt && hasSearched) {
+      return
+    }
+
+    try {
+      setIsMatching(true)
+      setMatchError(null)
+      setHasSearched(false)
+      
+      const response = await fetch(`${API_BASE_URL}/api/v1/matching/match`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          buyer_prompt: description,
+          top_k: 30,
+          top_n: 10
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      
+      // Extract app_ids and percentages from results
+      const matchedIds = data.results.map(result => String(result.app_id))
+      
+      // Update products with percentage data
+      setProducts(prevProducts => prevProducts.map(product => {
+        const matchResult = data.results.find(r => String(r.app_id) === product.id)
+        if (matchResult) {
+          return {
+            ...product,
+            percentage: `${matchResult.similarity_percent}%`
+          }
+        }
+        return { ...product, percentage: undefined }
+      }))
+      
+      setMatchedAppIds(matchedIds)
+      setHasSearched(true)
+      setLastSearchedPrompt(description)
+      setPage(1) // Reset to first page
+      
+    } catch (err) {
+      console.error('Error matching applications:', err)
+      setMatchError(err.message)
+    } finally {
+      setIsMatching(false)
+    }
+  }
+
   return (
     <ChakraProvider value={defaultSystem}>
       <NavBar currentPage={currentPage} onNavigate={setCurrentPage} />
       
       {currentPage === 'marketplace' && (
-        <>
+        <Box display="flex" gap="4" px="2rem" pt="calc(8% + 6rem)" pb="2rem">
           <Box 
-            position="fixed"
-            left="2rem"
             width="20%"
-            top="calc(8% + 4rem)"
-            bottom="0"
             borderRadius="12px"
             overflow="hidden"
+            alignSelf="flex-start"
           >
-            <Filters onFilterChange={setFilters} />
+            <Filters onFilterChange={setFilters} availableTags={availableTags} />
           </Box>
           
           <Box 
-            position="fixed"
-            left="calc(20% + 4rem)"
-            right="0"
-            top="calc(8% + 4rem)"
-            bottom="0"
+            flex="1"
             padding="4"
-            paddingRight="calc(4 + 2rem)"
-            overflowY="auto"
             bg="white"
             borderRadius="12px"
             display="flex"
@@ -158,11 +199,37 @@ function App() {
             
             {!loading && (
               <>
+                {/* User Prompts Section */}
+                <Box mb="6">
+                  <UserPrompts 
+                    onSubmit={handleUserPrompt} 
+                    isLoading={isMatching}
+                  />
+                  {matchError && (
+                    <Text color="red.500" mt="2" fontSize="sm">
+                      Error: {matchError}
+                    </Text>
+                  )}
+                  {hasSearched && matchedAppIds.length === 0 && (
+                    <Box mt="3" p="3" bg="blue.50" borderRadius="md" borderLeft="4px solid" borderColor="blue.400">
+                      <Text color="blue.800" fontSize="sm" fontWeight="medium">
+                        Sorry, we couldn't find a match. We are working on your petition.
+                      </Text>
+                    </Box>
+                  )}
+                  {matchedAppIds.length > 0 && (
+                    <Text color="green.600" mt="2" fontSize="sm">
+                      Showing {filteredProducts.length} matched applications
+                    </Text>
+                  )}
+                </Box>
+
                 <Grid 
                   templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} 
                   gap="4"
                   w="100%"
                   alignContent="start"
+                  mb="8"
                 >
                   {currentProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
@@ -174,6 +241,7 @@ function App() {
               justify="center" 
               gap="2" 
               padding="4"
+              paddingTop="6"
               borderTop="1px solid"
               borderColor="gray.200"
             >
@@ -229,7 +297,7 @@ function App() {
               </>
             )}
           </Box>
-        </>
+        </Box>
       )}
     </ChakraProvider>
   )
