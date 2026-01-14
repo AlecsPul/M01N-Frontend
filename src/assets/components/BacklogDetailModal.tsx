@@ -9,6 +9,9 @@ interface BacklogDetailModalProps {
   isOpen: boolean
   onClose: () => void
   cardId: string
+  showSearchButton?: boolean
+  canToggleStatus?: boolean
+  onStatusUpdate?: (cardId: string, newStatus: number) => void
 }
 
 interface CardDetail {
@@ -28,7 +31,7 @@ interface CardDetail {
   }>
 }
 
-export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogDetailModalProps) {
+export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearchButton = true, canToggleStatus = false, onStatusUpdate }: BacklogDetailModalProps) {
   const [cardDetail, setCardDetail] = useState<CardDetail | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -91,16 +94,60 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
     console.log('Search in marketplaces for:', cardDetail?.title)
   }
 
+  const handleToggleStatus = async () => {
+    if (!canToggleStatus || !cardDetail) return
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/cards/toggle-status`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          card_id: cardDetail.id
+        }),
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const updatedCard = await response.json()
+      console.log('Card status toggled:', updatedCard)
+      
+      // Update local state
+      setCardDetail(prev => prev ? {
+        ...prev,
+        status: updatedCard.status
+      } : null)
+      
+      // Notify parent component of the change
+      if (onStatusUpdate) {
+        onStatusUpdate(cardDetail.id, updatedCard.status)
+      }
+    } catch (error) {
+      console.error('Failed to toggle card status:', error)
+    }
+  }
+
   return (
     <DialogRoot open={isOpen} onOpenChange={(e) => !e.open && onClose()} size="xl">
       <DialogBackdrop />
       <DialogContent
-        maxW="900px"
-        maxH="90vh"
-        overflowY="auto"
+        position="fixed"
+        right="0"
+        top="0"
+        bottom="0"
+        maxW="600px"
+        h="100vh"
+        m="0"
+        borderRadius="0"
         bg="white"
-        borderRadius="16px"
         boxShadow="2xl"
+        transform={isOpen ? "translateX(0)" : "translateX(100%)"}
+        transition="transform 0.3s ease-in-out"
+        display="flex"
+        flexDirection="column"
       >
         <DialogHeader borderBottom="2px solid" borderColor="gray.200" pb="4" position="relative">
           <HStack justify="space-between" align="center">
@@ -144,7 +191,7 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
           </IconButton>
         </DialogHeader>
 
-        <DialogBody p="6">
+        <DialogBody p="6" overflowY="auto" flex="1">
           {loading && (
             <Box textAlign="center" py="8">
               <Spinner size="xl" color="green.500" />
@@ -162,11 +209,11 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
             <VStack align="stretch" gap="6">
               {/* Title and Status */}
               <Box>
-                <HStack justify="space-between" align="start" mb="3">
-                  <Text fontSize="3xl" fontWeight="bold" color="black" flex="1">
+                <HStack justify="space-between" align="start" mb="3" gap="4">
+                  <Text fontSize="3xl" fontWeight="bold" color="black" flex="1" lineHeight="1.2" wordBreak="break-word">
                     {cardDetail.title}
                   </Text>
-                  <HStack gap="2">
+                  <HStack gap="2" flexShrink="0">
                     <Badge 
                       colorScheme={cardDetail.status === 1 ? "green" : "red"}
                       fontSize="md" 
@@ -178,6 +225,9 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
                       gap="2"
                       bg={cardDetail.status === 1 ? "green.500" : "red.500"}
                       color="white"
+                      cursor={canToggleStatus ? "pointer" : "default"}
+                      onClick={canToggleStatus ? handleToggleStatus : undefined}
+                      _hover={canToggleStatus ? { opacity: 0.8 } : {}}
                     >
                       {cardDetail.status === 1 ? (
                         <><FaCheckCircle /> Completed</>
@@ -199,17 +249,19 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
                   >
                     {cardDetail.number_of_requests} {cardDetail.number_of_requests === 1 ? 'Request' : 'Requests'}
                   </Badge>
-                  <Button
-                    onClick={handleSearchMarketplaces}
-                    size="sm"
-                    colorScheme="blue"
-                    bg="blue.500"
-                    _hover={{ bg: "blue.600" }}
-                    borderRadius="md"
-                  >
-                    <FaSearch style={{ marginRight: '6px' }} size={14} />
-                    Search in Popular Marketplaces
-                  </Button>
+                  {showSearchButton && (
+                    <Button
+                      onClick={handleSearchMarketplaces}
+                      size="sm"
+                      colorScheme="blue"
+                      bg="blue.500"
+                      _hover={{ bg: "blue.600" }}
+                      borderRadius="md"
+                    >
+                      <FaSearch style={{ marginRight: '6px' }} size={14} />
+                      Search in Popular Marketplaces
+                    </Button>
+                  )}
                 </HStack>
               </Box>
 
