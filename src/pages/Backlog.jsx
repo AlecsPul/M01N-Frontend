@@ -94,10 +94,34 @@ export default function Backlog() {
               <BacklogCard 
                 key={item.id} 
                 item={item}
-                onStatusToggle={(id, status) => {
-                  setBacklogItems(prev => prev.map(i => 
-                    i.id === id ? { ...i, status } : i
-                  ))
+                onStatusToggle={async (id, status) => {
+                  try {
+                    // Call the backend API to toggle the card status
+                    const response = await fetch(`${API_BASE_URL}/api/v1/cards/toggle-status`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        card_id: id
+                      }),
+                    })
+                    
+                    if (!response.ok) {
+                      throw new Error(`HTTP error! status: ${response.status}`)
+                    }
+                    
+                    const updatedCard = await response.json()
+                    console.log('Card status toggled:', updatedCard)
+                    
+                    // Update local state with the new status from backend
+                    setBacklogItems(prev => prev.map(i => 
+                      i.id === id ? { ...i, status: updatedCard.status === 1 ? 'completed' : 'not-completed' } : i
+                    ))
+                  } catch (error) {
+                    console.error('Failed to toggle card status:', error)
+                    // Optionally show an error message to the user
+                  }
                 }}
                 onClick={(id) => {
                   console.log('Backlog item clicked:', id)
