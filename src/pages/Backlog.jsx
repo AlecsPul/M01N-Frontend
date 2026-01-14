@@ -4,6 +4,7 @@ import { FaPlus } from 'react-icons/fa'
 import BacklogCard from '../assets/components/BacklogCard.tsx'
 import BacklogDetailModal from '../assets/components/BacklogDetailModal.tsx'
 import BacklogFormModal from '../assets/components/BacklogFormModal.tsx'
+import ChartsView from '../assets/components/ChartsView.tsx'
 
 const API_BASE_URL = 'http://localhost:8000'
 
@@ -11,19 +12,38 @@ export default function Backlog() {
   const [backlogItems, setBacklogItems] = useState([])
   const [backlogLoading, setBacklogLoading] = useState(false)
   const [backlogError, setBacklogError] = useState(null)
+  
+  const [viewMode, setViewMode] = useState('backlog')
   const [selectedCardId, setSelectedCardId] = useState(null)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [isFormModalOpen, setIsFormModalOpen] = useState(false)
-
   // Fetch backlog items from backend
-  const fetchBacklogItems = async () => {
-    try {
-      setBacklogLoading(true)
-      setBacklogError(null)
-      const response = await fetch(`${API_BASE_URL}/api/v1/cards`)
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+  useEffect(() => {
+    const fetchBacklogItems = async () => {
+      try {
+        setBacklogLoading(true)
+        setBacklogError(null)
+        const response = await fetch(`${API_BASE_URL}/api/v1/cards`)
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        
+        const data = await response.json()
+        
+        const mappedBacklog = data.map(card => ({
+          id: String(card.id),
+          title: card.title,
+          requestCount: card.number_of_requests || 0,
+          status: card.status === 1 ? 'completed' : 'not-completed'
+        }))
+        
+        setBacklogItems(mappedBacklog)
+      } catch (err) {
+        console.error('Error fetching backlog items:', err)
+        setBacklogError(err.message)
+      } finally {
+        setBacklogLoading(false)
       }
       
       const data = await response.json()
