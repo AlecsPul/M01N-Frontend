@@ -148,9 +148,28 @@ function App() {
     }
   }
 
+
+    // USER PROMPT HANDLING (VALIDATION)
   const handleUserPrompt = async (description) => {
     // Don't search if it's the same prompt as last time
     if (description === lastSearchedPrompt && hasSearched) {
+      return
+    }
+
+    // Validate prompt length (backend requires 10-2000 characters)
+    const trimmedDescription = description.trim()
+    
+    if (trimmedDescription.length < 10) {
+      setMatchError('Please provide more details. Your description must be at least 10 characters long.')
+      setHasSearched(false)
+      setMatchedAppIds([])
+      return
+    }
+
+    if (trimmedDescription.length > 2000) {
+      setMatchError('Your description is too long. Please keep it under 2000 characters.')
+      setHasSearched(false)
+      setMatchedAppIds([])
       return
     }
 
@@ -165,7 +184,7 @@ function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          buyer_prompt: description,
+          buyer_prompt: trimmedDescription,
           top_k: 30,
           top_n: 10
         })
