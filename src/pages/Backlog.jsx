@@ -39,7 +39,7 @@ export default function Backlog() {
           id: String(card.id),
           title: card.title,
           requestCount: card.number_of_requests || 0,
-          upvotes: card.upvote || 0,
+          upvotes: card.upvote || 0,  // This matches the backend field name
           status: card.status === 1 ? 'completed' : 'not-completed',
           created_by_bexio: card.created_by_bexio || false
         }))
@@ -70,6 +70,7 @@ export default function Backlog() {
         }}
         cardId={selectedCardId}
         canToggleStatus={true}
+        canUpvote={false}  // Disable upvoting from Backlog
         onStatusUpdate={(cardId, newStatus) => {
           setBacklogItems(prev => prev.map(item => 
             item.id === cardId 

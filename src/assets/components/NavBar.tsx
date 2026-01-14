@@ -21,6 +21,19 @@ export default function NavBar() {
         borderBottom="1px solid"
         borderColor="gray.200"
       >
+        <Link to="/about" style={{ textDecoration: 'none' }}>
+          <Box 
+            bg="transparent" 
+            px="12px" 
+            py="8px" 
+            borderRadius="8px" 
+            cursor="pointer" 
+            _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
+            borderBottom={location.pathname === '/about' ? '2px solid black' : 'none'}
+          >
+            <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">About</Text>
+          </Box>
+        </Link>
         <Link to="/" style={{ textDecoration: 'none' }}>
           <Box 
             bg="transparent" 
@@ -32,19 +45,6 @@ export default function NavBar() {
             borderBottom={location.pathname === '/' ? '2px solid black' : 'none'}
           >
             <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">MarketPlace</Text>
-          </Box>
-        </Link>
-        <Link to="/backlog" style={{ textDecoration: 'none' }}>
-          <Box 
-            bg="transparent" 
-            px="12px" 
-            py="8px" 
-            borderRadius="8px" 
-            cursor="pointer" 
-            _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-            borderBottom={location.pathname === '/backlog' ? '2px solid black' : 'none'}
-          >
-            <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Backlog</Text>
           </Box>
         </Link>
         <Link to="/community" style={{ textDecoration: 'none' }}>
@@ -60,7 +60,7 @@ export default function NavBar() {
             <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Community</Text>
           </Box>
         </Link>
-        <Link to="/about" style={{ textDecoration: 'none' }}>
+        <Link to="/backlog" style={{ textDecoration: 'none' }}>
           <Box 
             bg="transparent" 
             px="12px" 
@@ -68,9 +68,9 @@ export default function NavBar() {
             borderRadius="8px" 
             cursor="pointer" 
             _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-            borderBottom={location.pathname === '/about' ? '2px solid black' : 'none'}
+            borderBottom={location.pathname === '/backlog' ? '2px solid black' : 'none'}
           >
-            <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">About</Text>
+            <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Backlog</Text>
           </Box>
         </Link>
       </Box>
