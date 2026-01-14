@@ -1,11 +1,12 @@
 import { useState } from "react"
 import { Text, Card, Box, HStack, Badge, IconButton } from "@chakra-ui/react"
-import { FaCheckSquare, FaRegSquare, FaTrash } from "react-icons/fa"
+import { FaCheckSquare, FaRegSquare, FaTrash, FaArrowUp } from "react-icons/fa"
 
 interface BacklogItem {
   id: string
   title: string
   requestCount: number
+  upvotes?: number
   status: "completed" | "not-completed"
 }
 
@@ -110,8 +111,8 @@ export default function BacklogCard({ item, onStatusToggle, onClick, onDiscard }
           {item.title}
         </Card.Title>
 
-        {/* Request Count Badge */}
-        <Box mt="auto">
+        {/* Request Count Badge and Upvotes */}
+        <HStack mt="auto" justify="space-between" align="center">
           <Badge 
             colorScheme="blue" 
             fontSize="md" 
@@ -121,7 +122,21 @@ export default function BacklogCard({ item, onStatusToggle, onClick, onDiscard }
           >
             {item.requestCount} {item.requestCount === 1 ? "Request" : "Requests"}
           </Badge>
-        </Box>
+          <HStack 
+            gap="2" 
+            bg="gray.100" 
+            px="3" 
+            py="1" 
+            borderRadius="full"
+            border="2px solid"
+            borderColor="gray.300"
+          >
+            <FaArrowUp color="#38A169" size={16} />
+            <Text fontSize="md" fontWeight="bold" color="gray.700">
+              {item.upvotes || 0}
+            </Text>
+          </HStack>
+        </HStack>
       </Card.Body>
     </Card.Root>
   )
