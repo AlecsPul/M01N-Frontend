@@ -49,7 +49,7 @@ export default function NavBar() {
           <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Backlog</Text>
         </Box>
       </Link>
-      <Link to="/categories" style={{ textDecoration: 'none' }}>
+      <Link to="/community" style={{ textDecoration: 'none' }}>
         <Box 
           bg="transparent" 
           px="12px" 
@@ -57,9 +57,9 @@ export default function NavBar() {
           borderRadius="8px" 
           cursor="pointer" 
           _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-          borderBottom={location.pathname === '/categories' ? '2px solid black' : 'none'}
+          borderBottom={location.pathname === '/community' ? '2px solid black' : 'none'}
         >
-          <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Categories</Text>
+          <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Community</Text>
         </Box>
       </Link>
       <Link to="/about" style={{ textDecoration: 'none' }}>
