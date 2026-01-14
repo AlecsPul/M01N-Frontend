@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Box, Text, VStack, HStack } from '@chakra-ui/react'
+import { Box, Text, VStack, HStack, Button } from '@chakra-ui/react'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
 
 const API_BASE_URL = 'http://localhost:8000'
 
@@ -10,47 +11,76 @@ interface Stat {
   tags: string[]
 }
 
+interface CategoryData {
+  category: string
+  click_count: number
+  [key: string]: string | number
+}
+
 interface ChartViewProps {
   apiBaseUrl: string
 }
 
 export default function ChartsView({ apiBaseUrl = API_BASE_URL }: ChartViewProps) {
-  const [clickStats, setClickStats] = useState<Stat[]>([])
+  const [allStats, setAllStats] = useState<Stat[]>([])
+  const [categoryData, setCategoryData] = useState<CategoryData[]>([])
   const [allCategories, setAllCategories] = useState<string[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string>('')
+  const [searchQuery, setSearchQuery] = useState<string>('')
   const [statsLoading, setStatsLoading] = useState<boolean>(false)
+  const [chartView, setChartView] = useState<'list' | 'bar' | 'pie'>('list')
 
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D', '#FFC658', '#FF7C7C']
+
+  // Fetch all stats and categories once on mount
   useEffect(() => {
-    const fetchClickStats = async () => {
+    const fetchAllStats = async () => {
       try {
         setStatsLoading(true)
-        const query = selectedCategory ? `?category=${selectedCategory}` : ''
-        const response = await fetch(`${apiBaseUrl}/api/v1/application/clicks/stats${query}`)
-        
+        const response = await fetch(`${apiBaseUrl}/api/v1/application/clicks/stats`)
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
-        
         const data: Stat[] = await response.json()
-        setClickStats(data)
+        console.log(`Fetched ${data.length} total stats`, data)
+        setAllStats(data)
         
-        if (!selectedCategory) {
-          const categories = new Set<string>()
-          data.forEach(stat => {
-            stat.tags.forEach(tag => categories.add(tag))
-          })
-          setAllCategories(Array.from(categories).sort())
-        }
+        // Extract categories from all stats
+        const categories = new Set<string>()
+        data.forEach(stat => {
+          stat.tags.forEach(tag => categories.add(tag))
+        })
+        setAllCategories(Array.from(categories).sort())
       } catch (err) {
-        console.error('Error fetching click statistics:', err)
-        setClickStats([])
+        console.error('Error fetching statistics:', err)
+        setAllStats([])
       } finally {
         setStatsLoading(false)
       }
     }
 
-    fetchClickStats()
-  }, [selectedCategory, apiBaseUrl])
+    const fetchCategoryData = async () => {
+      try {
+        const response = await fetch(`${apiBaseUrl}/api/v1/application/clicks/top-categories?limit=5`)
+        if (response.ok) {
+          const data = await response.json()
+          setCategoryData(data.categories || [])
+        }
+      } catch (err) {
+        console.error('Error fetching category data:', err)
+      }
+    }
+
+    fetchAllStats()
+    fetchCategoryData()
+  }, [apiBaseUrl])
+
+  // Filter stats based on selected category and search query
+  const filteredStats = allStats.filter(stat => {
+    const matchesCategory = !selectedCategory || stat.tags.includes(selectedCategory)
+    const matchesSearch = stat.app_name.toLowerCase().includes(searchQuery.toLowerCase())
+    return matchesCategory && matchesSearch
+  }).sort((a, b) => b.click_count - a.click_count)
 
   return (
     <Box display="flex" gap="4" px="2rem" pb="2rem">
@@ -62,41 +92,117 @@ export default function ChartsView({ apiBaseUrl = API_BASE_URL }: ChartViewProps
         display="flex"
         flexDirection="column"
       >
-        <Box mb="4">
-          <Text fontSize="2xl" fontWeight="bold" color="black">
-            Click Statistics
-          </Text>
-          <Text fontSize="sm" color="gray.600" mt="1">
-            Application click analytics
-          </Text>
+        <Box mb="4" display="flex" justifyContent="space-between" alignItems="center">
+          <Box>
+            <Text fontSize="2xl" fontWeight="bold" color="black">
+              Click Statistics
+            </Text>
+            <Text fontSize="sm" color="gray.600" mt="1">
+              Application click analytics
+            </Text>
+          </Box>
+          
+          {/* View Toggle Buttons */}
+          <HStack gap="2">
+            <Button
+              onClick={() => setChartView('list')}
+              bg={chartView === 'list' ? 'black' : 'gray.200'}
+              color={chartView === 'list' ? 'white' : 'black'}
+              fontWeight="500"
+              size="sm"
+            >
+              List
+            </Button>
+            <Button
+              onClick={() => setChartView('bar')}
+              bg={chartView === 'bar' ? 'black' : 'gray.200'}
+              color={chartView === 'bar' ? 'white' : 'black'}
+              fontWeight="500"
+              size="sm"
+            >
+              Bar Chart
+            </Button>
+            <Button
+              onClick={() => setChartView('pie')}
+              bg={chartView === 'pie' ? 'black' : 'gray.200'}
+              color={chartView === 'pie' ? 'white' : 'black'}
+              fontWeight="500"
+              size="sm"
+            >
+              Pie Chart
+            </Button>
+          </HStack>
         </Box>
 
-        {/* Category Filter */}
-        <Box mb="6">
-          <Text fontSize="sm" fontWeight="600" color="black" mb="2">
-            Filter by Category
-          </Text>
-          <select 
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              border: '1px solid #e2e8f0',
-              backgroundColor: '#f7fafc',
-              fontSize: '14px',
-              cursor: 'pointer'
-            }}
-          >
-            <option value="">All Categories</option>
-            {allCategories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-        </Box>
+        {/* Search Bar - Only show in list view */}
+        {chartView === 'list' && (
+          <>
+            <Box mb="6">
+              <Text fontSize="sm" fontWeight="600" color="black" mb="2">
+                Search Applications
+              </Text>
+              <input 
+                type="text"
+                placeholder="Search by app name..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '10px 12px',
+                  borderRadius: '6px',
+                  border: '1px solid #e2e8f0',
+                  backgroundColor: '#f7fafc',
+                  fontSize: '14px',
+                  fontFamily: 'inherit'
+                }}
+              />
+            </Box>
+
+            {/* Category Filter - Toggle Squares */}
+            <Box mb="6">
+              <Text fontSize="sm" fontWeight="600" color="black" mb="3">
+                Filter by Category
+              </Text>
+              <HStack gap="2" flexWrap="wrap">
+                <Box
+                  onClick={() => setSelectedCategory('')}
+                  p="3"
+                  borderRadius="6px"
+                  border="2px solid"
+                  borderColor={selectedCategory === '' ? 'black' : 'gray.300'}
+                  bg={selectedCategory === '' ? 'black' : 'white'}
+                  color={selectedCategory === '' ? 'white' : 'black'}
+                  cursor="pointer"
+                  fontWeight="500"
+                  fontSize="sm"
+                  transition="all 0.2s"
+                  _hover={{ transform: 'scale(1.05)' }}
+                >
+                  All
+                </Box>
+                {allCategories.map((category) => (
+                  <Box
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    p="3"
+                    borderRadius="6px"
+                    border="2px solid"
+                    borderColor={selectedCategory === category ? 'black' : 'gray.300'}
+                    bg={selectedCategory === category ? 'black' : 'white'}
+                    color={selectedCategory === category ? 'white' : 'black'}
+                    cursor="pointer"
+                    fontWeight="500"
+                    fontSize="sm"
+                    transition="all 0.2s"
+                    _hover={{ transform: 'scale(1.05)' }}
+                  >
+                    {category}
+                  </Box>
+                ))}
+              </HStack>
+            </Box>
+          </>
+        )}
 
         {/* Loading State */}
         {statsLoading && (
@@ -105,10 +211,10 @@ export default function ChartsView({ apiBaseUrl = API_BASE_URL }: ChartViewProps
           </Box>
         )}
 
-        {/* Stats List */}
-        {!statsLoading && clickStats.length > 0 && (
+        {/* List View */}
+        {chartView === 'list' && !statsLoading && filteredStats.length > 0 && (
           <VStack gap="3" align="stretch">
-            {clickStats.map((stat, index) => (
+            {filteredStats.map((stat, index) => (
               <Box
                 key={index}
                 p="4"
@@ -151,9 +257,84 @@ export default function ChartsView({ apiBaseUrl = API_BASE_URL }: ChartViewProps
           </VStack>
         )}
 
-        {!statsLoading && clickStats.length === 0 && (
+        {/* Bar Chart View */}
+        {chartView === 'bar' && !statsLoading && categoryData.length > 0 && (
+          <Box display="flex" justifyContent="center" mt="4">
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={categoryData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="category" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="click_count" fill="#8884d8" name="Clicks" />
+              </BarChart>
+            </ResponsiveContainer>
+          </Box>
+        )}
+
+        {/* Pie Chart View */}
+        {chartView === 'pie' && !statsLoading && categoryData.length > 0 && (
+          <Box display="flex" flexDirection="column" justifyContent="center" mt="4" width="100%">
+            <Text fontSize="lg" fontWeight="600" color="black" mb="4" textAlign="center">
+              Top 5 Categories by Clicks
+            </Text>
+            <ResponsiveContainer width="100%" height={800}>
+              <PieChart>
+                <Pie 
+                  data={categoryData} 
+                  dataKey="click_count" 
+                  nameKey="category" 
+                  cx="50%" 
+                  cy="50%" 
+                  outerRadius={260}
+                  label={({ payload }) => payload.category}
+                >
+                  {categoryData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '6px',
+                    padding: '8px 12px'
+                  }}
+                  formatter={(value) => {
+                    const numValue = Number(value) || 0
+                    const total = categoryData.reduce((sum, item) => sum + item.click_count, 0)
+                    const percentage = ((numValue / total) * 100).toFixed(1)
+                    return [`${numValue} clicks (${percentage}%)`]
+                  }}
+                  labelFormatter={() => ""}
+                  labelStyle={{
+                    color: '#000000',
+                    fontSize: '14px',
+                    fontWeight: '500'
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </Box>
+        )}
+
+        {/* Empty States */}
+        {chartView === 'list' && !statsLoading && filteredStats.length === 0 && allStats.length > 0 && (
+          <Box textAlign="center" padding="8">
+            <Text fontSize="lg" color="gray.600">No apps match your search</Text>
+          </Box>
+        )}
+
+        {chartView === 'list' && !statsLoading && allStats.length === 0 && (
           <Box textAlign="center" padding="8">
             <Text fontSize="lg" color="gray.600">No click data available</Text>
+          </Box>
+        )}
+
+        {(chartView === 'bar' || chartView === 'pie') && !statsLoading && categoryData.length === 0 && (
+          <Box textAlign="center" padding="8">
+            <Text fontSize="lg" color="gray.600">No category data available</Text>
           </Box>
         )}
       </Box>
