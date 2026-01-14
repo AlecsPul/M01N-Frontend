@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
-import { Box, Text, VStack, HStack, Badge, Button, Spinner } from "@chakra-ui/react"
-import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger, DialogBackdrop } from "@chakra-ui/react"
-import { FaCheckCircle, FaTimesCircle, FaSearch } from "react-icons/fa"
+import { Box, Text, VStack, HStack, Badge, Button, Spinner, IconButton } from "@chakra-ui/react"
+import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogBackdrop } from "@chakra-ui/react"
+import { FaCheckCircle, FaTimesCircle, FaSearch, FaTimes } from "react-icons/fa"
 
 const API_BASE_URL = 'http://localhost:8000'
 
@@ -31,6 +31,7 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
   const [cardDetail, setCardDetail] = useState<CardDetail | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isCloseHovered, setIsCloseHovered] = useState(false)
 
   useEffect(() => {
     if (!isOpen || !cardId) return
@@ -76,11 +77,30 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
         borderRadius="16px"
         boxShadow="2xl"
       >
-        <DialogHeader borderBottom="2px solid" borderColor="gray.200" pb="4">
+        <DialogHeader borderBottom="2px solid" borderColor="gray.200" pb="4" position="relative">
           <DialogTitle fontSize="2xl" fontWeight="bold" color="black">
             Application Details
           </DialogTitle>
-          <DialogCloseTrigger />
+          <IconButton
+            onClick={onClose}
+            onMouseEnter={() => setIsCloseHovered(true)}
+            onMouseLeave={() => setIsCloseHovered(false)}
+            position="absolute"
+            top="2"
+            right="2"
+            bg="black"
+            borderRadius="md"
+            width="36px"
+            height="36px"
+            minW="36px"
+            aria-label="Close"
+            _hover={{ 
+              bg: "white", 
+              border: "2px solid black"
+            }}
+          >
+            <FaTimes color={isCloseHovered ? "black" : "white"} size={18} />
+          </IconButton>
         </DialogHeader>
 
         <DialogBody p="6">
