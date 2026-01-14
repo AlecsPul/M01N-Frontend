@@ -9,6 +9,9 @@ interface BacklogDetailModalProps {
   isOpen: boolean
   onClose: () => void
   cardId: string
+  showSearchButton?: boolean
+  canToggleStatus?: boolean
+  onStatusUpdate?: (cardId: string, newStatus: number) => void
 }
 
 interface CardDetail {
@@ -28,7 +31,7 @@ interface CardDetail {
   }>
 }
 
-export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogDetailModalProps) {
+export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearchButton = true, canToggleStatus = false, onStatusUpdate }: BacklogDetailModalProps) {
   const [cardDetail, setCardDetail] = useState<CardDetail | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -89,6 +92,42 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
   const handleSearchMarketplaces = () => {
     // TODO: Implement search in popular marketplaces
     console.log('Search in marketplaces for:', cardDetail?.title)
+  }
+
+  const handleToggleStatus = async () => {
+    if (!canToggleStatus || !cardDetail) return
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/cards/toggle-status`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          card_id: cardDetail.id
+        }),
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const updatedCard = await response.json()
+      console.log('Card status toggled:', updatedCard)
+      
+      // Update local state
+      setCardDetail(prev => prev ? {
+        ...prev,
+        status: updatedCard.status
+      } : null)
+      
+      // Notify parent component of the change
+      if (onStatusUpdate) {
+        onStatusUpdate(cardDetail.id, updatedCard.status)
+      }
+    } catch (error) {
+      console.error('Failed to toggle card status:', error)
+    }
   }
 
   return (
@@ -178,6 +217,9 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
                       gap="2"
                       bg={cardDetail.status === 1 ? "green.500" : "red.500"}
                       color="white"
+                      cursor={canToggleStatus ? "pointer" : "default"}
+                      onClick={canToggleStatus ? handleToggleStatus : undefined}
+                      _hover={canToggleStatus ? { opacity: 0.8 } : {}}
                     >
                       {cardDetail.status === 1 ? (
                         <><FaCheckCircle /> Completed</>
@@ -199,17 +241,19 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId }: BacklogD
                   >
                     {cardDetail.number_of_requests} {cardDetail.number_of_requests === 1 ? 'Request' : 'Requests'}
                   </Badge>
-                  <Button
-                    onClick={handleSearchMarketplaces}
-                    size="sm"
-                    colorScheme="blue"
-                    bg="blue.500"
-                    _hover={{ bg: "blue.600" }}
-                    borderRadius="md"
-                  >
-                    <FaSearch style={{ marginRight: '6px' }} size={14} />
-                    Search in Popular Marketplaces
-                  </Button>
+                  {showSearchButton && (
+                    <Button
+                      onClick={handleSearchMarketplaces}
+                      size="sm"
+                      colorScheme="blue"
+                      bg="blue.500"
+                      _hover={{ bg: "blue.600" }}
+                      borderRadius="md"
+                    >
+                      <FaSearch style={{ marginRight: '6px' }} size={14} />
+                      Search in Popular Marketplaces
+                    </Button>
+                  )}
                 </HStack>
               </Box>
 

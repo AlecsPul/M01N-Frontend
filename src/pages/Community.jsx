@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Grid, Text } from '@chakra-ui/react';
-import CommunityCard from '../assets/components/CommunityCard.tsx';
+import BacklogCard from '../assets/components/BacklogCard.tsx';
+import BacklogDetailModal from '../assets/components/BacklogDetailModal.tsx';
 
 const API_BASE_URL = 'http://localhost:8000';
 
@@ -8,6 +9,8 @@ const Community = () => {
   const [communityItems, setCommunityItems] = useState([]);
   const [communityLoading, setCommunityLoading] = useState(false);
   const [communityError, setCommunityError] = useState(null);
+  const [selectedCardId, setSelectedCardId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Fetch community items from backend
   useEffect(() => {
@@ -28,8 +31,9 @@ const Community = () => {
           id: String(card.id),
           title: card.title,
           upvotes: card.upvote || 0,
-          requests: card.number_of_requests || 0,
+          requestCount: card.number_of_requests || 0,
           status: card.status === 1 ? 'completed' : 'not-completed',
+          created_by_bexio: card.created_by_bexio || false,
         }));
 
         setCommunityItems(mappedCommunity);
@@ -45,7 +49,18 @@ const Community = () => {
   }, []);
 
   return (
-    <Box display="flex" gap="4" px="2rem" pt="7rem" pb="2rem">
+    <>
+      <BacklogDetailModal 
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedCardId(null);
+        }}
+        cardId={selectedCardId}
+        showSearchButton={false}
+      />
+      
+      <Box display="flex" gap="4" px="2rem" pt="7rem" pb="2rem">
       <Box
         flex="1"
         padding="4"
@@ -104,11 +119,12 @@ const Community = () => {
             mb="8"
           >
             {communityItems.map((item) => (
-              <CommunityCard
+              <BacklogCard
                 key={item.id}
                 item={item}
                 onClick={(id) => {
-                  console.log('Community item clicked:', id);
+                  setSelectedCardId(id);
+                  setIsModalOpen(true);
                 }}
                 onUpvote={async (id) => {
                   try {
@@ -133,7 +149,7 @@ const Community = () => {
                     const updatedCard = await response.json();
                     console.log('Card upvoted:', updatedCard);
 
-                    // Update local state with the new upvote count only
+                    // Update local state with the new upvote count
                     setCommunityItems((prev) =>
                       prev.map((i) =>
                         i.id === id ? { 
@@ -151,7 +167,8 @@ const Community = () => {
           </Grid>
         )}
       </Box>
-    </Box>
+      </Box>
+    </>
   );
 };
 
