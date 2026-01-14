@@ -1,11 +1,9 @@
 import { Box, Center, Text, VStack, Separator } from "@chakra-ui/react"
+import { Link, useLocation } from "react-router-dom"
 
-interface NavBarProps {
-  currentPage: string
-  onNavigate: (page: string) => void
-}
-
-export default function NavBar({ currentPage, onNavigate }: NavBarProps) {
+export default function NavBar() {
+  const location = useLocation()
+  
   return (
     <VStack
       position="fixed" 
@@ -25,50 +23,58 @@ export default function NavBar({ currentPage, onNavigate }: NavBarProps) {
         justifyContent="space-evenly" 
         px={8}
       >
-      <Box 
-        bg="transparent" 
-        px="12px" 
-        py="8px" 
-        borderRadius="8px" 
-        cursor="pointer" 
-        _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-        onClick={() => onNavigate('marketplace')}
-      >
-        <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">MarketPlace</Text>
-      </Box>
-      <Box 
-        bg="transparent" 
-        px="12px" 
-        py="8px" 
-        borderRadius="8px" 
-        cursor="pointer" 
-        _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-        onClick={() => onNavigate('backlog')}
-      >
-        <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Backlog</Text>
-      </Box>
-      <Box 
-        bg="transparent" 
-        px="12px" 
-        py="8px" 
-        borderRadius="8px" 
-        cursor="pointer" 
-        _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-        onClick={() => onNavigate('categories')}
-      >
-        <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Categories</Text>
-      </Box>
-      <Box 
-        bg="transparent" 
-        px="12px" 
-        py="8px" 
-        borderRadius="8px" 
-        cursor="pointer" 
-        _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-        onClick={() => onNavigate('about')}
-      >
-        <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">About</Text>
-      </Box>
+      <Link to="/" style={{ textDecoration: 'none' }}>
+        <Box 
+          bg="transparent" 
+          px="12px" 
+          py="8px" 
+          borderRadius="8px" 
+          cursor="pointer" 
+          _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
+          borderBottom={location.pathname === '/' ? '2px solid black' : 'none'}
+        >
+          <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">MarketPlace</Text>
+        </Box>
+      </Link>
+      <Link to="/backlog" style={{ textDecoration: 'none' }}>
+        <Box 
+          bg="transparent" 
+          px="12px" 
+          py="8px" 
+          borderRadius="8px" 
+          cursor="pointer" 
+          _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
+          borderBottom={location.pathname === '/backlog' ? '2px solid black' : 'none'}
+        >
+          <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Backlog</Text>
+        </Box>
+      </Link>
+      <Link to="/categories" style={{ textDecoration: 'none' }}>
+        <Box 
+          bg="transparent" 
+          px="12px" 
+          py="8px" 
+          borderRadius="8px" 
+          cursor="pointer" 
+          _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
+          borderBottom={location.pathname === '/categories' ? '2px solid black' : 'none'}
+        >
+          <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Categories</Text>
+        </Box>
+      </Link>
+      <Link to="/about" style={{ textDecoration: 'none' }}>
+        <Box 
+          bg="transparent" 
+          px="12px" 
+          py="8px" 
+          borderRadius="8px" 
+          cursor="pointer" 
+          _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
+          borderBottom={location.pathname === '/about' ? '2px solid black' : 'none'}
+        >
+          <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">About</Text>
+        </Box>
+      </Link>
     </Box>
     </VStack>
   )
