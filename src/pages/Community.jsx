@@ -60,6 +60,20 @@ const Community = () => {
         }}
         cardId={selectedCardId}
         showSearchButton={false}
+        canUpvote={true}  // Enable upvoting from Community modal
+        onUpvote={(cardId) => {
+          // Update local state when upvote happens in modal
+          setCommunityItems((prev) => {
+            const updated = prev.map((i) =>
+              i.id === cardId ? { 
+                ...i, 
+                upvotes: (i.upvotes || 0) + 1
+              } : i
+            );
+            // Re-sort by upvotes after updating
+            return updated.sort((a, b) => b.upvotes - a.upvotes);
+          });
+        }}
       />
       
       <Box display="flex" gap="4" px="2rem" pt="7rem" pb="2rem">

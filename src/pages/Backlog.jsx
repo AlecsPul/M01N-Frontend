@@ -70,6 +70,7 @@ export default function Backlog() {
         }}
         cardId={selectedCardId}
         canToggleStatus={true}
+        canUpvote={false}  // Disable upvoting from Backlog
         onStatusUpdate={(cardId, newStatus) => {
           setBacklogItems(prev => prev.map(item => 
             item.id === cardId 

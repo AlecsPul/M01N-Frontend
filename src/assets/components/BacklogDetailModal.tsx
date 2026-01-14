@@ -11,7 +11,9 @@ interface BacklogDetailModalProps {
   cardId: string
   showSearchButton?: boolean
   canToggleStatus?: boolean
+  canUpvote?: boolean  // Add this prop to control upvote functionality
   onStatusUpdate?: (cardId: string, newStatus: number) => void
+  onUpvote?: (cardId: string) => void  // Add this prop
 }
 
 interface CardDetail {
@@ -31,7 +33,7 @@ interface CardDetail {
   }>
 }
 
-export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearchButton = true, canToggleStatus = false, onStatusUpdate }: BacklogDetailModalProps) {
+export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearchButton = true, canToggleStatus = false, canUpvote = false, onStatusUpdate, onUpvote }: BacklogDetailModalProps) {
   const [cardDetail, setCardDetail] = useState<CardDetail | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -161,6 +163,42 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
     }
   }
 
+  const handleUpvote = async () => {
+    if (!canUpvote || !cardDetail) return  // Check canUpvote permission
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/cards/upvote`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          card_id: cardDetail.id
+        }),
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const updatedCard = await response.json()
+      console.log('Card upvoted:', updatedCard)
+      
+      // Update local state
+      setCardDetail(prev => prev ? {
+        ...prev,
+        upvote: updatedCard.upvote
+      } : null)
+      
+      // Notify parent component of the change
+      if (onUpvote) {
+        onUpvote(cardDetail.id)
+      }
+    } catch (error) {
+      console.error('Failed to upvote card:', error)
+    }
+  }
+
   // Reset provider suggestion when cardId changes
   useEffect(() => {
     setProviderSuggestion(null)
@@ -200,6 +238,13 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
               borderRadius="full"
               border="2px solid"
               borderColor="gray.300"
+              cursor={canUpvote ? "pointer" : "default"}  // Only clickable if canUpvote
+              onClick={canUpvote ? handleUpvote : undefined}  // Only handle click if canUpvote
+              transition="all 0.2s"
+              _hover={canUpvote ? { 
+                bg: "green.50", 
+                borderColor: "green.400"
+              } : {}}
             >
               <FaArrowUp color="#38A169" size={20} />
               <Text fontSize="xl" fontWeight="bold" color="gray.700">
