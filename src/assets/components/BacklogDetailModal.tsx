@@ -36,6 +36,14 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isCloseHovered, setIsCloseHovered] = useState(false)
+  const [providerSuggestion, setProviderSuggestion] = useState<null | {
+    company_name: string
+    company_url: string
+    marketplace_url: string
+    reasoning_brief: string
+  }>(null)
+  const [providerLoading, setProviderLoading] = useState(false)
+  const [providerError, setProviderError] = useState<string | null>(null)
 
   // Reset hover state when modal opens
   useEffect(() => {
@@ -89,9 +97,32 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
     fetchCardDetail()
   }, [isOpen, cardId])
 
-  const handleSearchMarketplaces = () => {
-    // TODO: Implement search in popular marketplaces
-    console.log('Search in marketplaces for:', cardDetail?.title)
+  const handleSearchMarketplaces = async () => {
+    setProviderLoading(true)
+    setProviderError(null)
+    setProviderSuggestion(null)
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/backlog/${cardId}/suggest-provider`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const data = await response.json()
+      setProviderSuggestion({
+        company_name: data.company_name,
+        company_url: data.company_url,
+        marketplace_url: data.marketplace_url,
+        reasoning_brief: data.reasoning_brief
+      })
+    } catch (err) {
+      setProviderError(err instanceof Error ? err.message : 'Failed to fetch provider suggestion')
+    } finally {
+      setProviderLoading(false)
+    }
   }
 
   const handleToggleStatus = async () => {
@@ -257,12 +288,51 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
                       bg="blue.500"
                       _hover={{ bg: "blue.600" }}
                       borderRadius="md"
+                      loading={providerLoading}
                     >
                       <FaSearch style={{ marginRight: '6px' }} size={14} />
                       Search in Popular Marketplaces
                     </Button>
                   )}
                 </HStack>
+                {/* Provider Suggestion Result */}
+                {providerLoading && (
+                  <Box mt="4" textAlign="center">
+                    <Spinner size="md" color="blue.500" />
+                    <Text mt="2" color="gray.500">Searching for providers...</Text>
+                  </Box>
+                )}
+                {providerError && (
+                  <Box mt="4" textAlign="center">
+                    <Text color="red.500">{providerError}</Text>
+                  </Box>
+                )}
+                {providerSuggestion && (
+                  <Box mt="4" bg="gray.50" p="4" borderRadius="12px" border="1px solid" borderColor="blue.200">
+                    <Text fontSize="md" fontWeight="bold" color="blue.700" mb="2">
+                      Suggested Provider: {providerSuggestion.company_name}
+                    </Text>
+                    <Text fontSize="sm" color="gray.700" mb="2">
+                      {providerSuggestion.reasoning_brief}
+                    </Text>
+                    <HStack gap="3" mt="2">
+                      {providerSuggestion.company_url && (
+                        <a href={providerSuggestion.company_url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                          <Button size="sm" colorScheme="blue" variant="outline" as="span">
+                            Visit Company
+                          </Button>
+                        </a>
+                      )}
+                      {providerSuggestion.marketplace_url && (
+                        <a href={providerSuggestion.marketplace_url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                          <Button size="sm" colorScheme="green" variant="outline" as="span">
+                            View in Marketplace
+                          </Button>
+                        </a>
+                      )}
+                    </HStack>
+                  </Box>
+                )}
               </Box>
 
               {/* Description */}
