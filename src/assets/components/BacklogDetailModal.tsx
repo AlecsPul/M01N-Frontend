@@ -310,7 +310,19 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
                       color="white"
                       cursor={canToggleStatus ? "pointer" : "default"}
                       onClick={canToggleStatus ? handleToggleStatus : undefined}
-                      _hover={canToggleStatus ? { opacity: 0.8 } : {}}
+                      border={canToggleStatus ? "2px solid" : "none"}
+                      borderColor={canToggleStatus ? (cardDetail.status === 1 ? "green.700" : "red.700") : "transparent"}
+                      boxShadow={canToggleStatus ? "md" : "none"}
+                      transition="all 0.2s ease-in-out"
+                      _hover={canToggleStatus ? { 
+                        transform: "scale(1.05)",
+                        boxShadow: "lg",
+                        bg: cardDetail.status === 1 ? "green.600" : "red.600"
+                      } : {}}
+                      _active={canToggleStatus ? {
+                        transform: "scale(0.98)",
+                        boxShadow: "sm"
+                      } : {}}
                     >
                       {cardDetail.status === 1 ? (
                         <><FaCheckCircle /> Completed</>
