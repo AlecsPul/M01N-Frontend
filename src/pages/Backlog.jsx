@@ -71,7 +71,6 @@ export default function Backlog() {
         cardId={selectedCardId}
         canToggleStatus={true}
         onStatusUpdate={(cardId, newStatus) => {
-          // Update the card in the list when status changes in modal
           setBacklogItems(prev => prev.map(item => 
             item.id === cardId 
               ? { ...item, status: newStatus === 1 ? 'completed' : 'not-completed' }
@@ -84,12 +83,72 @@ export default function Backlog() {
         isOpen={isFormModalOpen}
         onClose={() => setIsFormModalOpen(false)}
         onSuccess={(newCard) => {
-          // Refresh the entire backlog list to ensure consistency
           fetchBacklogItems()
         }}
       />
+
+      {/* View Toggle - Below Navbar */}
+      <Box 
+        display="flex" 
+        justifyContent="center" 
+        alignItems="center"
+        gap="64px"
+        pt="2rem" 
+        pb="0"
+        w="100%"
+      >
+        <Box
+          cursor="pointer"
+          pb="3"
+          px="0"
+          display="flex"
+          justifyContent="center"
+          borderBottom={viewMode === 'backlog' ? '3px solid black' : 'none'}
+          width="fit-content"
+          transition="all 0.2s"
+          _hover={{ transform: 'scale(1.08)' }}
+          onClick={() => setViewMode('backlog')}
+        >
+          <Text 
+            fontSize="lg" 
+            fontWeight="600"
+            color={viewMode === 'backlog' ? 'black' : 'gray.400'}
+            transition="color 0.2s"
+            textAlign="center"
+            px="2"
+          >
+            Cards
+          </Text>
+        </Box>
+        <Box
+          cursor="pointer"
+          pb="3"
+          px="0"
+          display="flex"
+          justifyContent="center"
+          borderBottom={viewMode === 'charts' ? '3px solid black' : 'none'}
+          width="fit-content"
+          transition="all 0.2s"
+          _hover={{ transform: 'scale(1.08)' }}
+          onClick={() => setViewMode('charts')}
+        >
+          <Text 
+            fontSize="lg" 
+            fontWeight="600"
+            color={viewMode === 'charts' ? 'black' : 'gray.400'}
+            transition="color 0.2s"
+            textAlign="center"
+            px="2"
+          >
+            Charts
+          </Text>
+        </Box>
+      </Box>
+      <Box h="2.5rem" /> {/* Add extra space below the toggle */}
+      {/* Cards header only for cards view */}
       
-      <Box display="flex" gap="4" px="2rem" pt="7rem" pb="2rem">
+      
+      <Box display="flex" gap="4" px="2rem" pb="2rem">
         <Box 
           flex="1"
           padding="4"
@@ -106,6 +165,18 @@ export default function Backlog() {
                 Backlog
               </Text>
             </Box>
+
+            {/* Create New Card Button - Only show in backlog view */}
+            {viewMode === 'backlog' && (
+              <Button
+                onClick={() => setIsFormModalOpen(true)}
+                colorScheme="blue"
+                size="lg"
+                leftIcon={<FaPlus />}
+              >
+                Create New Card
+              </Button>
+            )}
 
             {/* Center: View Toggle Buttons */}
             <Box position="absolute" left="50%" transform="translateX(-50%)">
