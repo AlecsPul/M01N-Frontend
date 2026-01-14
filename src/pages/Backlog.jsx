@@ -33,15 +33,17 @@ export default function Backlog() {
       
       console.log('Raw backend data:', data)
       
-      // Map backend data to frontend format
-      const mappedBacklog = data.map(card => ({
-        id: String(card.id),
-        title: card.title,
-        requestCount: card.number_of_requests || 0,
-        upvotes: card.upvote || 0,
-        status: card.status === 1 ? 'completed' : 'not-completed',
-        created_by_bexio: card.created_by_bexio || false
-      }))
+      // Map backend data to frontend format and sort by upvotes (descending)
+      const mappedBacklog = data
+        .map(card => ({
+          id: String(card.id),
+          title: card.title,
+          requestCount: card.number_of_requests || 0,
+          upvotes: card.upvote || 0,
+          status: card.status === 1 ? 'completed' : 'not-completed',
+          created_by_bexio: card.created_by_bexio || false
+        }))
+        .sort((a, b) => b.upvotes - a.upvotes) // Sort by upvotes descending
       
       console.log('Mapped backlog items:', mappedBacklog)
       
@@ -155,13 +157,12 @@ export default function Backlog() {
           display="flex"
           flexDirection="column"
         >
-          <Box mb="4" display="flex" justifyContent="space-between" alignItems="center">
-            <Box>
+          {/* Header with Title, Toggle (centered), and Create Button */}
+          <Box mb="4" display="flex" justifyContent="space-between" alignItems="center" position="relative">
+            {/* Left: Title */}
+            <Box flex="1">
               <Text fontSize="2xl" fontWeight="bold" color="black">
-                Application Backlog
-              </Text>
-              <Text fontSize="sm" color="gray.600" mt="1">
-                Requested applications from users
+                Backlog
               </Text>
             </Box>
 
@@ -176,6 +177,56 @@ export default function Backlog() {
                 Create New Card
               </Button>
             )}
+
+            {/* Center: View Toggle Buttons */}
+            <Box position="absolute" left="50%" transform="translateX(-50%)">
+              <HStack 
+                bg="gray.100" 
+                p="1" 
+                borderRadius="md"
+                border="1px solid"
+                borderColor="gray.300"
+              >
+                <Button
+                  onClick={() => setViewMode('backlog')}
+                  size="md"
+                  leftIcon={<FaThLarge />}
+                  bg={viewMode === 'backlog' ? 'white' : 'transparent'}
+                  color={viewMode === 'backlog' ? 'blue.600' : 'gray.600'}
+                  fontWeight={viewMode === 'backlog' ? 'bold' : 'normal'}
+                  boxShadow={viewMode === 'backlog' ? 'sm' : 'none'}
+                  _hover={{ bg: viewMode === 'backlog' ? 'white' : 'gray.200' }}
+                >
+                  Cards
+                </Button>
+                <Button
+                  onClick={() => setViewMode('charts')}
+                  size="md"
+                  leftIcon={<FaChartBar />}
+                  bg={viewMode === 'charts' ? 'white' : 'transparent'}
+                  color={viewMode === 'charts' ? 'blue.600' : 'gray.600'}
+                  fontWeight={viewMode === 'charts' ? 'bold' : 'normal'}
+                  boxShadow={viewMode === 'charts' ? 'sm' : 'none'}
+                  _hover={{ bg: viewMode === 'charts' ? 'white' : 'gray.200' }}
+                >
+                  Charts
+                </Button>
+              </HStack>
+            </Box>
+
+            {/* Right: Create New Card Button - Only show in backlog view */}
+            <Box flex="1" display="flex" justifyContent="flex-end">
+              {viewMode === 'backlog' && (
+                <Button
+                  onClick={() => setIsFormModalOpen(true)}
+                  colorScheme="blue"
+                  size="lg"
+                  leftIcon={<FaPlus />}
+                >
+                  Create New Card
+                </Button>
+              )}
+            </Box>
           </Box>
 
           {/* Charts View */}
