@@ -29,26 +29,9 @@ function App() {
   const [lastSearchedPrompt, setLastSearchedPrompt] = useState('')
   const [showNoMatchModal, setShowNoMatchModal] = useState(false)
   const [noMatchPrompt, setNoMatchPrompt] = useState('')
-  const [backlogItems, setBacklogItems] = useState([
-    {
-      id: '1',
-      title: 'Advanced Analytics Dashboard',
-      requestCount: 15,
-      status: 'not-completed'
-    },
-    {
-      id: '2',
-      title: 'Inventory Management System',
-      requestCount: 8,
-      status: 'completed'
-    },
-    {
-      id: '3',
-      title: 'Customer Relationship Manager',
-      requestCount: 23,
-      status: 'not-completed'
-    }
-  ])
+  const [backlogItems, setBacklogItems] = useState([])
+  const [backlogLoading, setBacklogLoading] = useState(false)
+  const [backlogError, setBacklogError] = useState(null)
 
   const itemsPerPage = 9
 
@@ -91,6 +74,42 @@ function App() {
 
     fetchProducts()
   }, [])
+
+  // Fetch backlog items from backend when navigating to backlog page
+  useEffect(() => {
+    const fetchBacklogItems = async () => {
+      if (currentPage !== 'backlog') return
+      
+      try {
+        setBacklogLoading(true)
+        setBacklogError(null)
+        const response = await fetch(`${API_BASE_URL}/api/v1/cards`)
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        
+        const data = await response.json()
+        
+        // Map backend data to frontend format
+        const mappedBacklog = data.map(card => ({
+          id: String(card.id),
+          title: card.title,
+          requestCount: card.number_of_requests || 0,
+          status: card.status === 1 ? 'completed' : 'not-completed'
+        }))
+        
+        setBacklogItems(mappedBacklog)
+      } catch (err) {
+        console.error('Error fetching backlog items:', err)
+        setBacklogError(err.message)
+      } finally {
+        setBacklogLoading(false)
+      }
+    }
+
+    fetchBacklogItems()
+  }, [currentPage])
 
   // Reset page to 1 when filters change
   useEffect(() => {
@@ -468,11 +487,27 @@ function App() {
               </Text>
             </Box>
 
-            {backlogItems.length === 0 ? (
+            {/* Loading and Error States */}
+            {backlogLoading && (
+              <Box textAlign="center" padding="8">
+                <Text fontSize="lg" color="gray.600">Loading backlog items...</Text>
+              </Box>
+            )}
+            
+            {backlogError && (
+              <Box textAlign="center" padding="8">
+                <Text fontSize="lg" color="red.500">Error loading backlog: {backlogError}</Text>
+                <Text fontSize="sm" color="gray.600" mt="2">Please try refreshing the page</Text>
+              </Box>
+            )}
+
+            {!backlogLoading && !backlogError && backlogItems.length === 0 && (
               <Box textAlign="center" padding="8">
                 <Text fontSize="lg" color="gray.600">No backlog items yet</Text>
               </Box>
-            ) : (
+            )}
+            
+            {!backlogLoading && !backlogError && backlogItems.length > 0 && (
               <Grid 
                 templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} 
                 gap="4"
