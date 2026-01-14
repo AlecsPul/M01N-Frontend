@@ -19,6 +19,8 @@ interface BacklogCardProps {
 }
 
 export default function BacklogCard({ item, onStatusToggle, onClick, onDiscard, onUpvote }: BacklogCardProps) {
+  console.log('BacklogCard - item:', item) // Debug log
+  
   const handleDiscard = (e: React.MouseEvent) => {
     e.stopPropagation() // Prevent card click
     if (onDiscard) {
@@ -36,12 +38,12 @@ export default function BacklogCard({ item, onStatusToggle, onClick, onDiscard, 
     <Card.Root 
       overflow="visible" 
       m={4} 
-      bg={item.created_by_bexio ? "yellow.50" : "white"}
+      bg={item.created_by_bexio ? "#FEF08A" : "white"}
       position="relative"
       cursor="pointer"
       onClick={handleCardClick}
       border="2px solid"
-      borderColor={item.created_by_bexio ? "yellow.400" : "black"}
+      borderColor={item.created_by_bexio ? "#FBBF24" : "black"}
       borderRadius="md"
       _hover={{ transform: "translateY(-4px)", transition: "transform 0.2s" }}
       display="flex"
@@ -79,7 +81,7 @@ export default function BacklogCard({ item, onStatusToggle, onClick, onDiscard, 
                 px="2" 
                 py="1" 
                 borderRadius="full"
-                bg="yellow.400"
+                bg="#FBBF24"
                 color="gray.800"
                 fontWeight="bold"
               >
