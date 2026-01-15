@@ -16,11 +16,6 @@ interface ProductCardProps {
   product: Product
   onClick?: () => void
   seeOptionsButtonProps?: any
-}
-
-export default function ProductCard({ product, onClick, seeOptionsButtonProps }: ProductCardProps) {
-  const BRAND_COLOR = "#2F6FED"
-
   onSelect?: (id: string, name: string) => void
   showSelect?: boolean
   isSelected?: boolean
@@ -30,6 +25,7 @@ export default function ProductCard({ product, onClick, seeOptionsButtonProps }:
 export default function ProductCard({ 
   product, 
   onClick, 
+  seeOptionsButtonProps,
   onSelect, 
   showSelect = false, 
   isSelected = false, 
@@ -37,6 +33,8 @@ export default function ProductCard({
 }: ProductCardProps) {
   // Debug: log the full product object
   console.log('Product data:', { title: product.title, rating: product.rating, fullProduct: product })
+
+  const BRAND_COLOR = "#2F6FED"
 
   const handleClick = () => {
     // Call the parent's onClick first (which tracks the click)
