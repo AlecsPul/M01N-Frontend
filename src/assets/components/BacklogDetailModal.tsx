@@ -617,13 +617,13 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
                                   borderRadius="full"
                                   border="1px solid"
                                   borderColor="gray.300"
-                                  cursor="pointer"
-                                  onClick={() => handleCommentUpvote(comment.id)}
-                                  _hover={{ 
+                                  cursor={canUpvoteComments ? "pointer" : "default"}
+                                  onClick={canUpvoteComments ? () => handleCommentUpvote(comment.id) : undefined}
+                                  _hover={canUpvoteComments ? { 
                                     bg: "green.50", 
                                     borderColor: "green.400"
-                                  }}
-                                  transition="all 0.2s"
+                                  } : {}}
+                                  transition={canUpvoteComments ? "all 0.2s" : "none"}
                                 >
                                   <FaArrowUp color="#38A169" size={12} />
                                   <Text fontSize="xs" fontWeight="bold" color="gray.700">
