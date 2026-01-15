@@ -277,6 +277,88 @@ const AboutUs = () => {
         </Box>
       </Box>
 
+      {/* Comparison Table: Backlog vs Community */}
+      <Box py={16} px={8} bg="white">
+        <Box maxW="900px" mx="auto">
+          <Heading size="2xl" mb={8} color="black" textAlign="center">
+            Backlog vs Community: Feature Comparison
+          </Heading>
+          <Box
+            bg="gray.50"
+            borderRadius="lg"
+            boxShadow="md"
+            p={{ base: 4, md: 8 }}
+            overflowX="auto"
+          >
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr>
+                  <th style={{ textAlign: "left", fontWeight: 700, fontSize: "1.1rem", color: "#1a3570", padding: "12px 8px" }}></th>
+                  <th style={{ textAlign: "center", fontWeight: 700, fontSize: "1.1rem", color: "#1a3570", padding: "12px 8px" }}>Backlog</th>
+                  <th style={{ textAlign: "center", fontWeight: 700, fontSize: "1.1rem", color: "#1a3570", padding: "12px 8px" }}>Community</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                  <td style={{ padding: "12px 8px", fontWeight: 500 }}>Create <b>created_by_bexio</b> card</td>
+                  <td style={{ textAlign: "center" }}>
+                    <span style={{ color: "#1a3570", fontSize: "1.5rem" }}>✔️</span>
+                  </td>
+                  <td style={{ textAlign: "center" }}>
+                    <span style={{ color: "#b23a3a", fontSize: "1.5rem" }}>❌</span>
+                  </td>
+                </tr>
+                <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                  <td style={{ padding: "12px 8px", fontWeight: 500 }}>Upvote cards</td>
+                  <td style={{ textAlign: "center" }}>
+                    <span style={{ color: "#b23a3a", fontSize: "1.5rem" }}>❌</span>
+                  </td>
+                  <td style={{ textAlign: "center" }}>
+                    <span style={{ color: "#1a3570", fontSize: "1.5rem" }}>✔️</span>
+                  </td>
+                </tr>
+                <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                  <td style={{ padding: "12px 8px", fontWeight: 500 }}>Upvote comments</td>
+                  <td style={{ textAlign: "center" }}>
+                    <span style={{ color: "#b23a3a", fontSize: "1.5rem" }}>❌</span>
+                  </td>
+                  <td style={{ textAlign: "center" }}>
+                    <span style={{ color: "#1a3570", fontSize: "1.5rem" }}>✔️</span>
+                  </td>
+                </tr>
+                <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                  <td style={{ padding: "12px 8px", fontWeight: 500 }}>Comment on <b>created_by_bexio</b> cards</td>
+                  <td style={{ textAlign: "center" }}>
+                    <span style={{ color: "#b23a3a", fontSize: "1.5rem" }}>❌</span>
+                  </td>
+                  <td style={{ textAlign: "center" }}>
+                    <span style={{ color: "#1a3570", fontSize: "1.5rem" }}>✔️</span>
+                  </td>
+                </tr>
+                <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                  <td style={{ padding: "12px 8px", fontWeight: 500 }}>Delete cards</td>
+                  <td style={{ textAlign: "center" }}>
+                    <span style={{ color: "#1a3570", fontSize: "1.5rem" }}>✔️</span>
+                  </td>
+                  <td style={{ textAlign: "center" }}>
+                    <span style={{ color: "#b23a3a", fontSize: "1.5rem" }}>❌</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ padding: "12px 8px", fontWeight: 500 }}>Change status of cards</td>
+                  <td style={{ textAlign: "center" }}>
+                    <span style={{ color: "#1a3570", fontSize: "1.5rem" }}>✔️</span>
+                  </td>
+                  <td style={{ textAlign: "center" }}>
+                    <span style={{ color: "#b23a3a", fontSize: "1.5rem" }}>❌</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </Box>
+        </Box>
+      </Box>
+
       {/* Team Placeholder Section */}
       <Box py={16} px={8} bg="gray.50">
         <Box maxW="1200px" mx="auto">

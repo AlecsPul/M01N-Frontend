@@ -17,16 +17,17 @@ export default function NavBar() {
       boxShadow="0 4px 16px -8px rgba(0,0,0,0.10)"
     >
       <Flex
-        maxW="1200px"
+        maxW="1400px"
         mx="auto"
         px={0}
         minH="8vh"
         alignItems="center"
         justifyContent="flex-start"
         position="relative"
+        gap={12}
       >
         {/* Logo - further left */}
-        <Box minW="240px" display="flex" alignItems="center" justifyContent="flex-start" mr={10} >
+        <Box  display="flex" alignItems="left" justifyContent="flex-start" mr={10} ml={0}>
           <Link to="/" style={{ textDecoration: 'none' }}>
             <Image
               src="/logo.png"
