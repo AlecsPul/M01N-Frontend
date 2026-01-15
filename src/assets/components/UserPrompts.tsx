@@ -128,46 +128,51 @@ export default function UserPrompts({ onSubmit, onResults, isLoading = false }: 
     )
   }
 
+  const BRAND_COLOR = "#2F6FED"
+
   return (
     <Box
-  w="100%"
-  bg="white"
-  p={6}
-  borderRadius="12px"
-  border="1px solid"
-  borderColor="gray.200"
-  boxShadow="sm"
->
-  <VStack align="stretch" gap={3}>
-    <Text fontSize="lg" fontWeight="semibold">
-      What do you need help with?
-    </Text>
-
-    <Text fontSize="sm" color="gray.600">
-      We’ll suggest tools that match your needs.
-    </Text>
-
-    <Textarea
-      value={description}
-      onChange={(e) => setDescription(e.target.value)}
-      placeholder="Example: I need an easy way to send invoices and track payments"
-      minH="120px"
-      borderColor="gray.300"
-      _focus={{ borderColor: "blue.400", boxShadow: "none" }}
-    />
-    
-    {error && <Text color="red.500" fontSize="sm">{error}</Text>}
-
-    <Button
-      onClick={handleSubmit}
-      colorScheme="blue"
-      disabled={!description.trim() || isProcessing}
-      loading={isProcessing}
+      w="100%"
+      bg="white"
+      p={6}
+      borderRadius="12px"
+      border="1px solid"
+      borderColor="gray.200"
+      boxShadow="sm"
     >
-      {isProcessing ? 'Matching...' : 'See options'}
-    </Button>
-  </VStack>
-</Box>
+      <VStack align="stretch" gap={3}>
+        <Text fontSize="lg" fontWeight="semibold">
+          What do you need help with?
+        </Text>
 
+        <Text fontSize="sm" color={BRAND_COLOR}>
+          We’ll suggest tools that match your needs.
+        </Text>
+
+        <Textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Example: I need an easy way to send invoices and track payments"
+          minH="120px"
+          borderColor={BRAND_COLOR}
+          _focus={{ borderColor: BRAND_COLOR, boxShadow: "none" }}
+        />
+        
+        {error && <Text color="red.500" fontSize="sm">{error}</Text>}
+
+        <Button
+          onClick={handleSubmit}
+          colorScheme="blue"
+          disabled={!description.trim() || isProcessing}
+          loading={isProcessing}
+          _hover={{ bg: "black", color: "white" }}
+          bg="#204a99"
+          color="white"
+          _active={{ bg: "#204a99" }}
+        >
+          {isProcessing ? 'Matching...' : 'See options'}
+        </Button>
+      </VStack>
+    </Box>
   )
 }

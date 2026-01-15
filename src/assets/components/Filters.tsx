@@ -35,14 +35,27 @@ export default function Filters({ onFilterChange, availableCategories = [], avai
     }
   }
 
+  const BRAND_COLOR = "#2F6FED"
+
   return (
     <Box
-      w="100%"
+      w="90%"
       h="100%"
       bg="white"
       p={6}
       paddingRight={4}
       overflowY="auto"
+      rounded="md"
+      boxShadow="md"
+      border="1px solid"
+      borderColor="gray.200"
+      transition="box-shadow 0.15s"
+      _hover={{ boxShadow: "lg" }}
+      cursor="pointer"
+      _focusVisible={{
+        outline: "2px solid",
+        outlineColor: "gray.400",
+      }}
     >
       <VStack align="stretch" gap={6}>
         <Box>
@@ -61,22 +74,46 @@ export default function Filters({ onFilterChange, availableCategories = [], avai
               checked={priceType === 'free'}
               onCheckedChange={(e) => handlePriceChange('free', !!e.checked)}
               colorScheme="blue"
+              style={{ transition: "transform 0.15s" }}
+              _hover={{ transform: "scale(1.06)", boxShadow: "sm" }}
+              cursor="pointer"
+              _focusVisible={{
+                outline: "2px solid",
+                outlineColor: "gray.400",
+              }}
             >
               <Checkbox.HiddenInput />
-              <Checkbox.Control />
+              <Checkbox.Control
+                borderColor={priceType === 'free' ? BRAND_COLOR : "gray.300"}
+                bg={priceType === 'free' ? BRAND_COLOR : "white"}
+              />
               <Checkbox.Label>
-                <Text color="gray.700">Free</Text>
+                <Text color={priceType === 'free' ? BRAND_COLOR : "gray.700"} fontWeight={priceType === 'free' ? "bold" : "normal"}>
+                  Free
+                </Text>
               </Checkbox.Label>
             </Checkbox.Root>
             <Checkbox.Root
               checked={priceType === 'paid'}
               onCheckedChange={(e) => handlePriceChange('paid', !!e.checked)}
               colorScheme="blue"
+              style={{ transition: "transform 0.15s" }}
+              _hover={{ transform: "scale(1.06)", boxShadow: "sm" }}
+              cursor="pointer"
+              _focusVisible={{
+                outline: "2px solid",
+                outlineColor: "gray.400",
+              }}
             >
               <Checkbox.HiddenInput />
-              <Checkbox.Control />
+              <Checkbox.Control
+                borderColor={priceType === 'paid' ? BRAND_COLOR : "gray.300"}
+                bg={priceType === 'paid' ? BRAND_COLOR : "white"}
+              />
               <Checkbox.Label>
-                <Text color="gray.700">Paid</Text>
+                <Text color={priceType === 'paid' ? BRAND_COLOR : "gray.700"} fontWeight={priceType === 'paid' ? "bold" : "normal"}>
+                  Paid
+                </Text>
               </Checkbox.Label>
             </Checkbox.Root>
           </VStack>
@@ -95,11 +132,23 @@ export default function Filters({ onFilterChange, availableCategories = [], avai
                   checked={selectedCategories.includes(category)}
                   onCheckedChange={(e) => handleCategoryChange(category, !!e.checked)}
                   colorScheme="blue"
+                  style={{ transition: "transform 0.15s" }}
+                  _hover={{ transform: "scale(1.06)", boxShadow: "sm" }}
+                  cursor="pointer"
+                  _focusVisible={{
+                    outline: "2px solid",
+                    outlineColor: "gray.400",
+                  }}
                 >
                   <Checkbox.HiddenInput />
-                  <Checkbox.Control />
+                  <Checkbox.Control
+                    borderColor={selectedCategories.includes(category) ? BRAND_COLOR : "gray.300"}
+                    bg={selectedCategories.includes(category) ? BRAND_COLOR : "white"}
+                  />
                   <Checkbox.Label>
-                    <Text color="gray.700">{category}</Text>
+                    <Text color={selectedCategories.includes(category) ? BRAND_COLOR : "gray.700"} fontWeight={selectedCategories.includes(category) ? "bold" : "normal"}>
+                      {category}
+                    </Text>
                   </Checkbox.Label>
                 </Checkbox.Root>
               ))}
@@ -122,11 +171,23 @@ export default function Filters({ onFilterChange, availableCategories = [], avai
                   checked={selectedCategories.includes(industry)}
                   onCheckedChange={(e) => handleCategoryChange(industry, !!e.checked)}
                   colorScheme="blue"
+                  style={{ transition: "transform 0.15s" }}
+                  _hover={{ transform: "scale(1.06)", boxShadow: "sm" }}
+                  cursor="pointer"
+                  _focusVisible={{
+                    outline: "2px solid",
+                    outlineColor: "gray.400",
+                  }}
                 >
                   <Checkbox.HiddenInput />
-                  <Checkbox.Control />
+                  <Checkbox.Control
+                    borderColor={selectedCategories.includes(industry) ? BRAND_COLOR : "gray.300"}
+                    bg={selectedCategories.includes(industry) ? BRAND_COLOR : "white"}
+                  />
                   <Checkbox.Label>
-                    <Text color="gray.700">{industry}</Text>
+                    <Text color={selectedCategories.includes(industry) ? BRAND_COLOR : "gray.700"} fontWeight={selectedCategories.includes(industry) ? "bold" : "normal"}>
+                      {industry}
+                    </Text>
                   </Checkbox.Label>
                 </Checkbox.Root>
               ))}
