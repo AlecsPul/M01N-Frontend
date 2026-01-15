@@ -303,28 +303,61 @@ export default function Marketplace() {
         onClose={() => setShowNoMatchModal(false)}
         userPrompt={noMatchPrompt}
       />
+
+      {/* Marketplace Title */}
+      <Text
+        fontSize="3xl"
+        fontWeight="bold"
+        mt="4rem"
+        ml="11rem"
+        mb="1.5rem"
+        color="gray.800"
+      >
+        Marketplace
+      </Text>
       
-      <Box display="flex" gap="4" px="2rem" pt="7rem" pb="2rem">
+      <Box 
+        display="flex" 
+        gap="2"
+        px="2rem" 
+        pt="2rem" 
+        pb="2rem"
+        pl="8rem" // Add this line to move content to the right
+        bg="gray.50"
+        minH="100vh"
+      >
         <Box 
-          width="20%"
+          width="16%" // Slightly increased to keep filters readable
           borderRadius="12px"
           overflow="hidden"
           alignSelf="flex-start"
+          bg="gray.50"
+          p="0"
+          height="100%"
+          display="flex"
+          flexDirection="column"
         >
-          <Filters 
-            onFilterChange={setFilters} 
-            availableCategories={availableCategories}
-            availableIndustries={availableIndustries}
-          />
+          <Box flex="1" display="flex" flexDirection="column" marginLeft= {10}>
+            <Filters 
+              onFilterChange={setFilters} 
+              availableCategories={availableCategories}
+              availableIndustries={availableIndustries}
+            />
+          </Box>
         </Box>
         
         <Box 
-          flex="1"
+          width="72%" // Slightly increased to fill more space, but still leaves margin
+          mx="0"      // Remove auto margin to bring sections closer
+          ml="2rem"   // Add left margin to increase space from filters
           padding="4"
           bg="white"
           borderRadius="12px"
           display="flex"
           flexDirection="column"
+          boxShadow="md"
+          border="1px solid"
+          borderColor="gray.200"
         >
           {/* Loading and Error States */}
           {loading && (
@@ -343,11 +376,44 @@ export default function Marketplace() {
           {!loading && (
             <>
               {/* User Prompts Section */}
-              <Box mb="6">
-                <UserPrompts 
-                  onSubmit={handleUserPrompt} 
+              <Box
+                mb={12} // Big gap after hero
+                bg="white"
+                borderRadius="18px"
+                p={{ base: 4, md: 8 }}
+                boxShadow="lg"
+                border="2px solid"
+                borderColor="gray.200"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                width="100%"
+                maxW="100%"
+              >
+                <UserPrompts
+                  onSubmit={handleUserPrompt}
                   onResults={handleInteractiveResults}
                   isLoading={isMatching}
+                  textareaProps={{
+                    minH: "90px",
+                    fontSize: "lg",
+                    borderRadius: "12px",
+                    px: 4,
+                    py: 3,
+                    _placeholder: { fontSize: "lg", color: "gray.400" }
+                  }}
+                  buttonProps={{
+                    mt: 4,
+                    fontWeight: "bold",
+                    fontSize: "lg",
+                    borderRadius: "10px",
+                    px: 8,
+                    py: 3,
+                    bg: "gray.700",
+                    color: "white",
+                    _hover: { bg: "gray.800" },
+                    _active: { bg: "gray.900" }
+                  }}
                 />
                 {matchError && (
                   <Text color="red.500" mt="2" fontSize="sm">
@@ -377,16 +443,19 @@ export default function Marketplace() {
 
               <Grid 
                 templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} 
-                gap="4"
+                gap={6} // Cards grid: medium gap
                 w="100%"
                 alignContent="start"
-                mb="8"
+                mb={12} // Medium gap between sections
               >
                 {currentProducts.map((product) => (
                   <ProductCard 
                     key={product.id} 
                     product={product} 
-                    onClick={() => handleApplicationClick(product.id, product.link)} // Track clicks
+                    onClick={() => handleApplicationClick(product.id, product.link)}
+                    seeOptionsButtonProps={{
+                      _hover: { bg: "black", color: "white" }
+                    }}
                   />
                 ))}
               </Grid>
@@ -399,6 +468,10 @@ export default function Marketplace() {
                 paddingTop="6"
                 borderTop="1px solid"
                 borderColor="gray.200"
+                bg="gray.50"
+                borderRadius="12px"
+                boxShadow="xs"
+                mb={6} // Medium gap after pagination
               >
                 <Button
                   onClick={() => handlePageChange(page - 1)}
