@@ -120,9 +120,11 @@ export default function ProductCard({
           flexShrink={0}
           overflow="hidden"
         >
-          {product.description}
-        </Text>
-      </Box>
+          <Text>
+            {product.description}
+          </Text>
+        </Box>
+      </Card.Body>
       {/* Footer */}
       <HStack gap={3} justifyContent="space-between" alignItems="center" flexShrink={0} px={4} py={3} mt="auto">
         <Text fontSize="md" fontWeight="bold" letterSpacing="tight" color="black">
@@ -174,6 +176,6 @@ export default function ProductCard({
           Visit Page
         </Button>
       </Box>
-    </Box>
+    </Card.Root>
   )
 }
