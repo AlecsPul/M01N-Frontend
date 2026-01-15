@@ -15,7 +15,6 @@ interface Product {
 interface ProductCardProps {
   product: Product
   onClick?: () => void
-  seeOptionsButtonProps?: any
   onSelect?: (id: string, name: string) => void
   showSelect?: boolean
   isSelected?: boolean
@@ -25,7 +24,6 @@ interface ProductCardProps {
 export default function ProductCard({ 
   product, 
   onClick, 
-  seeOptionsButtonProps,
   onSelect, 
   showSelect = false, 
   isSelected = false, 
@@ -33,8 +31,6 @@ export default function ProductCard({
 }: ProductCardProps) {
   // Debug: log the full product object
   console.log('Product data:', { title: product.title, rating: product.rating, fullProduct: product })
-
-  const BRAND_COLOR = "#2F6FED"
 
   const handleClick = () => {
     // Call the parent's onClick first (which tracks the click)
@@ -73,101 +69,105 @@ export default function ProductCard({
   }
 
   return (
-    <Box
-      bg="white"
-      borderRadius="lg"
-      boxShadow="xs"
-      _hover={{ boxShadow: "md", transform: "translateY(-2px)" }}
-      transition="all 0.2s ease"
-      overflow="visible"
-      m={4}
+    <Card.Root 
+      overflow="visible" 
+      m={4} 
+      bg={isSelected ? "blue.50" : "white"}
       position="relative"
       cursor="pointer"
       onClick={handleClick}
+      border="2px solid"
+      borderColor={isSelected ? "blue.400" : "black"}
+      borderRadius="md"
+      _hover={{ transform: "translateY(-4px)", transition: "transform 0.2s" }}
       display="flex"
       flexDirection="column"
       h="100%"
-      border="2px solid"
-      borderColor="gray.200"
+      transition="all 0.2s"
     >
-      {/* Logo area */}
-      <Box bg="gray.50" borderRadius="md" p={4} mb={4} display="flex" alignItems="center" justifyContent="center" h="120px">
-        {product.image ? (
-          <Image
-            src={product.image}
-            alt={product.title}
-            borderRadius="md"
-            maxW="100%"
-            maxH="80px"
-            objectFit="contain"
-          />
-        ) : (
-          <Box w="100%" h="80px" bg="gray.100" borderRadius="md" />
-        )}
-      </Box>
-      {/* Percentage badge */}
-      {product.percentage && (
-        <Box position="absolute" top="12px" right="12px" zIndex={2}>
-          <Text fontSize="md" color="green.600" fontWeight="bold" bg="white" px={2} py={1} borderRadius="md" boxShadow="sm">
-            {product.percentage}
-          </Text>
+      <Card.Body gap="2" display="flex" flexDirection="column" flex="1" pb="2">
+        <Box display="flex" w="100%" h="180px" mb={3} flexShrink={0}>
+          {product.image ? (
+            <Box 
+              w="90%" 
+              h="100%" 
+              display="flex" 
+              alignItems="center" 
+              justifyContent="center"
+            >
+              <Image 
+                src={product.image} 
+                alt={product.title} 
+                borderRadius="md" 
+                maxW="100%"
+                maxH="100%"
+                objectFit="contain"
+              />
+            </Box>
+          ) : (
+            <Box w="90%" h="100%" bg="gray.100" borderRadius="md" />
+          )}
+          {product.percentage && (
+            <Box w="10%" display="flex" alignItems="flex-start" justifyContent="center" pt={2}>
+              <Text fontSize="md" color="green.600" fontWeight="bold">
+                {product.percentage}
+              </Text>
+            </Box>
+          )}
         </Box>
-      )}
-      {/* Title */}
-      <Text color="black" minH="3em" lineHeight="1.5em" fontSize="xl" fontWeight="bold" flexShrink={0} px={4}>
-        {product.title}
-      </Text>
-      {/* Description */}
-      <Box h="6em" flexShrink={0} overflow="hidden" px={4} mt={2}>
-        <Text
-          fontSize="md"
-          color="gray.600"
-          lineHeight="1.5em"
-          fontWeight="medium"
-          display="-webkit-box"
-          css={{
-            WebkitLineClamp: 4,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-            textOverflow: "ellipsis"
-          }}
+        <Card.Title color={"black"} minH="3em" lineHeight="1.5em" fontSize="xl" fontWeight="semibold" flexShrink={0}>
+          {product.title}
+        </Card.Title>
+        <Box
+          h="6em"
+          flexShrink={0}
+          overflow="hidden"
         >
-          {product.description}
-        </Text>
-      </Box>
-      {/* Footer */}
-      <HStack gap="2" justifyContent="space-between" alignItems="center" flexShrink={0} px={4} py={3} mt="auto">
-        <Text fontSize="md" fontWeight="bold" letterSpacing="tight" color="black">
-          {product.price}
+          <Card.Description 
+            textStyle="md"
+            color="black"
+            lineHeight="1.5em"
+            display="-webkit-box"
+            css={{
+              WebkitLineClamp: 4,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              textOverflow: "ellipsis"
+            }}>
+            {product.description}
+          </Card.Description>
+        </Box>
+        
+      </Card.Body>
+      <Card.Footer gap="2" justifyContent="space-between" alignItems="center" flexShrink={0}>
+        <Text fontSize="md" fontWeight="medium" letterSpacing="tight" color={"black"}>
+          {product.price} 
         </Text>
         {product.rating !== undefined && (
           <HStack gap={1}>
             {renderStars(product.rating)}
-            <Text fontSize="sm" color={BRAND_COLOR} ml={2} fontWeight="semibold">
-              ({product.rating.toFixed(1)})
-            </Text>
+            <Text fontSize="sm" color="gray.600" ml={2}>({product.rating.toFixed(1)})</Text>
           </HStack>
         )}
-      </HStack>
-      <Box px={4} pb={4}>
-        <Button
-          w="100%"
-          mt={2}
-          fontWeight="bold"
-          borderRadius="md"
-          _hover={{ bg: "black", color: "white" }}
-          onClick={(e) => {
-            e.stopPropagation()
-            if (onClick) onClick()
-          }}
-          {...seeOptionsButtonProps}
-          bg="#204a99" // less shiny version of #2F6FED
-          color="white"
-          _active={{ bg: "#204a99" }}
-        >
-          Visit Page
-        </Button>
-      </Box>
-    </Box>
+      </Card.Footer>
+      {showSelect && (
+        <Box p={4} pt={0} width="100%">
+           <Button 
+             width="100%" 
+             onClick={handleSelect}
+             disabled={!isSelected && isSelectionDisabled}
+             variant={isSelected ? "solid" : "outline"}
+             bg={isSelected ? "blue.700" : "white"}
+             color={isSelected ? "white" : "gray.800"}
+             borderColor={isSelected ? "blue.700" : "gray.600"}
+             opacity={(!isSelected && isSelectionDisabled) ? 0.4 : 1}
+             _hover={isSelected ? { bg: "blue.800" } : { bg: "gray.50" }}
+             _disabled={{ opacity: 0.4, cursor: "not-allowed", bg: "gray.200", color: "gray.500" }}
+           >
+             {isSelected ? "Selected" : "Select"}
+           </Button>
+        </Box>
+      )}
+    </Card.Root>
   )
 }
