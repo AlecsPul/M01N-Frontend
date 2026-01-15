@@ -24,7 +24,7 @@ interface CardDetail {
   status: number
   number_of_requests: number
   upvote?: number
-  created_by_bexio?: boolean  // Add this field to identify Bexio-created cards
+  created_by_bexio?: boolean
   created_at: string
   updated_at: string | null
   comments: Array<{
@@ -32,6 +32,7 @@ interface CardDetail {
     prompt_text: string
     comment_text: string | null
     created_at: string
+    upvotes?: number  // Changed from upvote to upvotes (plural) to match backend
   }>
 }
 
@@ -244,6 +245,68 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
       console.error('Failed to submit comment:', error)
     } finally {
       setIsSubmittingComment(false)
+    }
+  }
+
+  const handleCommentUpvote = async (commentId: string) => {
+    if (!cardDetail) return
+    
+    // Optimistic update - increment immediately
+    setCardDetail(prev => {
+      if (!prev) return null
+      
+      return {
+        ...prev,
+        comments: prev.comments.map(c => 
+          c.id === commentId ? { ...c, upvotes: (c.upvotes || 0) + 1 } : c
+        )
+      }
+    })
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/comments/upvote`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          comment_id: commentId
+        }),
+      })
+      
+      if (!response.ok) {
+        // Revert optimistic update on error
+        setCardDetail(prev => {
+          if (!prev) return null
+          return {
+            ...prev,
+            comments: prev.comments.map(c => 
+              c.id === commentId ? { ...c, upvotes: (c.upvotes || 1) - 1 } : c
+            )
+          }
+        })
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const updatedComment = await response.json()
+      console.log('Comment upvoted - Full response:', updatedComment)
+      
+      // Update with actual value from backend
+      if (updatedComment.upvotes !== undefined) {
+        setCardDetail(prev => {
+          if (!prev) return null
+          
+          return {
+            ...prev,
+            comments: prev.comments.map(c => 
+              c.id === commentId ? { ...c, upvotes: updatedComment.upvotes } : c
+            )
+          }
+        })
+      }
+      
+    } catch (error) {
+      console.error('Failed to upvote comment:', error)
     }
   }
 
@@ -490,19 +553,42 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
                           /* For Bexio-created cards: show only comment_text if exists */
                           comment.comment_text && (
                             <Box>
-                              <HStack mb="2">
-                                <Badge colorScheme="blue" fontSize="xs" px="2" py="1">
-                                  COMMENT
-                                </Badge>
-                                <Text fontSize="xs" color="gray.500">
-                                  {new Date(comment.created_at).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'short',
-                                    day: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                  })}
-                                </Text>
+                              <HStack mb="2" justify="space-between">
+                                <HStack>
+                                  <Badge colorScheme="blue" fontSize="xs" px="2" py="1">
+                                    COMMENT
+                                  </Badge>
+                                  <Text fontSize="xs" color="gray.500">
+                                    {new Date(comment.created_at).toLocaleDateString('en-US', {
+                                      year: 'numeric',
+                                      month: 'short',
+                                      day: 'numeric',
+                                      hour: '2-digit',
+                                      minute: '2-digit'
+                                    })}
+                                  </Text>
+                                </HStack>
+                                <HStack 
+                                  gap="1" 
+                                  bg="gray.100" 
+                                  px="2" 
+                                  py="1" 
+                                  borderRadius="full"
+                                  border="1px solid"
+                                  borderColor="gray.300"
+                                  cursor="pointer"
+                                  onClick={() => handleCommentUpvote(comment.id)}
+                                  _hover={{ 
+                                    bg: "green.50", 
+                                    borderColor: "green.400"
+                                  }}
+                                  transition="all 0.2s"
+                                >
+                                  <FaArrowUp color="#38A169" size={12} />
+                                  <Text fontSize="xs" fontWeight="bold" color="gray.700">
+                                    {comment.upvotes || 0}
+                                  </Text>
+                                </HStack>
                               </HStack>
                               <Text 
                                 fontSize="md" 
@@ -518,10 +604,31 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
                           <>
                             {/* User Prompt */}
                             <Box mb="3">
-                              <HStack mb="2">
+                              <HStack mb="2" justify="space-between">
                                 <Badge colorScheme="purple" fontSize="xs" px="2" py="1">
                                   USER PROMPT
                                 </Badge>
+                                <HStack 
+                                  gap="1" 
+                                  bg="gray.100" 
+                                  px="2" 
+                                  py="1" 
+                                  borderRadius="full"
+                                  border="1px solid"
+                                  borderColor="gray.300"
+                                  cursor="pointer"
+                                  onClick={() => handleCommentUpvote(comment.id)}
+                                  _hover={{ 
+                                    bg: "green.50", 
+                                    borderColor: "green.400"
+                                  }}
+                                  transition="all 0.2s"
+                                >
+                                  <FaArrowUp color="#38A169" size={12} />
+                                  <Text fontSize="xs" fontWeight="bold" color="gray.700">
+                                    {comment.upvotes || 0}
+                                  </Text>
+                                </HStack>
                               </HStack>
                               <Text 
                                 fontSize="md" 
