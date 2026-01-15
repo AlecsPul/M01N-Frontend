@@ -115,15 +115,29 @@ export default function BacklogCard({ item, onStatusToggle, onClick, onDiscard, 
 
         {/* Request Count Badge and Upvotes */}
         <HStack mt="auto" justify="space-between" align="center">
-          <Badge 
-            colorScheme="blue" 
-            fontSize="md" 
-            px="3" 
-            py="1" 
-            borderRadius="md"
-          >
-            {item.requestCount} {item.requestCount === 1 ? "Request" : "Requests"}
-          </Badge>
+          {item.created_by_bexio ? (
+            <Badge 
+              fontSize="xs" 
+              px="2" 
+              py="1" 
+              borderRadius="full"
+              bg="purple.400"
+              color="white"
+              fontWeight="bold"
+            >
+              Comment and suggest
+            </Badge>
+          ) : (
+            <Badge 
+              colorScheme="blue" 
+              fontSize="md" 
+              px="3" 
+              py="1" 
+              borderRadius="md"
+            >
+              {item.requestCount} {item.requestCount === 1 ? "Request" : "Requests"}
+            </Badge>
+          )}
           <HStack 
             gap="2" 
             bg="gray.100" 
