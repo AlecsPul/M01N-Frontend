@@ -209,12 +209,14 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
     try {
       setIsSubmittingComment(true)
       
-      const response = await fetch(`${API_BASE_URL}/api/v1/cards/${cardDetail.id}/comments`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/cards/comment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          card_id: cardDetail.id,
+          prompt_text: "Community comment",  // Backend requires this field
           comment_text: newComment.trim()
         }),
       })
