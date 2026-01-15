@@ -98,8 +98,11 @@ export default function NoMatchModal({ isOpen, onClose, userPrompt }: NoMatchMod
             colorScheme="blue" 
             onClick={handleConfirm}
             size="md"
+            loading={isSubmitting}
+            loadingText="Submitting..."
+            disabled={isSubmitting}
           >
-            Confirm
+            {isSubmitting ? 'Submitting...' : 'Confirm'}
           </Button>
         </DialogFooter>
       </DialogContent>
