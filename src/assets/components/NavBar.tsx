@@ -46,7 +46,7 @@ export default function NavBar() {
                 color={location.pathname === '/about' ? "gray.900" : "gray.600"}
                 fontWeight={location.pathname === '/about' ? "semibold" : "medium"}
                 position="relative"
-                fontSize="16px"
+                fontSize="20px"
                 letterSpacing="0.2px"
                 _hover={{ color: "gray.900" }}
                 {...(location.pathname === '/about'
@@ -74,7 +74,7 @@ export default function NavBar() {
                 color={location.pathname === '/' ? "gray.900" : "gray.600"}
                 fontWeight={location.pathname === '/' ? "semibold" : "medium"}
                 position="relative"
-                fontSize="16px"
+                fontSize="20px"
                 letterSpacing="0.2px"
                 _hover={{ color: "gray.900" }}
                 {...(location.pathname === '/'
@@ -102,7 +102,7 @@ export default function NavBar() {
                 color={location.pathname === '/community' ? "gray.900" : "gray.600"}
                 fontWeight={location.pathname === '/community' ? "semibold" : "medium"}
                 position="relative"
-                fontSize="16px"
+                fontSize="20px"
                 letterSpacing="0.2px"
                 _hover={{ color: "gray.900" }}
                 {...(location.pathname === '/community'
@@ -130,7 +130,7 @@ export default function NavBar() {
                 color={location.pathname === '/backlog' ? "gray.900" : "gray.600"}
                 fontWeight={location.pathname === '/backlog' ? "semibold" : "medium"}
                 position="relative"
-                fontSize="16px"
+                fontSize="20px"
                 letterSpacing="0.2px"
                 _hover={{ color: "gray.900" }}
                 {...(location.pathname === '/backlog'
