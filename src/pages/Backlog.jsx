@@ -111,7 +111,7 @@ export default function Backlog() {
           onClick={() => setViewMode('backlog')}
         >
           <Text 
-            fontSize="lg" 
+            fontSize="20px" 
             fontWeight="600"
             color={viewMode === 'backlog' ? 'black' : 'gray.400'}
             transition="color 0.2s"
@@ -134,12 +134,12 @@ export default function Backlog() {
           onClick={() => setViewMode('charts')}
         >
           <Text 
-            fontSize="lg" 
+            fontSize="20px" 
             fontWeight="600"
             color={viewMode === 'charts' ? 'black' : 'gray.400'}
             transition="color 0.2s"
             textAlign="center"
-            px="2"
+            px="3"
           >
             Charts
           </Text>
@@ -149,128 +149,152 @@ export default function Backlog() {
       {/* Cards header only for cards view */}
       
       
-      <Box display="flex" gap="4" px="2rem" pb="2rem">
-        <Box 
-          flex="1"
-          padding="4"
-          bg="white"
-          border="1px solid"
-          borderColor="gray.200"
-          borderRadius="md"
-          display="flex"
-          flexDirection="column"
+      <Box display="flex" flexDirection="column" gap="4" px="2rem" pt="0rem" pb="2rem">
+        <Text
+          fontSize="3xl"
+          fontWeight="bold"
+          mb={11}
+          color="gray.800"
+          ml="15%"
+          px={0}
+          pt="0rem"
+          textAlign="left"
+          maxW="1200px"
         >
-          {/* Header with Title and Create Button */}
-          <Box mb="4" display="flex" justifyContent="space-between" alignItems="center">
-            {/* Left: Title */}
-            <Box flex="1">
-              <Text fontSize="2xl" fontWeight="bold" color="black">
-                Backlog
-              </Text>
-            </Box>
-
-            {/* Right: Create New Card Button - Only show in backlog view */}
-            <Box flex="1" display="flex" justifyContent="flex-end">
+          Backlog
+        </Text>
+        <Box display="flex" flexDirection="row" w="100%" pt="0rem">
+          {/* Left space with page background color */}
+          <Box
+            width="8%"
+            bg="gray.100"
+            borderRadius="md"
+            // No content, just for background
+          />
+          {/* Main content */}
+          <Box
+            flex="1"
+            padding="1rem"
+            bg="white"
+            borderRadius="md"
+            display="flex"
+            flexDirection="column"
+            border="1px solid"
+            borderColor="gray.200"
+            boxShadow="md"
+            alignSelf="flex-start"
+            // Add right margin to match Marketplace right space
+            mr="5rem"
+          >
+            {/* Header with Title and Create Button */}
+            <Box mb="4" ml="1rem" display="flex" justifyContent="space-between" alignItems="center" pt="0rem">
               {viewMode === 'backlog' && (
-                <Button
-                  onClick={() => setIsFormModalOpen(true)}
-                  bg="#1a3570"
-                  color="white"
-                  _hover={{ bg: "#162e5c" }}
-                  _active={{ bg: "#162e5c" }}
-                  boxShadow="md"
-                  border="1px solid"
-                  borderColor="#1a3570"
-                  size="lg"
-                  leftIcon={<FaPlus />}
-                  borderRadius="md"
-                  fontWeight="bold"
-                >
-                  Create New Card
-                </Button>
+                <Text fontSize="2xl" fontWeight="bold" color="black">
+                  Requests
+                </Text>
               )}
+              <Box flex="1" display="flex" justifyContent="flex-end">
+                {viewMode === 'backlog' && (
+                  <Button
+                    onClick={() => setIsFormModalOpen(true)}
+                    bg="#1a3570"
+                    color="white"
+                    _hover={{ bg: "#162e5c" }}
+                    _active={{ bg: "#162e5c" }}
+                    boxShadow="md"
+                    border="1px solid"
+                    borderColor="#1a3570"
+                    size="lg"
+                    leftIcon={<FaPlus />}
+                    borderRadius="md"
+                    fontWeight="bold"
+                  >
+                    Create New Card
+                  </Button>
+                )}
+              </Box>
             </Box>
-          </Box>
 
-          {/* Charts View */}
-          {viewMode === 'charts' && (
-            <ChartsView />
-          )}
+            {/* Charts View */}
+            {viewMode === 'charts' && (
+              <ChartsView />
+            )}
 
-          {/* Backlog Cards View */}
-          {viewMode === 'backlog' && (
-            <>
-              {/* Loading and Error States */}
-              {backlogLoading && (
-                <Box textAlign="center" padding="8">
-                  <Text fontSize="lg" color="gray.600">Loading backlog items...</Text>
-                </Box>
-              )}
-              
-              {backlogError && (
-                <Box textAlign="center" padding="8">
-                  <Text fontSize="lg" color="red.500">Error loading backlog: {backlogError}</Text>
-                  <Text fontSize="sm" color="gray.600" mt="2">Please try refreshing the page</Text>
-                </Box>
-              )}
-              
-              {!backlogLoading && !backlogError && backlogItems.length > 0 && (
-                <Grid 
-                  templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} 
-                  gap="4"
-                  w="100%"
-                  alignContent="start"
-                  mb="8"
-                >
-                  {backlogItems.map((item) => (
-                    <BacklogCard 
-                      key={item.id} 
-                      item={item}
-                      onClick={(id) => {
-                        setSelectedCardId(id)
-                        setIsDetailModalOpen(true)
-                      }}
-                      onDiscard={async (id) => {
-                        try {
-                          // Call the backend API to drop the card
-                          const response = await fetch(`${API_BASE_URL}/api/v1/dropcard`, {
-                            method: 'POST',
-                            headers: {
-                              'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                              card_id: id
-                            }),
-                          })
-                          
-                          if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`)
+            {/* Backlog Cards View */}
+            {viewMode === 'backlog' && (
+              <>
+                {/* Loading and Error States */}
+                {backlogLoading && (
+                  <Box textAlign="center" padding="8">
+                    <Text fontSize="lg" color="gray.600">Loading backlog items...</Text>
+                  </Box>
+                )}
+                
+                {backlogError && (
+                  <Box textAlign="center" padding="8">
+                    <Text fontSize="lg" color="red.500">Error loading backlog: {backlogError}</Text>
+                    <Text fontSize="sm" color="gray.600" mt="2">Please try refreshing the page</Text>
+                  </Box>
+                )}
+                
+                {!backlogLoading && !backlogError && backlogItems.length > 0 && (
+                  <Grid 
+                    templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} 
+                    gap="4"
+                    w="100%"
+                    alignContent="start"
+                    mb="8"
+                  >
+                    {backlogItems.map((item) => (
+                      <BacklogCard 
+                        key={item.id} 
+                        item={item}
+                        onClick={(id) => {
+                          setSelectedCardId(id)
+                          setIsDetailModalOpen(true)
+                        }}
+                        onDiscard={async (id) => {
+                          try {
+                            // Call the backend API to drop the card
+                            const response = await fetch(`${API_BASE_URL}/api/v1/dropcard`, {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({
+                                card_id: id
+                              }),
+                            })
+                            
+                            if (!response.ok) {
+                              throw new Error(`HTTP error! status: ${response.status}`)
+                            }
+                            
+                            const data = await response.json()
+                            console.log('Backlog card dropped:', data.message)
+                            
+                            // Remove from local state after successful API call
+                            setBacklogItems(prev => prev.filter(i => i.id !== id))
+                          } catch (error) {
+                            console.error('Failed to drop backlog card:', error)
+                            // Optionally show an error message to the user
                           }
-                          
-                          const data = await response.json()
-                          console.log('Backlog card dropped:', data.message)
-                          
-                          // Remove from local state after successful API call
-                          setBacklogItems(prev => prev.filter(i => i.id !== id))
-                        } catch (error) {
-                          console.error('Failed to drop backlog card:', error)
-                          // Optionally show an error message to the user
-                        }
-                      }}
-                    />
-                  ))}
-                </Grid>
-              )}
+                        }}
+                      />
+                    ))}
+                  </Grid>
+                )}
 
-              {/* Show message when no items exist */}
-              {!backlogLoading && !backlogError && backlogItems.length === 0 && (
-                <Box textAlign="center" padding="8">
-                  <Text fontSize="lg" color="gray.600">No backlog items yet</Text>
-                  <Text fontSize="sm" color="gray.500" mt="2">Click "Create New Card" to add one</Text>
-                </Box>
-              )}
-            </>
-          )}
+                {/* Show message when no items exist */}
+                {!backlogLoading && !backlogError && backlogItems.length === 0 && (
+                  <Box textAlign="center" padding="8">
+                    <Text fontSize="lg" color="gray.600">No backlog items yet</Text>
+                    <Text fontSize="sm" color="gray.500" mt="2">Click "Create New Card" to add one</Text>
+                  </Box>
+                )}
+              </>
+            )}
+          </Box>
         </Box>
       </Box>
     </>

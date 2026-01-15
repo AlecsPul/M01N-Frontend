@@ -30,7 +30,7 @@ export default function ChartsView({ apiBaseUrl = API_BASE_URL }: ChartViewProps
   const [statsLoading, setStatsLoading] = useState<boolean>(false)
   const [chartView, setChartView] = useState<'list' | 'bar' | 'pie'>('list')
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D', '#FFC658', '#FF7C7C']
+  const COLORS = ['#0056b3', '#009e7a', '#e6a700', '#d95c00', '#5a4ca7', '#4e7c5a', '#bfa200', '#b23a3a']
 
   // Fetch all stats and categories once on mount
   useEffect(() => {
