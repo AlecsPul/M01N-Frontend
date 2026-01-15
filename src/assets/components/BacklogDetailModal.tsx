@@ -465,11 +465,11 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
                 </Box>
               )}
 
-              {/* Comments and Prompts Section */}
+              {/* Comments Section - Different display for Bexio-created cards */}
               {cardDetail.comments && cardDetail.comments.length > 0 && (
                 <Box>
                   <Text fontSize="xl" fontWeight="bold" color="black" mb="4">
-                    User Feedback & Prompts
+                    {cardDetail.created_by_bexio ? "Comments" : "User Feedback & Prompts"}
                   </Text>
                   <VStack align="stretch" gap="4">
                     {cardDetail.comments.map((comment) => (
@@ -486,51 +486,83 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
                           transition: "all 0.2s"
                         }}
                       >
-                        {/* User Prompt */}
-                        <Box mb="3">
-                          <HStack mb="2">
-                            <Badge colorScheme="purple" fontSize="xs" px="2" py="1">
-                              USER PROMPT
-                            </Badge>
-                          </HStack>
-                          <Text 
-                            fontSize="md" 
-                            fontWeight="medium" 
-                            color="purple.700"
-                            bg="purple.50"
-                            p="3"
-                            borderRadius="8px"
-                            fontStyle="italic"
-                          >
-                            "{comment.prompt_text}"
-                          </Text>
-                        </Box>
-
-                        {/* Comment */}
-                        {comment.comment_text && (
-                          <Box>
-                            <HStack mb="2">
-                              <Badge colorScheme="green" fontSize="xs" px="2" py="1">
-                                COMMENT
-                              </Badge>
-                              <Text fontSize="xs" color="gray.500">
-                                {new Date(comment.created_at).toLocaleDateString('en-US', {
-                                  year: 'numeric',
-                                  month: 'short',
-                                  day: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })}
+                        {cardDetail.created_by_bexio ? (
+                          /* For Bexio-created cards: show only comment_text if exists */
+                          comment.comment_text && (
+                            <Box>
+                              <HStack mb="2">
+                                <Badge colorScheme="blue" fontSize="xs" px="2" py="1">
+                                  COMMENT
+                                </Badge>
+                                <Text fontSize="xs" color="gray.500">
+                                  {new Date(comment.created_at).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'short',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </Text>
+                              </HStack>
+                              <Text 
+                                fontSize="md" 
+                                color="gray.700"
+                                lineHeight="1.6"
+                              >
+                                {comment.comment_text}
                               </Text>
-                            </HStack>
-                            <Text 
-                              fontSize="md" 
-                              color="gray.700"
-                              lineHeight="1.6"
-                            >
-                              {comment.comment_text}
-                            </Text>
-                          </Box>
+                            </Box>
+                          )
+                        ) : (
+                          /* For user-created cards: show prompt and optional comment */
+                          <>
+                            {/* User Prompt */}
+                            <Box mb="3">
+                              <HStack mb="2">
+                                <Badge colorScheme="purple" fontSize="xs" px="2" py="1">
+                                  USER PROMPT
+                                </Badge>
+                              </HStack>
+                              <Text 
+                                fontSize="md" 
+                                fontWeight="medium" 
+                                color="purple.700"
+                                bg="purple.50"
+                                p="3"
+                                borderRadius="8px"
+                                fontStyle="italic"
+                              >
+                                "{comment.prompt_text}"
+                              </Text>
+                            </Box>
+
+                            {/* Comment */}
+                            {comment.comment_text && (
+                              <Box>
+                                <HStack mb="2">
+                                  <Badge colorScheme="green" fontSize="xs" px="2" py="1">
+                                    COMMENT
+                                  </Badge>
+                                  <Text fontSize="xs" color="gray.500">
+                                    {new Date(comment.created_at).toLocaleDateString('en-US', {
+                                      year: 'numeric',
+                                      month: 'short',
+                                      day: 'numeric',
+                                      hour: '2-digit',
+                                      minute: '2-digit'
+                                    })}
+                                  </Text>
+                                </HStack>
+                                <Text 
+                                  fontSize="md" 
+                                  color="gray.700"
+                                  lineHeight="1.6"
+                                >
+                                  {comment.comment_text}
+                                </Text>
+                              </Box>
+                            )}
+                          </>
                         )}
                       </Box>
                     ))}
@@ -546,7 +578,7 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
                   borderRadius="12px"
                 >
                   <Text color="gray.500" fontSize="md">
-                    No user feedback yet
+                    {cardDetail.created_by_bexio ? "No comments yet" : "No user feedback yet"}
                   </Text>
                 </Box>
               )}
