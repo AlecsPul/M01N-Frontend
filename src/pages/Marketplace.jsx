@@ -345,9 +345,9 @@ export default function Marketplace() {
         fontSize="3xl"
         fontWeight="bold"
         mt="3rem"
-        mb={12}
+        mb={12} // Big gap after hero
         color="gray.800"
-        ml="17%" // Align with filters box start
+        ml="17%"
         px={0}
         pt="2rem"
         textAlign="left"
@@ -364,7 +364,7 @@ export default function Marketplace() {
       />
       <Box display="flex" gap={4} px="2rem" pt="1rem" pb="2rem" pl="12%">
         <Box 
-          width="16%" // Cut more from the right
+          width="16%"
           borderRadius="12px"
           overflow="hidden"
           alignSelf="flex-start"
@@ -372,7 +372,7 @@ export default function Marketplace() {
           border="1px solid"
           borderColor="gray.300"
           pr={0}
-          bg="gray.50" // Match page background for the cut part
+          bg="gray.50"
         >
           <Filters 
             onFilterChange={setFilters} 
@@ -382,7 +382,7 @@ export default function Marketplace() {
         </Box>
         
         <Box 
-          width="78%" // Expand product cards box to fill the freed space
+          width="78%"
           padding="4"
           bg="white"
           borderRadius="12px"
@@ -391,188 +391,174 @@ export default function Marketplace() {
           boxShadow="lg"
           border="1px solid"
           borderColor="gray.300"
-        
+          gap={6} // Medium gap between sections inside the product cards container
         >
-          {/* Loading and Error States */}
-          {loading && (
-            <Box textAlign="center" padding="8">
-              <Text fontSize="lg" color="gray.600">Loading...</Text>
-            </Box>
-          )}
-          
-          {error && (
-            <Box textAlign="center" padding="8">
-              <Text fontSize="lg" color="red.500">Error loading data: {error}</Text>
-              <Text fontSize="sm" color="gray.600" mt="2">Please try refreshing the page</Text>
-            </Box>
-          )}
-          
-          {!loading && (
-            <>
-              {/* User Prompts Section */}
-              <Box
-                mb={12} // Big gap after hero
-                bg="white"
-                borderRadius="18px"
-                p={{ base: 4, md: 8 }}
-                boxShadow="lg"
-                border="2px solid"
-                borderColor="gray.200"
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                width="100%"
-                maxW="100%"
-              >
-                <UserPrompts 
-                  onSubmit={handleUserPrompt} 
-                  onResults={handleInteractiveResults}
-                  isLoading={isMatching}
-                />
-                {matchError && (
-                  <Text color="red.500" mt="2" fontSize="sm">
-                    Error: {matchError}
-                  </Text>
-                )}
-                {hasSearched && matchedAppIds.length === 0 && (
-                  <Box mt="3" p="3" bg="blue.50" borderRadius="md" borderLeft="4px solid" borderColor="blue.400">
-                    <Text color="blue.800" fontSize="sm" fontWeight="medium">
-                      Sorry, we couldn't find a match. We are working on your petition.
-                    </Text>
-                  </Box>
-                )}
-                {hasLowPercentageMatches && (
-                  <Box mt="3" p="3" bg="blue.50" borderRadius="md" borderLeft="4px solid" borderColor="blue.400">
-                    <Text color="blue.800" fontSize="sm" fontWeight="medium">
-                      There are no products that fit your criteria. We'll work on your petition.
-                    </Text>
-                  </Box>
-                )}
-                {matchedAppIds.length > 0 && filteredProducts.length > 0 && (
-                  <Text color="green.600" mt="2" fontSize="sm">
-                    Showing {filteredProducts.length} matched applications
-                  </Text>
-                )}
-                
-                {/* Comparison Actions */}
-                <HStack mt="4" spacing={4} justifyContent="flex-end">
-                  <Button 
-                     variant="solid"
-                     size="sm"
-                     onClick={clearSelection}
-                     disabled={selectedApps.length === 0}
-                     bg={selectedApps.length > 0 ? "black" : "gray.300"}
-                     color={selectedApps.length > 0 ? "white" : "gray.600"}
-                     _hover={selectedApps.length > 0 ? { bg: "gray.800" } : {}}
-                     _disabled={{ opacity: 0.6, cursor: "not-allowed" }}
-                  >
-                    Cancel selection
-                  </Button>
-                  <Button 
-                     variant="solid"
-                     size="sm"
-                     onClick={handleCompare}
-                     isLoading={isComparing}
-                     loadingText="Comparing..."
-                     disabled={selectedApps.length !== 2}
-                     bg={selectedApps.length === 2 ? "black" : "blue.500"}
-                     color="white"
-                     _hover={selectedApps.length === 2 ? { bg: "gray.800" } : { bg: "blue.600" }}
-                     _disabled={{ opacity: 0.6, cursor: "not-allowed", bg: "gray.300", color: "gray.600" }}
-                  >
-                    Compare {selectedApps.length > 0 ? `(${selectedApps.length}/2)` : ''}
-                  </Button>
-                  {compareError && (
-                    <Text color="red.500" fontSize="sm">{compareError}</Text>
-                  )}
-                </HStack>
+          {/* User Prompts Section */}
+          <Box
+            mb={12} // Medium gap after hero section
+            bg="white"
+            borderRadius="18px"
+            p={{ base: 4, md: 8 }}
+            boxShadow="lg"
+            border="2px solid"
+            borderColor="gray.200"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            width="100%"
+            maxW="100%"
+            gap={3} // Tight spacing inside component
+          >
+            <UserPrompts 
+              onSubmit={handleUserPrompt} 
+              onResults={handleInteractiveResults}
+              isLoading={isMatching}
+            />
+            {matchError && (
+              <Text color="red.500" mt="2" fontSize="sm">
+                Error: {matchError}
+              </Text>
+            )}
+            {hasSearched && matchedAppIds.length === 0 && (
+              <Box mt="3" p="3" bg="blue.50" borderRadius="md" borderLeft="4px solid" borderColor="blue.400">
+                <Text color="blue.800" fontSize="sm" fontWeight="medium">
+                  Sorry, we couldn't find a match. We are working on your petition.
+                </Text>
               </Box>
+            )}
+            {hasLowPercentageMatches && (
+              <Box mt="3" p="3" bg="blue.50" borderRadius="md" borderLeft="4px solid" borderColor="blue.400">
+                <Text color="blue.800" fontSize="sm" fontWeight="medium">
+                  There are no products that fit your criteria. We'll work on your petition.
+                </Text>
+              </Box>
+            )}
+            {matchedAppIds.length > 0 && filteredProducts.length > 0 && (
+              <Text color="green.600" mt="2" fontSize="sm">
+                Showing {filteredProducts.length} matched applications
+              </Text>
+            )}
+            
+            {/* Comparison Actions */}
+            <HStack mt="4" spacing={4} justifyContent="flex-end">
+              <Button 
+                 variant="solid"
+                 size="sm"
+                 onClick={clearSelection}
+                 disabled={selectedApps.length === 0}
+                 bg={selectedApps.length > 0 ? "#1a3570" : "gray.300"}
+                 color={selectedApps.length > 0 ? "white" : "gray.600"}
+                 _hover={selectedApps.length > 0 ? { bg: "#162e5c" } : {}}
+                 _active={selectedApps.length > 0 ? { bg: "#162e5c" } : {}}
+                 _disabled={{ opacity: 0.6, cursor: "not-allowed" }}
+              >
+                Cancel selection
+              </Button>
+              <Button 
+                 variant="solid"
+                 size="sm"
+                 onClick={handleCompare}
+                 isLoading={isComparing}
+                 loadingText="Comparing..."
+                 disabled={selectedApps.length !== 2}
+                 bg={selectedApps.length === 2 ? "#1a3570" : "blue.500"}
+                 color="white"
+                 _hover={selectedApps.length === 2 ? { bg: "#162e5c" } : { bg: "blue.600" }}
+                 _active={selectedApps.length === 2 ? { bg: "#162e5c" } : {}}
+                 _disabled={{ opacity: 0.6, cursor: "not-allowed", bg: "gray.300", color: "gray.600" }}
+              >
+                Compare {selectedApps.length > 0 ? `(${selectedApps.length}/2)` : ''}
+              </Button>
+              {compareError && (
+                <Text color="red.500" fontSize="sm">{compareError}</Text>
+              )}
+            </HStack>
+          </Box>
 
-              <Grid 
-                templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} 
-                gap={6}
-                w="100%"
-                alignContent="start"
-                mb={12}
-              >
-                {currentProducts.map((product) => (
-                  <ProductCard 
-                    key={product.id} 
-                    product={product} 
-                    onClick={() => handleApplicationClick(product.id, product.link)}
-                    onSelect={toggleSelection}
-                    showSelect={matchedAppIds.length > 0}
-                    isSelected={isSelected(product.id)}
-                    isSelectionDisabled={isFull}
-                    seeOptionsButtonProps={{
-                      bg: "#1a3570", // darker blue
-                      _hover: { bg: "#162e5c", color: "white" },
-                      _active: { bg: "#162e5c" }
-                    }}
-                  />
-                ))}
-              </Grid>
-              
-              {/* Pagination Controls */}
-              <HStack 
-                justify="center" 
-                gap="2" 
-                padding="4"
-                paddingTop="6"
-                borderTop="1px solid"
-                borderColor="gray.200"
-              >
-                <Button
-                  onClick={() => handlePageChange(page - 1)}
-                  disabled={page === 1}
-                  variant="outline"
-                  size="sm"
-                  bg="white"
-                  borderColor="black"
-                >
-                  ←
-                </Button>
-                
-                {[...Array(totalPages)].map((_, index) => {
-                  const pageNum = index + 1
-                  // Show current page, 2 before, 2 after, and last page
-                  if (
-                    (pageNum >= page - 2 && pageNum <= page + 2) ||
-                    pageNum === totalPages
-                  ) {
-                    return (
-                      <Button
-                        key={pageNum}
-                        onClick={() => handlePageChange(pageNum)}
-                        variant={page === pageNum ? "solid" : "outline"}
-                        colorScheme={page === pageNum ? "blue" : "gray"}
-                        size="sm"
-                        bg="white"
-                        color="black"
-                        borderColor="black"
-                      >
-                        {pageNum}
-                      </Button>
-                    )
-                  } else if (pageNum === page + 3 && pageNum < totalPages) {
-                    return <Text key={pageNum}>...</Text>
-                  }
-                  return null
-                })}
-                
-                <Button
-                  onClick={() => handlePageChange(page + 1)}
-                  disabled={page === totalPages}
-                  variant="outline"
-                  size="sm"
-                  bg="white"
-                  borderColor="black"
-                >
-                  →
-                </Button>
-              </HStack>
-            </>
-          )}
+          <Grid 
+            templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} 
+            gap={6} // Cards grid: medium gap
+            w="100%"
+            alignContent="start"
+            mb={12} // Medium gap between sections
+          >
+            {currentProducts.map((product) => (
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                onClick={() => handleApplicationClick(product.id, product.link)}
+                onSelect={toggleSelection}
+                showSelect={matchedAppIds.length > 0}
+                isSelected={isSelected(product.id)}
+                isSelectionDisabled={isFull}
+                seeOptionsButtonProps={{
+                  bg: "#1a3570", // darker blue
+                  _hover: { bg: "#162e5c", color: "white" },
+                  _active: { bg: "#162e5c" }
+                }}
+              />
+            ))}
+          </Grid>
+          
+          {/* Pagination Controls */}
+          <HStack 
+            justify="center" 
+            gap="2" 
+            padding="4"
+            paddingTop="6"
+            borderTop="1px solid"
+            borderColor="gray.200"
+            mb={12} // Medium gap after pagination
+          >
+            <Button
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page === 1}
+              variant="outline"
+              size="sm"
+              bg="white"
+              borderColor="black"
+            >
+              ←
+            </Button>
+            
+            {[...Array(totalPages)].map((_, index) => {
+              const pageNum = index + 1
+              // Show current page, 2 before, 2 after, and last page
+              if (
+                (pageNum >= page - 2 && pageNum <= page + 2) ||
+                pageNum === totalPages
+              ) {
+                return (
+                  <Button
+                    key={pageNum}
+                    onClick={() => handlePageChange(pageNum)}
+                    variant={page === pageNum ? "solid" : "outline"}
+                    colorScheme={page === pageNum ? "blue" : "gray"}
+                    size="sm"
+                    bg="white"
+                    color="black"
+                    borderColor="black"
+                  >
+                    {pageNum}
+                  </Button>
+                )
+              } else if (pageNum === page + 3 && pageNum < totalPages) {
+                return <Text key={pageNum}>...</Text>
+              }
+              return null
+            })}
+            
+            <Button
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page === totalPages}
+              variant="outline"
+              size="sm"
+              bg="white"
+              borderColor="black"
+            >
+              →
+            </Button>
+          </HStack>
         </Box>
       </Box>
     </>

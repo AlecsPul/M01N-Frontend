@@ -160,9 +160,13 @@ export default function UserPrompts({ onSubmit, onResults, isLoading = false }: 
 
     <Button
       onClick={handleSubmit}
-      colorScheme="blue"
+      bg="#1a3570"
+      color="white"
+      _hover={{ bg: "#162e5c" }}
+      _active={{ bg: "#162e5c" }}
       disabled={!description.trim() || isProcessing}
       loading={isProcessing}
+      _disabled={{ bg: "gray.300", color: "gray.600", cursor: "not-allowed" }}
     >
       {isProcessing ? 'Matching...' : 'See options'}
     </Button>

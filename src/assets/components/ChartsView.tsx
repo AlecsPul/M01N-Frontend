@@ -162,10 +162,10 @@ export default function ChartsView({ apiBaseUrl = API_BASE_URL }: ChartViewProps
           <Box mb="4" display="flex" justifyContent="space-between" alignItems="center">
             <Box>
               <Text fontSize="2xl" fontWeight="bold" color="black">
-                Click Statistics
+                Statistics
               </Text>
               <Text fontSize="sm" color="gray.600" mt="1">
-                Application click analytics
+                Application analytics
               </Text>
             </Box>
           </Box>

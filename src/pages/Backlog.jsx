@@ -154,7 +154,9 @@ export default function Backlog() {
           flex="1"
           padding="4"
           bg="white"
-          borderRadius="12px"
+          border="1px solid"
+          borderColor="gray.200"
+          borderRadius="md"
           display="flex"
           flexDirection="column"
         >
@@ -172,9 +174,17 @@ export default function Backlog() {
               {viewMode === 'backlog' && (
                 <Button
                   onClick={() => setIsFormModalOpen(true)}
-                  colorScheme="blue"
+                  bg="#1a3570"
+                  color="white"
+                  _hover={{ bg: "#162e5c" }}
+                  _active={{ bg: "#162e5c" }}
+                  boxShadow="md"
+                  border="1px solid"
+                  borderColor="#1a3570"
                   size="lg"
                   leftIcon={<FaPlus />}
+                  borderRadius="md"
+                  fontWeight="bold"
                 >
                   Create New Card
                 </Button>

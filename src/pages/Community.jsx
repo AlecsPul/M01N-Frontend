@@ -78,14 +78,18 @@ const Community = () => {
         }}
       />
       
-      <Box display="flex" gap="4" px="2rem" pt="7rem" pb="2rem">
+      <Box display="flex" gap="4" px="2rem" pt="7rem" pb="2rem" border="">
       <Box
         flex="1"
         padding="4"
         bg="white"
-        borderRadius="12px"
+        borderRadius="md"
         display="flex"
         flexDirection="column"
+        border="1px solid"
+        borderColor="gray.200"
+        boxShadow="md"
+        
       >
         <Box mb="4">
           <Text fontSize="2xl" fontWeight="bold" color="black">
@@ -128,10 +132,10 @@ const Community = () => {
               md: 'repeat(2, 1fr)',
               lg: 'repeat(3, 1fr)',
             }}
-            gap="4"
+            gap={6}
             w="100%"
             alignContent="start"
-            mb="8"
+            mb={12}
           >
             {communityItems.map((item) => (
               <BacklogCard

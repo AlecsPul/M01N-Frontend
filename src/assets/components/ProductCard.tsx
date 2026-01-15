@@ -73,10 +73,11 @@ export default function ProductCard({
       position="relative"
       cursor="pointer"
       onClick={handleClick}
-      border="2px solid"
-      borderColor={isSelected ? "blue.400" : "black"}
+      border="1px solid"
+      borderColor="gray.200"
       borderRadius="md"
-      _hover={{ transform: "translateY(-4px)", transition: "transform 0.2s" }}
+      boxShadow="md"
+      _hover={{ boxShadow: "xl", transform: "translateY(-4px)", transition: "transform 0.2s" }}
       display="flex"
       flexDirection="column"
       h="100%"
@@ -149,8 +150,11 @@ export default function ProductCard({
             borderRadius="md"
             onClick={handleSelect}
             disabled={isSelectionDisabled && !isSelected}
-            colorScheme={isSelected ? "blue" : "gray"}
-            variant={isSelected ? "solid" : "outline"}
+            bg="#8B1E3F" // Granate color
+            color="white"
+            _hover={{ bg: "#6a162f", color: "white" }}
+            _active={{ bg: "#6a162f" }}
+            variant="solid"
           >
             {isSelected ? "Selected" : "Select for Comparison"}
           </Button>

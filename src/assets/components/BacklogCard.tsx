@@ -42,9 +42,11 @@ export default function BacklogCard({ item, onStatusToggle, onClick, onDiscard, 
       position="relative"
       cursor="pointer"
       onClick={handleCardClick}
-      border="2px solid"
-      borderColor={item.created_by_bexio ? "#FBBF24" : "black"}
+      
+      border="1px solid"
+      borderColor="gray.200"
       borderRadius="md"
+      boxShadow="md"
       _hover={{ transform: "translateY(-4px)", transition: "transform 0.2s" }}
       display="flex"
       flexDirection="column"

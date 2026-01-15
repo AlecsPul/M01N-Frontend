@@ -14,32 +14,32 @@ export default function NavBar() {
       borderBottom="1px solid"
       borderColor="gray.200"
       w="100%"
-      boxShadow="0 4px 16px -8px rgba(0,0,0,0.10)" // shadowy bottom border
+      boxShadow="0 4px 16px -8px rgba(0,0,0,0.10)"
     >
       <Flex
         maxW="1200px"
         mx="auto"
-        px={6}
+        px={0}
         minH="8vh"
         alignItems="center"
-        justifyContent="space-between"
+        justifyContent="flex-start"
         position="relative"
       >
-        {/* Logo - left corner */}
-        <Box minW="140px" display="flex" alignItems="center" justifyContent="flex-start">
+        {/* Logo - further left */}
+        <Box minW="240px" display="flex" alignItems="center" justifyContent="flex-start" mr={10} >
           <Link to="/" style={{ textDecoration: 'none' }}>
             <Image
               src="/logo.png"
               alt="Logo"
-              height="90px"
+              height="160px"
               width="auto"
               cursor="pointer"
               _hover={{ transform: "scale(1.05)", transition: "transform 0.2s" }}
             />
           </Link>
         </Box>
-        {/* Navigation links - spaced evenly */}
-        <Flex flex="1" justify="space-evenly" alignItems="center" ml={6}>
+        {/* Navigation links - left aligned and more spread */}
+        <Flex flex="1" justify="flex-start" alignItems="center" gap={40}>
           <Link to="/about" style={{ textDecoration: 'none' }}>
             <Box px={3} py={2} borderRadius="md" cursor="pointer" _hover={{ bg: "gray.100" }}>
               <Text
