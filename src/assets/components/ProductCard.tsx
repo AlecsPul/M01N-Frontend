@@ -120,9 +120,23 @@ export default function ProductCard({
           flexShrink={0}
           overflow="hidden"
         >
-          {product.description}
-        </Text>
-      </Box>
+          <Text
+            fontSize="md"
+            color="gray.600"
+            lineHeight="1.5em"
+            fontWeight="medium"
+            display="-webkit-box"
+            css={{
+              WebkitLineClamp: 4,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              textOverflow: "ellipsis"
+            }}
+          >
+            {product.description}
+          </Text>
+        </Box>
+      </Card.Body>
       {/* Footer */}
       <HStack gap={3} justifyContent="space-between" alignItems="center" flexShrink={0} px={4} py={3} mt="auto">
         <Text fontSize="md" fontWeight="bold" letterSpacing="tight" color="black">
@@ -147,8 +161,11 @@ export default function ProductCard({
             borderRadius="md"
             onClick={handleSelect}
             disabled={isSelectionDisabled && !isSelected}
-            colorScheme={isSelected ? "blue" : "gray"}
-            variant={isSelected ? "solid" : "outline"}
+            bg={isSelected ? "#8B1E3F" : "#8B1E3F"} // Granate color
+            color="white"
+            _hover={{ bg: "#6a162f", color: "white" }}
+            _active={{ bg: "#6a162f" }}
+            variant="solid"
           >
             {isSelected ? "Selected" : "Select for Comparison"}
           </Button>
@@ -166,14 +183,14 @@ export default function ProductCard({
             e.stopPropagation()
             if (onClick) onClick()
           }}
-          {...seeOptionsButtonProps}
           bg="#1a3570"
           color="white"
           _active={{ bg: "#162e5c" }}
+          {...seeOptionsButtonProps}
         >
           Visit Page
         </Button>
       </Box>
-    </Box>
+    </Card.Root>
   )
 }
