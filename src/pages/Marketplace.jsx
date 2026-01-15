@@ -393,37 +393,101 @@ export default function Marketplace() {
           borderColor="gray.300"
           gap={6} // Medium gap between sections inside the product cards container
         >
-          {/* User Prompts Section */}
-          <Box
-            mb={12} // Medium gap after hero section
-            bg="white"
-            borderRadius="18px"
-            p={{ base: 4, md: 8 }}
-            boxShadow="lg"
-            border="2px solid"
-            borderColor="gray.200"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            width="100%"
-            maxW="100%"
-            gap={3} // Tight spacing inside component
-          >
-            <UserPrompts 
-              onSubmit={handleUserPrompt} 
-              onResults={handleInteractiveResults}
-              isLoading={isMatching}
-            />
-            {matchError && (
-              <Text color="red.500" mt="2" fontSize="sm">
-                Error: {matchError}
-              </Text>
-            )}
-            {hasSearched && matchedAppIds.length === 0 && (
-              <Box mt="3" p="3" bg="blue.50" borderRadius="md" borderLeft="4px solid" borderColor="blue.400">
-                <Text color="blue.800" fontSize="sm" fontWeight="medium">
-                  Sorry, we couldn't find a match. We are working on your petition.
-                </Text>
+          {/* Loading and Error States */}
+          {loading && (
+            <Box textAlign="center" padding="8">
+              <Text fontSize="lg" color="gray.600">Loading...</Text>
+            </Box>
+          )}
+          
+          {error && (
+            <Box textAlign="center" padding="8">
+              <Text fontSize="lg" color="red.500">Error loading data: {error}</Text>
+              <Text fontSize="sm" color="gray.600" mt="2">Please try refreshing the page</Text>
+            </Box>
+          )}
+          
+          {!loading && (
+            <>
+              {/* User Prompts Section */}
+              <Box
+                mb={12} // Big gap after hero
+                bg="white"
+                borderRadius="18px"
+                p={{ base: 4, md: 8 }}
+                boxShadow="lg"
+                border="2px solid"
+                borderColor="gray.200"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                width="100%"
+                maxW="100%"
+              >
+                <UserPrompts 
+                  onSubmit={handleUserPrompt} 
+                  onResults={handleInteractiveResults}
+                  isLoading={isMatching}
+                />
+                {matchError && (
+                  <Text color="red.500" mt="2" fontSize="sm">
+                    Error: {matchError}
+                  </Text>
+                )}
+                {hasSearched && matchedAppIds.length === 0 && (
+                  <Box mt="3" p="3" bg="blue.50" borderRadius="md" borderLeft="4px solid" borderColor="blue.400">
+                    <Text color="blue.800" fontSize="sm" fontWeight="medium">
+                      Sorry, we couldn't find a match. We are working on your petition.
+                    </Text>
+                  </Box>
+                )}
+                {hasLowPercentageMatches && (
+                  <Box mt="3" p="3" bg="blue.50" borderRadius="md" borderLeft="4px solid" borderColor="blue.400">
+                    <Text color="blue.800" fontSize="sm" fontWeight="medium">
+                      There are no products that fit your criteria. We'll work on your petition.
+                    </Text>
+                  </Box>
+                )}
+                {matchedAppIds.length > 0 && filteredProducts.length > 0 && (
+                  <Text color="green.600" mt="2" fontSize="sm">
+                    Showing {filteredProducts.length} matched applications
+                  </Text>
+                )}
+                
+                {/* Comparison Actions */}
+                <HStack mt="4" spacing={4} justifyContent="flex-end">
+                  <Button 
+                     variant="solid"
+                     size="sm"
+                     onClick={clearSelection}
+                     disabled={selectedApps.length === 0}
+                     bg={selectedApps.length > 0 ? "#1a3570" : "gray.300"}
+                     color={selectedApps.length > 0 ? "white" : "gray.600"}
+                     _hover={selectedApps.length > 0 ? { bg: "#162e5c" } : {}}
+                     _active={selectedApps.length > 0 ? { bg: "#162e5c" } : {}}
+                     _disabled={{ opacity: 0.6, cursor: "not-allowed" }}
+                  >
+                    Cancel selection
+                  </Button>
+                  <Button 
+                     variant="solid"
+                     size="sm"
+                     onClick={handleCompare}
+                     isLoading={isComparing}
+                     loadingText="Comparing..."
+                     disabled={selectedApps.length !== 2}
+                     bg={selectedApps.length === 2 ? "#1a3570" : "blue.500"}
+                     color="white"
+                     _hover={selectedApps.length === 2 ? { bg: "#162e5c" } : { bg: "blue.600" }}
+                     _active={selectedApps.length === 2 ? { bg: "#162e5c" } : {}}
+                     _disabled={{ opacity: 0.6, cursor: "not-allowed", bg: "gray.300", color: "gray.600" }}
+                  >
+                    Compare {selectedApps.length > 0 ? `(${selectedApps.length}/2)` : ''}
+                  </Button>
+                  {compareError && (
+                    <Text color="red.500" fontSize="sm">{compareError}</Text>
+                  )}
+                </HStack>
               </Box>
             )}
             {hasLowPercentageMatches && (
