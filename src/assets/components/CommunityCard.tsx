@@ -19,51 +19,60 @@ export default function CommunityCard({ item, onClick, onUpvote }: CommunityCard
   return (
     <Box
       bg={item.created_by_bexio ? "#FEF08A" : "white"}
-      border="2px solid"
+      border="1px solid"
       borderColor={item.created_by_bexio ? "#FBBF24" : "gray.200"}
-      borderRadius="8px"
-      padding="4"
+      borderRadius="lg"
+      px={6}
+      py={5}
+      boxShadow="md"
       cursor="pointer"
       transition="all 0.2s"
-      _hover={{ 
-        transform: "translateY(-2px)",
-        boxShadow: "md"
+      _hover={{
+        transform: "translateY(-4px)",
+        boxShadow: "xl",
+        borderColor: item.created_by_bexio ? "#FBBF24" : "gray.300"
       }}
+      mb={6}
       onClick={() => onClick?.(item.id)}
+      display="flex"
+      flexDirection="column"
+      gap={3}
     >
-      <VStack align="stretch" gap="3">
-        <HStack justify="space-between" align="start" flexWrap="wrap">
-          <Text 
-            fontSize="md" 
-            fontWeight="600" 
+      <VStack align="stretch" gap={3}>
+        <HStack justify="space-between" align="start" flexWrap="wrap" gap={3}>
+          <Text
+            fontSize="lg"
+            fontWeight="bold"
             color="black"
             flex="1"
+            lineHeight="1.4"
           >
             {item.title}
           </Text>
-          <HStack gap="2">
+          <HStack gap={2}>
             <Box
               bg={item.status === 'completed' ? 'green.100' : 'gray.100'}
-              px="2"
-              py="1"
-              borderRadius="4px"
+              px={3}
+              py={1}
+              borderRadius="md"
+              
             >
-              <Text 
-                fontSize="xs" 
-                fontWeight="500"
+              <Text
+                fontSize="xs"
+                fontWeight="bold"
                 color={item.status === 'completed' ? 'green.700' : 'gray.600'}
               >
                 {item.status === 'completed' ? 'Completed' : 'Pending'}
               </Text>
             </Box>
             {item.created_by_bexio && (
-              <Badge 
-                fontSize="xs" 
-                px="2" 
-                py="1" 
+              <Badge
+                fontSize="xs"
+                px={2}
+                py={1}
                 borderRadius="full"
                 bg="#FBBF24"
-                color="gray.800"
+                color="gray.000"
                 fontWeight="bold"
               >
                 Created by Bexio
@@ -72,34 +81,34 @@ export default function CommunityCard({ item, onClick, onUpvote }: CommunityCard
           </HStack>
         </HStack>
 
-        <HStack gap="2">
+        <HStack gap={3}>
           <Box
-            bg="blue.50"
-            px="3"
-            py="2"
-            borderRadius="6px"
+            bg="#1a3570"
+            px={4}
+            py={2}
+            borderRadius="md"
             cursor="pointer"
             transition="all 0.2s"
-            _hover={{ bg: 'blue.100' }}
+            _hover={{ bg: "#162e5c" }}
             onClick={(e) => {
               e.stopPropagation()
               onUpvote?.(item.id)
             }}
           >
-            <HStack gap="1">
-              <Text fontSize="lg">👍</Text>
-              <Text fontSize="sm" fontWeight="600" color="blue.700">
+            <HStack gap={1}>
+              <Text fontSize="lg" color="white">👍</Text>
+              <Text fontSize="sm" fontWeight="bold" color="white">
                 {item.upvotes}
               </Text>
-              <Text fontSize="xs" color="blue.600">upvotes</Text>
+              <Text fontSize="xs" color="blue.100">upvotes</Text>
             </HStack>
           </Box>
-          
+
           {item.created_by_bexio ? (
-            <Badge 
-              fontSize="xs" 
-              px="2" 
-              py="1" 
+            <Badge
+              fontSize="xs"
+              px={2}
+              py={1}
               borderRadius="full"
               bg="purple.400"
               color="white"
@@ -110,13 +119,13 @@ export default function CommunityCard({ item, onClick, onUpvote }: CommunityCard
           ) : (
             <Box
               bg="gray.50"
-              px="3"
-              py="2"
-              borderRadius="6px"
+              px={4}
+              py={2}
+              borderRadius="md"
             >
-              <HStack gap="1">
+              <HStack gap={1}>
                 <Text fontSize="lg">📝</Text>
-                <Text fontSize="sm" fontWeight="600" color="gray.700">
+                <Text fontSize="sm" fontWeight="bold" color="gray.700">
                   {item.requests}
                 </Text>
                 <Text fontSize="xs" color="gray.600">requests</Text>
