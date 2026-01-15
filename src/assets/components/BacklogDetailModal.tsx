@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Box, Text, VStack, HStack, Badge, Button, Spinner, IconButton } from "@chakra-ui/react"
+import { Box, Text, VStack, HStack, Badge, Button, Spinner, IconButton, Textarea } from "@chakra-ui/react"
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogBackdrop } from "@chakra-ui/react"
 import { FaCheckCircle, FaTimesCircle, FaSearch, FaTimes, FaArrowUp } from "react-icons/fa"
 
@@ -11,9 +11,10 @@ interface BacklogDetailModalProps {
   cardId: string
   showSearchButton?: boolean
   canToggleStatus?: boolean
-  canUpvote?: boolean  // Add this prop to control upvote functionality
+  canUpvote?: boolean
+  canComment?: boolean  // Add this prop to control comment functionality
   onStatusUpdate?: (cardId: string, newStatus: number) => void
-  onUpvote?: (cardId: string) => void  // Add this prop
+  onUpvote?: (cardId: string) => void
 }
 
 interface CardDetail {
@@ -22,7 +23,8 @@ interface CardDetail {
   description: string | null
   status: number
   number_of_requests: number
-  upvote?: number  // Changed from upvotes to upvote to match backend field name
+  upvote?: number
+  created_by_bexio?: boolean  // Add this field to identify Bexio-created cards
   created_at: string
   updated_at: string | null
   comments: Array<{
@@ -33,7 +35,7 @@ interface CardDetail {
   }>
 }
 
-export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearchButton = true, canToggleStatus = false, canUpvote = false, onStatusUpdate, onUpvote }: BacklogDetailModalProps) {
+export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearchButton = true, canToggleStatus = false, canUpvote = false, canComment = false, onStatusUpdate, onUpvote }: BacklogDetailModalProps) {
   const [cardDetail, setCardDetail] = useState<CardDetail | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -46,6 +48,8 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
   }>(null)
   const [providerLoading, setProviderLoading] = useState(false)
   const [providerError, setProviderError] = useState<string | null>(null)
+  const [newComment, setNewComment] = useState('')
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false)
 
   // Reset hover state when modal opens
   useEffect(() => {
@@ -196,6 +200,48 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
       }
     } catch (error) {
       console.error('Failed to upvote card:', error)
+    }
+  }
+
+  const handleSubmitComment = async () => {
+    if (!canComment || !cardDetail || !newComment.trim()) return
+    
+    try {
+      setIsSubmittingComment(true)
+      
+      const response = await fetch(`${API_BASE_URL}/api/v1/cards/${cardDetail.id}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          comment_text: newComment.trim()
+        }),
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const newCommentData = await response.json()
+      console.log('Comment submitted successfully:', newCommentData)
+      
+      // Refresh card details to show new comment
+      const commentsResponse = await fetch(`${API_BASE_URL}/api/v1/cards/${cardId}/comments`)
+      if (commentsResponse.ok) {
+        const commentsData = await commentsResponse.json()
+        setCardDetail(prev => prev ? {
+          ...prev,
+          comments: commentsData
+        } : null)
+      }
+      
+      // Clear comment input
+      setNewComment('')
+    } catch (error) {
+      console.error('Failed to submit comment:', error)
+    } finally {
+      setIsSubmittingComment(false)
     }
   }
 
@@ -500,6 +546,47 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
                   <Text color="gray.500" fontSize="md">
                     No user feedback yet
                   </Text>
+                </Box>
+              )}
+
+              {/* Add Comment Form - Only show if canComment and card is created by Bexio */}
+              {canComment && cardDetail.created_by_bexio && (
+                <Box 
+                  bg="blue.50" 
+                  p="5" 
+                  borderRadius="12px" 
+                  border="2px solid" 
+                  borderColor="blue.200"
+                >
+                  <Text fontSize="lg" fontWeight="bold" color="blue.700" mb="3">
+                    Add Your Comment
+                  </Text>
+                  <Textarea
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    placeholder="Share your thoughts about this feature request..."
+                    rows={4}
+                    resize="vertical"
+                    bg="white"
+                    borderColor="blue.300"
+                    _focus={{ 
+                      borderColor: "blue.500",
+                      boxShadow: "0 0 0 1px var(--chakra-colors-blue-500)"
+                    }}
+                    disabled={isSubmittingComment}
+                    mb="3"
+                  />
+                  <HStack justify="flex-end">
+                    <Button
+                      colorScheme="blue"
+                      onClick={handleSubmitComment}
+                      disabled={!newComment.trim() || isSubmittingComment}
+                      loading={isSubmittingComment}
+                      loadingText="Submitting..."
+                    >
+                      Submit Comment
+                    </Button>
+                  </HStack>
                 </Box>
               )}
 
