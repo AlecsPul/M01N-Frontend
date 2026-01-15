@@ -521,10 +521,6 @@ export default function Marketplace() {
                 paddingTop="6"
                 borderTop="1px solid"
                 borderColor="gray.200"
-                bg="gray.50"
-                borderRadius="12px"
-                boxShadow="xs"
-                mb={6} // Medium gap after pagination
               >
                 <Button
                   onClick={() => handlePageChange(page - 1)}

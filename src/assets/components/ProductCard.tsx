@@ -66,64 +66,59 @@ export default function ProductCard({
   }
 
   return (
-    <Box
-      bg="white"
-      borderRadius="lg"
-      boxShadow="xs"
-      _hover={{ boxShadow: "md", transform: "translateY(-2px)" }}
-      transition="all 0.2s ease"
-      overflow="visible"
-      m={4}
+    <Card.Root 
+      overflow="visible" 
+      m={4} 
+      bg={isSelected ? "blue.50" : "white"}
       position="relative"
       cursor="pointer"
       onClick={handleClick}
+      border="2px solid"
+      borderColor={isSelected ? "blue.400" : "black"}
+      borderRadius="md"
+      _hover={{ transform: "translateY(-4px)", transition: "transform 0.2s" }}
       display="flex"
       flexDirection="column"
       h="100%"
-      border="2px solid"
-      borderColor="gray.200"
+      transition="all 0.2s"
     >
-      {/* Logo area */}
-      <Box bg="gray.50" borderRadius="md" p={4} mb={4} display="flex" alignItems="center" justifyContent="center" h="120px">
-        {product.image ? (
-          <Image
-            src={product.image}
-            alt={product.title}
-            borderRadius="md"
-            maxW="100%"
-            maxH="80px"
-            objectFit="contain"
-          />
-        ) : (
-          <Box w="100%" h="80px" bg="gray.100" borderRadius="md" />
-        )}
-      </Box>
-      {/* Percentage badge */}
-      {product.percentage && (
-        <Box position="absolute" top="12px" right="12px" zIndex={2}>
-          <Text fontSize="md" color="green.600" fontWeight="bold" bg="white" px={2} py={1} borderRadius="md" boxShadow="sm">
-            {product.percentage}
-          </Text>
+      <Card.Body gap="2" display="flex" flexDirection="column" flex="1" pb="2">
+        <Box display="flex" w="100%" h="180px" mb={3} flexShrink={0}>
+          {product.image ? (
+            <Box 
+              w="90%" 
+              h="100%" 
+              display="flex" 
+              alignItems="center" 
+              justifyContent="center"
+            >
+              <Image 
+                src={product.image} 
+                alt={product.title} 
+                borderRadius="md" 
+                maxW="100%"
+                maxH="100%"
+                objectFit="contain"
+              />
+            </Box>
+          ) : (
+            <Box w="90%" h="100%" bg="gray.100" borderRadius="md" />
+          )}
+          {product.percentage && (
+            <Box w="10%" display="flex" alignItems="flex-start" justifyContent="center" pt={2}>
+              <Text fontSize="md" color="green.600" fontWeight="bold">
+                {product.percentage}
+              </Text>
+            </Box>
+          )}
         </Box>
-      )}
-      {/* Title */}
-      <Text color="black" minH="3em" lineHeight="1.5em" fontSize="xl" fontWeight="bold" flexShrink={0} px={4}>
-        {product.title}
-      </Text>
-      {/* Description */}
-      <Box h="6em" flexShrink={0} overflow="hidden" px={4} mt={2}>
-        <Text
-          fontSize="md"
-          color="gray.600"
-          lineHeight="1.5em"
-          fontWeight="medium"
-          display="-webkit-box"
-          css={{
-            WebkitLineClamp: 4,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-            textOverflow: "ellipsis"
-          }}
+        <Card.Title color={"black"} minH="3em" lineHeight="1.5em" fontSize="xl" fontWeight="semibold" flexShrink={0}>
+          {product.title}
+        </Card.Title>
+        <Box
+          h="6em"
+          flexShrink={0}
+          overflow="hidden"
         >
           {product.description}
         </Text>
