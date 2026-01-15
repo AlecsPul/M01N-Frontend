@@ -48,12 +48,32 @@ export default function NoMatchModal({ isOpen, onClose, userPrompt }: NoMatchMod
 
   return (
     <DialogRoot open={isOpen} onOpenChange={(e) => !e.open && onClose()} size="lg">
-      <DialogContent>
+      <DialogContent
+        position="fixed"
+        top="50%"
+        left="50%"
+        transform="translate(-50%, -50%)"
+        maxW="500px"
+        maxH="90vh"
+        overflowY="auto"
+        bg="white"
+        boxShadow="2xl"
+        borderRadius="12px"
+        m="0"
+      >
         <DialogHeader>
           <DialogTitle>No Matching Applications Found</DialogTitle>
           <DialogCloseTrigger asChild>
-            <Button variant="ghost" size="sm" color="white" _hover={{ color: "gray.800", bg: "gray.100" }}>
-              <FaTimes />
+            <Button 
+              variant="ghost" 
+              size="xs" 
+              color="white" 
+              _hover={{ color: "black", bg: "gray.100" }}
+              minW="24px"
+              h="24px"
+              p="1"
+            >
+              <FaTimes size={12} />
             </Button>
           </DialogCloseTrigger>
         </DialogHeader>
@@ -98,8 +118,11 @@ export default function NoMatchModal({ isOpen, onClose, userPrompt }: NoMatchMod
             colorScheme="blue" 
             onClick={handleConfirm}
             size="md"
+            loading={isSubmitting}
+            loadingText="Submitting..."
+            disabled={isSubmitting}
           >
-            Confirm
+            {isSubmitting ? 'Submitting...' : 'Confirm'}
           </Button>
         </DialogFooter>
       </DialogContent>

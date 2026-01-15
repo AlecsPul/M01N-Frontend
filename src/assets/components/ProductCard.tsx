@@ -2,6 +2,7 @@ import { Text, Button, Card, Image, Box, HStack } from "@chakra-ui/react"
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa"
 
 interface Product {
+  id?: string
   title: string
   description: string
   price: string
@@ -20,6 +21,20 @@ interface ProductCardProps {
 export default function ProductCard({ product, onClick, seeOptionsButtonProps }: ProductCardProps) {
   const BRAND_COLOR = "#2F6FED"
 
+  onSelect?: (id: string, name: string) => void
+  showSelect?: boolean
+  isSelected?: boolean
+  isSelectionDisabled?: boolean
+}
+
+export default function ProductCard({ 
+  product, 
+  onClick, 
+  onSelect, 
+  showSelect = false, 
+  isSelected = false, 
+  isSelectionDisabled = false 
+}: ProductCardProps) {
   // Debug: log the full product object
   console.log('Product data:', { title: product.title, rating: product.rating, fullProduct: product })
 
@@ -32,6 +47,13 @@ export default function ProductCard({ product, onClick, seeOptionsButtonProps }:
       if (product.link) {
         window.open(product.link, '_blank', 'noopener,noreferrer')
       }
+    }
+  }
+
+  const handleSelect = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (onSelect && product.id) {
+      onSelect(product.id, product.title)
     }
   }
 

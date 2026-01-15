@@ -4,6 +4,9 @@ import ProductCard from '../assets/components/ProductCard.tsx'
 import Filters from '../assets/components/Filters.tsx'
 import UserPrompts from '../assets/components/UserPrompts.tsx'
 import NoMatchModal from '../assets/components/NoMatchModal.tsx'
+import ComparisonModal from '../assets/components/ComparisonModal.tsx'
+import { useCompareSelection } from '../hooks/useCompareSelection.ts'
+import { comparisonService } from '../services/comparisonService.ts'
 
 const API_BASE_URL = 'http://localhost:8000'
 
@@ -23,6 +26,13 @@ export default function Marketplace() {
   const [lastSearchedPrompt, setLastSearchedPrompt] = useState('')
   const [showNoMatchModal, setShowNoMatchModal] = useState(false)
   const [noMatchPrompt, setNoMatchPrompt] = useState('')
+  
+  // Comparison State
+  const { selectedApps, isFull, toggleSelection, isSelected, clearSelection } = useCompareSelection()
+  const [isComparisonModalOpen, setIsComparisonModalOpen] = useState(false)
+  const [comparisonData, setComparisonData] = useState(null)
+  const [isComparing, setIsComparing] = useState(false)
+  const [compareError, setCompareError] = useState(null)
 
   const itemsPerPage = 9
 
@@ -164,7 +174,33 @@ export default function Marketplace() {
     }
   }
 
+  const handleCompare = async () => {
+    if (selectedApps.length !== 2) return;
+    
+    setIsComparisonModalOpen(true);
+    setIsComparing(true);
+    setCompareError(null);
+    setComparisonData(null);
+
+    try {
+        const result = await comparisonService.compareApplications(
+            selectedApps[0].name,
+            selectedApps[1].name
+        );
+        setComparisonData(result);
+    } catch (err) {
+        setCompareError(err.message || 'Comparison failed');
+    } finally {
+        setIsComparing(false);
+    }
+  };
+
   const handleUserPrompt = async (description) => {
+    // Clear selection on new search
+    if (selectedApps.length > 0) {
+      clearSelection();
+    }
+
     // Don't search if it's the same prompt as last time
     if (description === lastSearchedPrompt && hasSearched) {
       return
@@ -315,6 +351,13 @@ export default function Marketplace() {
       >
         Marketplace
       </Text>
+      <ComparisonModal
+        isOpen={isComparisonModalOpen}
+        onClose={() => setIsComparisonModalOpen(false)}
+        data={comparisonData}
+        isLoading={isComparing}
+        error={compareError}
+      />
       
       <Box 
         display="flex" 
@@ -439,6 +482,40 @@ export default function Marketplace() {
                     Showing {filteredProducts.length} matched applications
                   </Text>
                 )}
+                
+                {/* Comparison Actions */}
+                <HStack mt="4" spacing={4} justifyContent="flex-end">
+                  <Button 
+                     variant="solid"
+                     size="sm"
+                     onClick={clearSelection}
+                     disabled={selectedApps.length === 0}
+                     bg={selectedApps.length > 0 ? "black" : "gray.300"}
+                     color={selectedApps.length > 0 ? "white" : "gray.600"}
+                     _hover={selectedApps.length > 0 ? { bg: "gray.800" } : {}}
+                     _disabled={{ opacity: 0.6, cursor: "not-allowed" }}
+                  >
+                    Cancel selection
+                  </Button>
+                  <Button 
+                     variant="solid"
+                     size="sm"
+                     onClick={handleCompare}
+                     isLoading={isComparing}
+                     loadingText="Comparing..."
+                     disabled={selectedApps.length !== 2}
+                     bg={selectedApps.length === 2 ? "black" : "blue.500"}
+                     color="white"
+                     _hover={selectedApps.length === 2 ? { bg: "gray.800" } : { bg: "blue.600" }}
+                     _disabled={{ opacity: 0.6, cursor: "not-allowed", bg: "gray.300", color: "gray.600" }}
+                  >
+                    Compare {selectedApps.length > 0 ? `(${selectedApps.length}/2)` : ''}
+                  </Button>
+                  {compareError && (
+                    <Text color="red.500" fontSize="sm">{compareError}</Text>
+                  )}
+                </HStack>
+
               </Box>
 
               <Grid 
@@ -452,10 +529,11 @@ export default function Marketplace() {
                   <ProductCard 
                     key={product.id} 
                     product={product} 
-                    onClick={() => handleApplicationClick(product.id, product.link)}
-                    seeOptionsButtonProps={{
-                      _hover: { bg: "black", color: "white" }
-                    }}
+                    onClick={() => handleApplicationClick(product.id, product.link)} // Track clicks
+                    onSelect={toggleSelection}
+                    showSelect={matchedAppIds.length > 0}
+                    isSelected={isSelected(product.id)}
+                    isSelectionDisabled={isFull}
                   />
                 ))}
               </Grid>
