@@ -1,328 +1,159 @@
-<<<<<<< HEAD
-import { Box, Text, VStack, Flex, Heading, Image  } from "@chakra-ui/react"
-=======
-import { Box, Text, VStack } from "@chakra-ui/react"
->>>>>>> parent of 435011d (Marketplace Affordable)
+import { Box, Text, Flex, Image } from "@chakra-ui/react"
 import { Link, useLocation } from "react-router-dom"
 
 export default function NavBar() {
   const location = useLocation()
 
   return (
-    <VStack
+    <Box
+      as="nav"
+      position="sticky"
+      top="0"
+      zIndex="10"
+      bg="white"
+      borderBottom="1px solid"
+      borderColor="gray.200"
       w="100%"
-      minH="8vh"
-      gap={0}
+      boxShadow="0 4px 16px -8px rgba(0,0,0,0.10)" // shadowy bottom border
     >
-      <Box 
-        w="100%"
+      <Flex
+        maxW="1200px"
+        mx="auto"
+        px={6}
         minH="8vh"
-        bg="#ffffff" 
-        display="flex" 
-        alignItems="center" 
-        justifyContent="space-evenly" 
-        px={8}
-        borderBottom="1px solid"
-        borderColor="gray.200"
+        alignItems="center"
+        justifyContent="space-between"
+        position="relative"
       >
-<<<<<<< HEAD
-        <Flex
-          maxW="1200px"
-          mx="auto"
-          px={6}
-          minH="8vh"
-          alignItems="center"
-          justifyContent="space-evenly"
-        >
-          {/* About */}
-          <Link to="/about" style={{ textDecoration: 'none' }}>
-            <Box
-              bg="transparent"
-              px={3}
-              py={2}
-              borderRadius="md"
+        {/* Logo - left corner */}
+        <Box minW="140px" display="flex" alignItems="center" justifyContent="flex-start">
+          <Link to="/" style={{ textDecoration: 'none' }}>
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              height="90px"
+              width="auto"
               cursor="pointer"
-              _hover={{
-                transform: "scale(1.1)",
-                transition: "transform 0.2s",
-                bg: "gray.100",
-              }}
-            >
+              _hover={{ transform: "scale(1.05)", transition: "transform 0.2s" }}
+            />
+          </Link>
+        </Box>
+        {/* Navigation links - spaced evenly */}
+        <Flex flex="1" justify="space-evenly" alignItems="center" ml={6}>
+          <Link to="/about" style={{ textDecoration: 'none' }}>
+            <Box px={3} py={2} borderRadius="md" cursor="pointer" _hover={{ bg: "gray.100" }}>
               <Text
-                fontSize="16px"
-                fontWeight={location.pathname === '/about' ? "semibold" : "medium"}
                 color={location.pathname === '/about' ? "gray.900" : "gray.600"}
-                letterSpacing="0.2px"
+                fontWeight={location.pathname === '/about' ? "semibold" : "medium"}
                 position="relative"
-                _hover={location.pathname === '/about' ? {} : {}}
-                _after={
-                  location.pathname === '/about'
-                    ? {
+                fontSize="16px"
+                letterSpacing="0.2px"
+                _hover={{ color: "gray.900" }}
+                {...(location.pathname === '/about'
+                  ? {
+                      _after: {
                         content: '""',
                         position: "absolute",
                         left: 0,
                         right: 0,
-                        bottom: "-6px",
+                        bottom: "-10px",
                         height: "2px",
-                        bg: "brand.500",
+                        bg: "blue.600",
                         borderRadius: "full",
                       }
-                    : {}
-                }
+                    }
+                  : {})}
               >
                 About
               </Text>
             </Box>
           </Link>
-          {/* Marketplace */}
           <Link to="/" style={{ textDecoration: 'none' }}>
-            <Box
-              bg="transparent"
-              px={3}
-              py={2}
-              borderRadius="md"
-              cursor="pointer"
-              _hover={{
-                transform: "scale(1.1)",
-                transition: "transform 0.2s",
-                bg: "gray.100",
-              }}
-            >
+            <Box px={3} py={2} borderRadius="md" cursor="pointer" _hover={{ bg: "gray.100" }}>
               <Text
-                fontSize="16px"
-                fontWeight={location.pathname === '/' ? "semibold" : "medium"}
                 color={location.pathname === '/' ? "gray.900" : "gray.600"}
-                letterSpacing="0.2px"
+                fontWeight={location.pathname === '/' ? "semibold" : "medium"}
                 position="relative"
-                _hover={location.pathname === '/' ? {} : {}}
-                _after={
-                  location.pathname === '/'
-                    ? {
+                fontSize="16px"
+                letterSpacing="0.2px"
+                _hover={{ color: "gray.900" }}
+                {...(location.pathname === '/'
+                  ? {
+                      _after: {
                         content: '""',
                         position: "absolute",
                         left: 0,
                         right: 0,
-                        bottom: "-6px",
+                        bottom: "-10px",
                         height: "2px",
-                        bg: "brand.500",
+                        bg: "blue.600",
                         borderRadius: "full",
                       }
-                    : {}
-                }
+                    }
+                  : {})}
               >
-                MarketPlace
+                Marketplace
               </Text>
             </Box>
           </Link>
-          {/* Community */}
           <Link to="/community" style={{ textDecoration: 'none' }}>
-            <Box
-              bg="transparent"
-              px={3}
-              py={2}
-              borderRadius="md"
-              cursor="pointer"
-              _hover={{
-                transform: "scale(1.1)",
-                transition: "transform 0.2s",
-                bg: "gray.100",
-              }}
-            >
+            <Box px={3} py={2} borderRadius="md" cursor="pointer" _hover={{ bg: "gray.100" }}>
               <Text
-                fontSize="16px"
-                fontWeight={location.pathname === '/community' ? "semibold" : "medium"}
                 color={location.pathname === '/community' ? "gray.900" : "gray.600"}
-                letterSpacing="0.2px"
+                fontWeight={location.pathname === '/community' ? "semibold" : "medium"}
                 position="relative"
-                _hover={location.pathname === '/community' ? {} : {}}
-                _after={
-                  location.pathname === '/community'
-                    ? {
+                fontSize="16px"
+                letterSpacing="0.2px"
+                _hover={{ color: "gray.900" }}
+                {...(location.pathname === '/community'
+                  ? {
+                      _after: {
                         content: '""',
                         position: "absolute",
                         left: 0,
                         right: 0,
-                        bottom: "-6px",
+                        bottom: "-10px",
                         height: "2px",
-                        bg: "brand.500",
+                        bg: "blue.600",
                         borderRadius: "full",
                       }
-                    : {}
-                }
+                    }
+                  : {})}
               >
                 Community
               </Text>
             </Box>
           </Link>
-          {/* Backlog */}
           <Link to="/backlog" style={{ textDecoration: 'none' }}>
-            <Box
-              bg="transparent"
-              px={3}
-              py={2}
-              borderRadius="md"
-              cursor="pointer"
-              _hover={{
-                transform: "scale(1.1)",
-                transition: "transform 0.2s",
-                bg: "gray.100",
-              }}
-            >
+            <Box px={3} py={2} borderRadius="md" cursor="pointer" _hover={{ bg: "gray.100" }}>
               <Text
-                fontSize="16px"
-                fontWeight={location.pathname === '/backlog' ? "semibold" : "medium"}
                 color={location.pathname === '/backlog' ? "gray.900" : "gray.600"}
-                letterSpacing="0.2px"
+                fontWeight={location.pathname === '/backlog' ? "semibold" : "medium"}
                 position="relative"
-                _hover={location.pathname === '/backlog' ? {} : {}}
-                _after={
-                  location.pathname === '/backlog'
-                    ? {
+                fontSize="16px"
+                letterSpacing="0.2px"
+                _hover={{ color: "gray.900" }}
+                {...(location.pathname === '/backlog'
+                  ? {
+                      _after: {
                         content: '""',
                         position: "absolute",
                         left: 0,
                         right: 0,
-                        bottom: "-6px",
+                        bottom: "-10px",
                         height: "2px",
-                        bg: "brand.500",
+                        bg: "blue.600",
                         borderRadius: "full",
                       }
-                    : {}
-                }
+                    }
+                  : {})}
               >
                 Backlog
               </Text>
             </Box>
           </Link>
         </Flex>
-        bg="#ffffff" 
-        display="flex" 
-        alignItems="center" 
-        justifyContent="center" 
-        px={8}
-        borderBottom="1px solid"
-        borderColor="gray.200"
-        position="relative"
-      >
-        <Link to="/" style={{ textDecoration: 'none', position: 'absolute', left: '32px' }}>
-          <Image 
-            src="/logo.png" 
-            alt="Logo" 
-            height="110px"
-            cursor="pointer"
-            _hover={{ transform: "scale(1.05)", transition: "transform 0.2s" }}
-          />
-        </Link>
-
-        <Box display="flex" gap={4}>
-          <Link to="/about" style={{ textDecoration: 'none' }}>
-            <Box 
-              bg="transparent" 
-              px="12px" 
-              py="8px" 
-              borderRadius="8px" 
-              cursor="pointer" 
-              _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-              borderBottom={location.pathname === '/about' ? '2px solid black' : 'none'}
-            >
-              <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">About</Text>
-            </Box>
-          </Link>
-          <Link to="/" style={{ textDecoration: 'none' }}>
-            <Box 
-              bg="transparent" 
-              px="12px" 
-              py="8px" 
-              borderRadius="8px" 
-              cursor="pointer" 
-              _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-              borderBottom={location.pathname === '/' ? '2px solid black' : 'none'}
-            >
-              <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">MarketPlace</Text>
-            </Box>
-          </Link>
-          <Link to="/community" style={{ textDecoration: 'none' }}>
-            <Box 
-              bg="transparent" 
-              px="12px" 
-              py="8px" 
-              borderRadius="8px" 
-              cursor="pointer" 
-              _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-              borderBottom={location.pathname === '/community' ? '2px solid black' : 'none'}
-            >
-              <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Community</Text>
-            </Box>
-          </Link>
-          <Link to="/backlog" style={{ textDecoration: 'none' }}>
-            <Box 
-              bg="transparent" 
-              px="12px" 
-              py="8px" 
-              borderRadius="8px" 
-              cursor="pointer" 
-              _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-              borderBottom={location.pathname === '/backlog' ? '2px solid black' : 'none'}
-            >
-              <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Backlog</Text>
-            </Box>
-          </Link>
-        </Box>
-=======
-        <Link to="/about" style={{ textDecoration: 'none' }}>
-          <Box 
-            bg="transparent" 
-            px="12px" 
-            py="8px" 
-            borderRadius="8px" 
-            cursor="pointer" 
-            _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-            borderBottom={location.pathname === '/about' ? '2px solid black' : 'none'}
-          >
-            <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">About</Text>
-          </Box>
-        </Link>
-        <Link to="/" style={{ textDecoration: 'none' }}>
-          <Box 
-            bg="transparent" 
-            px="12px" 
-            py="8px" 
-            borderRadius="8px" 
-            cursor="pointer" 
-            _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-            borderBottom={location.pathname === '/' ? '2px solid black' : 'none'}
-          >
-            <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">MarketPlace</Text>
-          </Box>
-        </Link>
-        <Link to="/community" style={{ textDecoration: 'none' }}>
-          <Box 
-            bg="transparent" 
-            px="12px" 
-            py="8px" 
-            borderRadius="8px" 
-            cursor="pointer" 
-            _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-            borderBottom={location.pathname === '/community' ? '2px solid black' : 'none'}
-          >
-            <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Community</Text>
-          </Box>
-        </Link>
-        <Link to="/backlog" style={{ textDecoration: 'none' }}>
-          <Box 
-            bg="transparent" 
-            px="12px" 
-            py="8px" 
-            borderRadius="8px" 
-            cursor="pointer" 
-            _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-            borderBottom={location.pathname === '/backlog' ? '2px solid black' : 'none'}
-          >
-            <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Backlog</Text>
-          </Box>
-        </Link>
->>>>>>> parent of 435011d (Marketplace Affordable)
-      </Box>
-    </VStack>
+      </Flex>
+    </Box>
   )
 }

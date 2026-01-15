@@ -339,16 +339,19 @@ export default function Marketplace() {
         onClose={() => setShowNoMatchModal(false)}
         userPrompt={noMatchPrompt}
       />
-<<<<<<< HEAD
 
       {/* Marketplace Title */}
       <Text
         fontSize="3xl"
         fontWeight="bold"
-        mt="4rem"
-        ml="11rem"
-        mb="1.5rem"
+        mt="3rem"
+        mb={12}
         color="gray.800"
+        ml="17%" // Align with filters box start
+        px={0}
+        pt="2rem"
+        textAlign="left"
+        maxW="1200px"
       >
         Marketplace
       </Text>
@@ -359,15 +362,17 @@ export default function Marketplace() {
         isLoading={isComparing}
         error={compareError}
       />
-=======
->>>>>>> parent of 435011d (Marketplace Affordable)
-      
-      <Box display="flex" gap="4" px="2rem" pt="7rem" pb="2rem">
+      <Box display="flex" gap={4} px="2rem" pt="1rem" pb="2rem" pl="12%">
         <Box 
-          width="20%"
+          width="16%" // Cut more from the right
           borderRadius="12px"
           overflow="hidden"
           alignSelf="flex-start"
+          boxShadow="lg"
+          border="1px solid"
+          borderColor="gray.300"
+          pr={0}
+          bg="gray.50" // Match page background for the cut part
         >
           <Filters 
             onFilterChange={setFilters} 
@@ -377,12 +382,16 @@ export default function Marketplace() {
         </Box>
         
         <Box 
-          flex="1"
+          width="78%" // Expand product cards box to fill the freed space
           padding="4"
           bg="white"
           borderRadius="12px"
           display="flex"
           flexDirection="column"
+          boxShadow="lg"
+          border="1px solid"
+          borderColor="gray.300"
+        
         >
           {/* Loading and Error States */}
           {loading && (
@@ -401,7 +410,20 @@ export default function Marketplace() {
           {!loading && (
             <>
               {/* User Prompts Section */}
-              <Box mb="6">
+              <Box
+                mb={12} // Big gap after hero
+                bg="white"
+                borderRadius="18px"
+                p={{ base: 4, md: 8 }}
+                boxShadow="lg"
+                border="2px solid"
+                borderColor="gray.200"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                width="100%"
+                maxW="100%"
+              >
                 <UserPrompts 
                   onSubmit={handleUserPrompt} 
                   onResults={handleInteractiveResults}
@@ -464,28 +486,29 @@ export default function Marketplace() {
                     <Text color="red.500" fontSize="sm">{compareError}</Text>
                   )}
                 </HStack>
-
               </Box>
 
               <Grid 
                 templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} 
-                gap="4"
+                gap={6}
                 w="100%"
                 alignContent="start"
-                mb="8"
+                mb={12}
               >
                 {currentProducts.map((product) => (
                   <ProductCard 
                     key={product.id} 
                     product={product} 
-                    onClick={() => handleApplicationClick(product.id, product.link)} // Track clicks
-<<<<<<< HEAD
+                    onClick={() => handleApplicationClick(product.id, product.link)}
                     onSelect={toggleSelection}
                     showSelect={matchedAppIds.length > 0}
                     isSelected={isSelected(product.id)}
                     isSelectionDisabled={isFull}
-=======
->>>>>>> parent of 435011d (Marketplace Affordable)
+                    seeOptionsButtonProps={{
+                      bg: "#1a3570", // darker blue
+                      _hover: { bg: "#162e5c", color: "white" },
+                      _active: { bg: "#162e5c" }
+                    }}
                   />
                 ))}
               </Grid>
@@ -498,6 +521,10 @@ export default function Marketplace() {
                 paddingTop="6"
                 borderTop="1px solid"
                 borderColor="gray.200"
+                bg="gray.50"
+                borderRadius="12px"
+                boxShadow="xs"
+                mb={6} // Medium gap after pagination
               >
                 <Button
                   onClick={() => handlePageChange(page - 1)}
