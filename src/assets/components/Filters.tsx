@@ -64,7 +64,14 @@ export default function Filters({ onFilterChange, availableCategories = [], avai
             >
               <Checkbox.HiddenInput />
               <Checkbox.Control />
-              <Checkbox.Label>
+              <Checkbox.Label
+                _hover={{
+                  transform: "scale(1.07)",
+                  transition: "transform 0.15s",
+                  bg: "gray.50",
+                  borderRadius: "md"
+                }}
+              >
                 <Text color="gray.700">Free</Text>
               </Checkbox.Label>
             </Checkbox.Root>
@@ -75,7 +82,14 @@ export default function Filters({ onFilterChange, availableCategories = [], avai
             >
               <Checkbox.HiddenInput />
               <Checkbox.Control />
-              <Checkbox.Label>
+              <Checkbox.Label
+                _hover={{
+                  transform: "scale(1.07)",
+                  transition: "transform 0.15s",
+                  bg: "gray.50",
+                  borderRadius: "md"
+                }}
+              >
                 <Text color="gray.700">Paid</Text>
               </Checkbox.Label>
             </Checkbox.Root>
@@ -98,7 +112,14 @@ export default function Filters({ onFilterChange, availableCategories = [], avai
                 >
                   <Checkbox.HiddenInput />
                   <Checkbox.Control />
-                  <Checkbox.Label>
+                  <Checkbox.Label
+                    _hover={{
+                      transform: "scale(1.07)",
+                      transition: "transform 0.15s",
+                      bg: "gray.50",
+                      borderRadius: "md"
+                    }}
+                  >
                     <Text color="gray.700">{category}</Text>
                   </Checkbox.Label>
                 </Checkbox.Root>
@@ -125,7 +146,14 @@ export default function Filters({ onFilterChange, availableCategories = [], avai
                 >
                   <Checkbox.HiddenInput />
                   <Checkbox.Control />
-                  <Checkbox.Label>
+                  <Checkbox.Label
+                    _hover={{
+                      transform: "scale(1.07)",
+                      transition: "transform 0.15s",
+                      bg: "gray.50",
+                      borderRadius: "md"
+                    }}
+                  >
                     <Text color="gray.700">{industry}</Text>
                   </Checkbox.Label>
                 </Checkbox.Root>

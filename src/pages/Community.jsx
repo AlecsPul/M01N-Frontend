@@ -60,7 +60,9 @@ const Community = () => {
         }}
         cardId={selectedCardId}
         showSearchButton={false}
-        canUpvote={true}  // Enable upvoting from Community modal
+        canComment={true}
+        canUpvote={true}
+        canUpvoteComments={true}  // Enable comment upvoting in Community
         onUpvote={(cardId) => {
           // Update local state when upvote happens in modal
           setCommunityItems((prev) => {

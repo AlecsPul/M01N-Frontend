@@ -1,92 +1,159 @@
-import { Box, Text, VStack, Image } from "@chakra-ui/react"
+import { Box, Text, Flex, Image } from "@chakra-ui/react"
 import { Link, useLocation } from "react-router-dom"
 
 export default function NavBar() {
   const location = useLocation()
 
   return (
-    <VStack
+    <Box
+      as="nav"
+      position="sticky"
+      top="0"
+      zIndex="10"
+      bg="white"
+      borderBottom="1px solid"
+      borderColor="gray.200"
       w="100%"
-      minH="8vh"
-      gap={0}
+      boxShadow="0 4px 16px -8px rgba(0,0,0,0.10)" // shadowy bottom border
     >
-      <Box 
-        w="100%"
+      <Flex
+        maxW="1200px"
+        mx="auto"
+        px={6}
         minH="8vh"
-        bg="#ffffff" 
-        display="flex" 
-        alignItems="center" 
-        justifyContent="center" 
-        px={8}
-        borderBottom="1px solid"
-        borderColor="gray.200"
+        alignItems="center"
+        justifyContent="space-between"
         position="relative"
       >
-        <Link to="/" style={{ textDecoration: 'none', position: 'absolute', left: '32px' }}>
-          <Image 
-            src="/logo.png" 
-            alt="Logo" 
-            height="110px"
-            cursor="pointer"
-            _hover={{ transform: "scale(1.05)", transition: "transform 0.2s" }}
-          />
-        </Link>
-
-        <Box display="flex" gap={4}>
+        {/* Logo - left corner */}
+        <Box minW="140px" display="flex" alignItems="center" justifyContent="flex-start">
+          <Link to="/" style={{ textDecoration: 'none' }}>
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              height="90px"
+              width="auto"
+              cursor="pointer"
+              _hover={{ transform: "scale(1.05)", transition: "transform 0.2s" }}
+            />
+          </Link>
+        </Box>
+        {/* Navigation links - spaced evenly */}
+        <Flex flex="1" justify="space-evenly" alignItems="center" ml={6}>
           <Link to="/about" style={{ textDecoration: 'none' }}>
-            <Box 
-              bg="transparent" 
-              px="12px" 
-              py="8px" 
-              borderRadius="8px" 
-              cursor="pointer" 
-              _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-              borderBottom={location.pathname === '/about' ? '2px solid black' : 'none'}
-            >
-              <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">About</Text>
+            <Box px={3} py={2} borderRadius="md" cursor="pointer" _hover={{ bg: "gray.100" }}>
+              <Text
+                color={location.pathname === '/about' ? "gray.900" : "gray.600"}
+                fontWeight={location.pathname === '/about' ? "semibold" : "medium"}
+                position="relative"
+                fontSize="16px"
+                letterSpacing="0.2px"
+                _hover={{ color: "gray.900" }}
+                {...(location.pathname === '/about'
+                  ? {
+                      _after: {
+                        content: '""',
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        bottom: "-10px",
+                        height: "2px",
+                        bg: "blue.600",
+                        borderRadius: "full",
+                      }
+                    }
+                  : {})}
+              >
+                About
+              </Text>
             </Box>
           </Link>
           <Link to="/" style={{ textDecoration: 'none' }}>
-            <Box 
-              bg="transparent" 
-              px="12px" 
-              py="8px" 
-              borderRadius="8px" 
-              cursor="pointer" 
-              _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-              borderBottom={location.pathname === '/' ? '2px solid black' : 'none'}
-            >
-              <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">MarketPlace</Text>
+            <Box px={3} py={2} borderRadius="md" cursor="pointer" _hover={{ bg: "gray.100" }}>
+              <Text
+                color={location.pathname === '/' ? "gray.900" : "gray.600"}
+                fontWeight={location.pathname === '/' ? "semibold" : "medium"}
+                position="relative"
+                fontSize="16px"
+                letterSpacing="0.2px"
+                _hover={{ color: "gray.900" }}
+                {...(location.pathname === '/'
+                  ? {
+                      _after: {
+                        content: '""',
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        bottom: "-10px",
+                        height: "2px",
+                        bg: "blue.600",
+                        borderRadius: "full",
+                      }
+                    }
+                  : {})}
+              >
+                Marketplace
+              </Text>
             </Box>
           </Link>
           <Link to="/community" style={{ textDecoration: 'none' }}>
-            <Box 
-              bg="transparent" 
-              px="12px" 
-              py="8px" 
-              borderRadius="8px" 
-              cursor="pointer" 
-              _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-              borderBottom={location.pathname === '/community' ? '2px solid black' : 'none'}
-            >
-              <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Community</Text>
+            <Box px={3} py={2} borderRadius="md" cursor="pointer" _hover={{ bg: "gray.100" }}>
+              <Text
+                color={location.pathname === '/community' ? "gray.900" : "gray.600"}
+                fontWeight={location.pathname === '/community' ? "semibold" : "medium"}
+                position="relative"
+                fontSize="16px"
+                letterSpacing="0.2px"
+                _hover={{ color: "gray.900" }}
+                {...(location.pathname === '/community'
+                  ? {
+                      _after: {
+                        content: '""',
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        bottom: "-10px",
+                        height: "2px",
+                        bg: "blue.600",
+                        borderRadius: "full",
+                      }
+                    }
+                  : {})}
+              >
+                Community
+              </Text>
             </Box>
           </Link>
           <Link to="/backlog" style={{ textDecoration: 'none' }}>
-            <Box 
-              bg="transparent" 
-              px="12px" 
-              py="8px" 
-              borderRadius="8px" 
-              cursor="pointer" 
-              _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
-              borderBottom={location.pathname === '/backlog' ? '2px solid black' : 'none'}
-            >
-              <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Backlog</Text>
+            <Box px={3} py={2} borderRadius="md" cursor="pointer" _hover={{ bg: "gray.100" }}>
+              <Text
+                color={location.pathname === '/backlog' ? "gray.900" : "gray.600"}
+                fontWeight={location.pathname === '/backlog' ? "semibold" : "medium"}
+                position="relative"
+                fontSize="16px"
+                letterSpacing="0.2px"
+                _hover={{ color: "gray.900" }}
+                {...(location.pathname === '/backlog'
+                  ? {
+                      _after: {
+                        content: '""',
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        bottom: "-10px",
+                        height: "2px",
+                        bg: "blue.600",
+                        borderRadius: "full",
+                      }
+                    }
+                  : {})}
+              >
+                Backlog
+              </Text>
             </Box>
           </Link>
-        </Box>
-      </Box>
-    </VStack>
+        </Flex>
+      </Flex>
+    </Box>
   )
 }
