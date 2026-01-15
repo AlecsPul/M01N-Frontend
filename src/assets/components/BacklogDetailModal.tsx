@@ -12,7 +12,8 @@ interface BacklogDetailModalProps {
   showSearchButton?: boolean
   canToggleStatus?: boolean
   canUpvote?: boolean
-  canComment?: boolean  // Add this prop to control comment functionality
+  canComment?: boolean
+  canUpvoteComments?: boolean  // Add this prop to control comment upvoting
   onStatusUpdate?: (cardId: string, newStatus: number) => void
   onUpvote?: (cardId: string) => void
 }
@@ -36,7 +37,7 @@ interface CardDetail {
   }>
 }
 
-export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearchButton = true, canToggleStatus = false, canUpvote = false, canComment = false, onStatusUpdate, onUpvote }: BacklogDetailModalProps) {
+export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearchButton = true, canToggleStatus = false, canUpvote = false, canComment = false, canUpvoteComments = false, onStatusUpdate, onUpvote }: BacklogDetailModalProps) {
   const [cardDetail, setCardDetail] = useState<CardDetail | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -249,7 +250,7 @@ export default function BacklogDetailModal({ isOpen, onClose, cardId, showSearch
   }
 
   const handleCommentUpvote = async (commentId: string) => {
-    if (!cardDetail) return
+    if (!canUpvoteComments || !cardDetail) return  // Check canUpvoteComments permission
     
     // Optimistic update - increment immediately
     setCardDetail(prev => {
