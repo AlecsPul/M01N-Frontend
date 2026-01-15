@@ -461,9 +461,10 @@ export default function Marketplace() {
                      size="sm"
                      onClick={clearSelection}
                      disabled={selectedApps.length === 0}
-                     bg={selectedApps.length > 0 ? "black" : "gray.300"}
+                     bg={selectedApps.length > 0 ? "#1a3570" : "gray.300"}
                      color={selectedApps.length > 0 ? "white" : "gray.600"}
-                     _hover={selectedApps.length > 0 ? { bg: "gray.800" } : {}}
+                     _hover={selectedApps.length > 0 ? { bg: "#162e5c" } : {}}
+                     _active={selectedApps.length > 0 ? { bg: "#162e5c" } : {}}
                      _disabled={{ opacity: 0.6, cursor: "not-allowed" }}
                   >
                     Cancel selection
@@ -475,9 +476,10 @@ export default function Marketplace() {
                      isLoading={isComparing}
                      loadingText="Comparing..."
                      disabled={selectedApps.length !== 2}
-                     bg={selectedApps.length === 2 ? "black" : "blue.500"}
+                     bg={selectedApps.length === 2 ? "#1a3570" : "blue.500"}
                      color="white"
-                     _hover={selectedApps.length === 2 ? { bg: "gray.800" } : { bg: "blue.600" }}
+                     _hover={selectedApps.length === 2 ? { bg: "#162e5c" } : { bg: "blue.600" }}
+                     _active={selectedApps.length === 2 ? { bg: "#162e5c" } : {}}
                      _disabled={{ opacity: 0.6, cursor: "not-allowed", bg: "gray.300", color: "gray.600" }}
                   >
                     Compare {selectedApps.length > 0 ? `(${selectedApps.length}/2)` : ''}
