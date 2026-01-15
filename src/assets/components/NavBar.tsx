@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Box, Text, VStack, Flex, Heading, Image  } from "@chakra-ui/react"
+=======
+import { Box, Text, VStack } from "@chakra-ui/react"
+>>>>>>> parent of 435011d (Marketplace Affordable)
 import { Link, useLocation } from "react-router-dom"
 
 export default function NavBar() {
@@ -9,16 +13,19 @@ export default function NavBar() {
       w="100%"
       minH="8vh"
       gap={0}
-      bg="gray.50" // Quiet contrast: page background
     >
       <Box 
         w="100%"
         minH="8vh"
-        bg="white" // Main content container: white
+        bg="#ffffff" 
+        display="flex" 
+        alignItems="center" 
+        justifyContent="space-evenly" 
+        px={8}
         borderBottom="1px solid"
         borderColor="gray.200"
-        boxShadow="sm" // subtle elevation
       >
+<<<<<<< HEAD
         <Flex
           maxW="1200px"
           mx="auto"
@@ -261,8 +268,61 @@ export default function NavBar() {
             </Box>
           </Link>
         </Box>
+=======
+        <Link to="/about" style={{ textDecoration: 'none' }}>
+          <Box 
+            bg="transparent" 
+            px="12px" 
+            py="8px" 
+            borderRadius="8px" 
+            cursor="pointer" 
+            _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
+            borderBottom={location.pathname === '/about' ? '2px solid black' : 'none'}
+          >
+            <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">About</Text>
+          </Box>
+        </Link>
+        <Link to="/" style={{ textDecoration: 'none' }}>
+          <Box 
+            bg="transparent" 
+            px="12px" 
+            py="8px" 
+            borderRadius="8px" 
+            cursor="pointer" 
+            _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
+            borderBottom={location.pathname === '/' ? '2px solid black' : 'none'}
+          >
+            <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">MarketPlace</Text>
+          </Box>
+        </Link>
+        <Link to="/community" style={{ textDecoration: 'none' }}>
+          <Box 
+            bg="transparent" 
+            px="12px" 
+            py="8px" 
+            borderRadius="8px" 
+            cursor="pointer" 
+            _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
+            borderBottom={location.pathname === '/community' ? '2px solid black' : 'none'}
+          >
+            <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Community</Text>
+          </Box>
+        </Link>
+        <Link to="/backlog" style={{ textDecoration: 'none' }}>
+          <Box 
+            bg="transparent" 
+            px="12px" 
+            py="8px" 
+            borderRadius="8px" 
+            cursor="pointer" 
+            _hover={{ transform: "scale(1.1)", transition: "transform 0.2s" }}
+            borderBottom={location.pathname === '/backlog' ? '2px solid black' : 'none'}
+          >
+            <Text color="black" fontSize="16px" fontWeight="500" letterSpacing="0.2px">Backlog</Text>
+          </Box>
+        </Link>
+>>>>>>> parent of 435011d (Marketplace Affordable)
       </Box>
-      
     </VStack>
   )
 }
